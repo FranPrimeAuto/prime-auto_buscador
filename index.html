@@ -190,6 +190,7 @@ input,select,textarea,button{font-family:inherit}
   </div>
   <div class="hdr-r">
     <div class="api-status"><div class="sdot" id="sdot"></div><span id="stxt">API no configurada</span></div>
+    <div class="api-status" style="margin-left:8px"><div class="sdot" id="sdotApify"></div><span id="stxtApify">Apify no configurado</span></div>
     <button class="btn-cfg" onclick="openCfg()">⚙ Configurar API</button>
   </div>
 </header>
@@ -197,13 +198,18 @@ input,select,textarea,button{font-family:inherit}
 <!-- CONFIG MODAL -->
 <div class="overlay" id="cfgModal">
   <div class="modal">
-    <h2>⚙ Configuración de API</h2>
-    <p>Necesitas una clave API de Anthropic (Claude) para el análisis con IA. Se guarda solo en tu navegador.</p>
+    <h2>⚙ Configuración de APIs</h2>
+    <p>Necesitas ambas claves para el funcionamiento completo del dashboard.</p>
     <div class="modal-hint">
-      <strong>¿Dónde conseguirla?</strong> → <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
+      <strong>Claude (IA):</strong> console.anthropic.com → API Keys → Create Key<br>
       Empieza por <strong>sk-ant-api03-...</strong>
     </div>
-    <div class="fg"><label>Clave API de Anthropic</label><input type="password" id="apiIn" placeholder="sk-ant-api03-..."/></div>
+    <div class="fg" style="margin-bottom:14px"><label>Clave API de Anthropic (Claude)</label><input type="password" id="apiIn" placeholder="sk-ant-api03-..."/></div>
+    <div class="modal-hint">
+      <strong>Apify (scraping de anuncios reales):</strong> apify.com/account/integrations → Personal API tokens<br>
+      Empieza por <strong>apify_api_...</strong>
+    </div>
+    <div class="fg"><label>Clave API de Apify</label><input type="password" id="apifyIn" placeholder="apify_api_..."/></div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeCfg()">Cancelar</button>
       <button class="btn-save" onclick="saveCfg()">Guardar y Activar</button>
@@ -302,16 +308,16 @@ input,select,textarea,button{font-family:inherit}
 <div class="tab-panel" id="tab-leads">
   <div class="sec-hdr">
     <h2>🎯 Búsqueda de <span>Leads</span></h2>
-    <p>Obtén leads reales con guion personalizado y % de probabilidad de conversión.</p>
+    <p>Anuncios reales de particulares que venden su coche, con URL directa al anuncio, puntuados por IA y con guion de llamada personalizado.</p>
   </div>
   <div class="src-panel">
-    <div class="src-panel-ttl">Portales analizados</div>
+    <div class="src-panel-ttl">Portales donde se buscan los leads — y por qué</div>
     <div class="src-grid">
-      <div class="src-item"><div class="src-dot"></div>Wallapop</div>
-      <div class="src-item"><div class="src-dot"></div>Milanuncios</div>
-      <div class="src-item"><div class="src-dot"></div>Autoscout24.es</div>
-      <div class="src-item"><div class="src-dot"></div>Coches.com</div>
-      <div class="src-item"><div class="src-dot"></div>Vibbo</div>
+      <div class="src-item" title="Mayor volumen de particulares en España. Filtramos exclusivamente vendedor=Particular."><div class="src-dot"></div>Wallapop ✅ Particulares</div>
+      <div class="src-item" title="Segunda mayor plataforma de clasificados en España. Acceso vía URL de búsqueda directa."><div class="src-dot"></div>Milanuncios ✅ Particulares</div>
+    </div>
+    <div style="font-size:11px;color:var(--white3);margin-top:8px;line-height:1.5">
+      ⓘ Solo se busca en portales donde el scraping es fiable y devuelve URLs reales de cada anuncio. Coches.net, AutoScout24 y similares están dominados por concesionarios, no por particulares, y no son objetivo de Prime Auto.
     </div>
   </div>
   <div class="card">
@@ -326,7 +332,7 @@ input,select,textarea,button{font-family:inherit}
       <div class="fg"><label>Año mínimo</label>
         <select id="l_anio"><option value="2018">Desde 2018</option><option value="2019">Desde 2019</option><option value="2020">Desde 2020</option><option value="2021">Desde 2021</option><option value="2022">Desde 2022</option><option value="2016">Desde 2016</option></select></div>
       <div class="fg"><label>Tipo de lead</label>
-        <select id="l_tipo"><option value="vendedor">Particulares que venden</option><option value="comprador">Particulares que buscan comprar</option><option value="ambos">Ambos</option></select></div>
+        <select id="l_tipo" disabled title="Solo se buscan anuncios de particulares que venden su coche"><option value="vendedor">🚗 Particulares que venden</option></select></div>
       <div class="fg"><label>Zona</label>
         <select id="l_zona"><option value="España">Toda España</option><option value="Madrid">Madrid</option><option value="Barcelona">Barcelona</option><option value="Valencia">Valencia</option><option value="Sevilla">Sevilla</option><option value="Málaga">Málaga</option><option value="Bilbao">Bilbao / País Vasco</option><option value="Zaragoza">Zaragoza</option></select></div>
     </div>
@@ -335,7 +341,7 @@ input,select,textarea,button{font-family:inherit}
     </div>
   </div>
   <div class="alert" id="leadsAlert"></div>
-  <div class="loading" id="loadLeads"><div class="spin"></div><p>Buscando leads con IA…</p><p style="opacity:.6;font-size:12px">Analizando portales y generando guiones personalizados</p></div>
+  <div class="loading" id="loadLeads"><div class="spin"></div><p>Buscando anuncios reales…</p><p style="opacity:.6;font-size:12px">Scrapendo Wallapop y Milanuncios · La IA puntuará y generará guiones (30-60 seg)</p></div>
   <div class="leads-grid" id="leadsRes"></div>
 </div>
 
@@ -1083,19 +1089,30 @@ var CAR_DB = {
 // ────────────────────────────────────────────────────────────────
 // API KEY — usar var para evitar TDZ en todos los contextos
 // ────────────────────────────────────────────────────────────────
-var API_KEY = localStorage.getItem('pa_api_key') || '';
+var API_KEY   = localStorage.getItem('pa_api_key')   || '';
+var APIFY_KEY = localStorage.getItem('pa_apify_key') || '';
 
-function openCfg(){ document.getElementById('apiIn').value = API_KEY; document.getElementById('cfgModal').classList.add('open'); }
+function openCfg(){
+  document.getElementById('apiIn').value   = API_KEY;
+  document.getElementById('apifyIn').value = APIFY_KEY;
+  document.getElementById('cfgModal').classList.add('open');
+}
 function closeCfg(){ document.getElementById('cfgModal').classList.remove('open'); }
 function saveCfg(){
   var k = document.getElementById('apiIn').value.trim();
-  if(!k.startsWith('sk-ant')){ alert('La clave debe empezar por sk-ant-...'); return; }
-  API_KEY = k; localStorage.setItem('pa_api_key', k); closeCfg(); updateStatus();
+  if(k && !k.startsWith('sk-ant')){ alert('La clave de Anthropic debe empezar por sk-ant-...'); return; }
+  if(k){ API_KEY = k; localStorage.setItem('pa_api_key', k); }
+  var ak = document.getElementById('apifyIn').value.trim();
+  if(ak){ APIFY_KEY = ak; localStorage.setItem('pa_apify_key', ak); }
+  closeCfg(); updateStatus();
 }
 function updateStatus(){
   var dot = document.getElementById('sdot'), txt = document.getElementById('stxt');
-  if(API_KEY){ dot.classList.add('on'); txt.textContent = 'API activa'; }
-  else{ dot.classList.remove('on'); txt.textContent = 'API no configurada'; }
+  if(API_KEY){ dot.classList.add('on'); txt.textContent = 'Claude activo'; }
+  else{ dot.classList.remove('on'); txt.textContent = 'Claude no configurado'; }
+  var dotA = document.getElementById('sdotApify'), txtA = document.getElementById('stxtApify');
+  if(APIFY_KEY){ dotA.classList.add('on'); txtA.textContent = 'Apify activo'; }
+  else{ dotA.classList.remove('on'); txtA.textContent = 'Apify no configurado'; }
 }
 updateStatus();
 
@@ -1341,59 +1358,120 @@ async function analizarSemaforo(){
 }
 
 // ────────────────────────────────────────────────────────────────
-// LEADS — generador de URLs de búsqueda reales por portal
+// LEADS — Apify scraping + Claude scoring
 // ────────────────────────────────────────────────────────────────
-function buildSearchUrl(l){
-  var m  = encodeURIComponent((l.marca||'').toLowerCase());
-  var mo = encodeURIComponent((l.modelo||'').toLowerCase());
-  var q  = encodeURIComponent(((l.marca||'')+' '+(l.modelo||'')).trim());
-  var anio = l.anio ? l.anio : '';
-  var pmax = l.precio ? Math.round(l.precio * 1.15) : '';
-  var p = (l.portal||'').toLowerCase();
-  if(p.includes('coches.net')){
-    // https://www.coches.net/segunda-mano/coches/?marca=bmw&modelo=serie-3&precioMax=40000&anioMin=2020
-    var url = 'https://www.coches.net/segunda-mano/coches/?';
-    if(l.marca) url += 'marca='+m+'&';
-    if(l.modelo) url += 'modelo='+mo+'&';
-    if(anio)  url += 'anioMin='+anio+'&';
-    if(pmax)  url += 'precioMax='+pmax;
-    return url;
-  }
-  if(p.includes('autoscout24')){
-    // https://www.autoscout24.es/lst/bmw/m3?atype=C&fregfrom=2020&priceto=50000
-    var url = 'https://www.autoscout24.es/lst/'+m+(mo ? '/'+mo : '')+'?atype=C&';
-    if(anio)  url += 'fregfrom='+anio+'&';
-    if(pmax)  url += 'priceto='+pmax;
-    return url;
-  }
-  if(p.includes('autocasion')){
-    // https://www.autocasion.com/coches-ocasion/?marca=BMW&modelo=M3&preciomax=50000&anyodesde=2020
-    var url = 'https://www.autocasion.com/coches-ocasion/?';
-    if(l.marca)  url += 'marca='+encodeURIComponent(l.marca)+'&';
-    if(l.modelo) url += 'modelo='+encodeURIComponent(l.modelo)+'&';
-    if(anio)     url += 'anyodesde='+anio+'&';
-    if(pmax)     url += 'preciomax='+pmax;
-    return url;
-  }
-  if(p.includes('motor.es')){
-    return 'https://www.motor.es/segunda-mano/?q='+q+(anio?'&ano_desde='+anio:'')+(pmax?'&precio_hasta='+pmax:'');
-  }
-  if(p.includes('automotor')){
-    return 'https://www.automotor.es/coches-segunda-mano/?q='+q+(anio?'&year_from='+anio:'')+(pmax?'&price_to='+pmax:'');
-  }
-  if(p.includes('wallapop')){
-    return 'https://es.wallapop.com/coches?keywords='+q+(pmax?'&max_sale_price='+pmax:'');
-  }
-  // fallback genérico: búsqueda en Google del anuncio
-  return 'https://www.google.es/search?q='+encodeURIComponent((l.marca||'')+' '+(l.modelo||'')+' '+anio+' segunda mano '+l.zona);
+var ZONA_WALLAPOP = {Madrid:'Madrid',Barcelona:'Barcelona',Valencia:'Valencia',Sevilla:'Seville','Málaga':'Malaga','Bilbao / País Vasco':'Bilbao',Zaragoza:'Zaragoza'};
+var ZONA_MILA_PROV = {Madrid:'28',Barcelona:'8',Valencia:'46',Sevilla:'41','Málaga':'29','Bilbao / País Vasco':'48',Zaragoza:'50'};
+
+async function callApify(actorId, input){
+  var url = 'https://api.apify.com/v2/acts/'+actorId+'/run-sync-get-dataset-items?token='+APIFY_KEY+'&timeout=90&memory=256';
+  var resp = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(input)});
+  if(!resp.ok){ var err = await resp.text(); throw new Error('Apify ('+actorId+'): '+resp.status+' '+err.substring(0,120)); }
+  return resp.json();
+}
+
+async function fetchWallapop(marca, modelo, pmax, anioMin, zona){
+  var input = {sellerType:'Private', maxItems:6, orderBy:'newest'};
+  var kw = ((marca||'')+' '+(modelo||'')).trim();
+  if(kw) input.keywords = kw;
+  input.location = ZONA_WALLAPOP[zona] || 'Madrid';
+  if(anioMin) input.minYear = Number(anioMin);
+  if(pmax)    input.maxPrice = Number(pmax);
+  var items = await callApify('rastriq~wallapop-cars-scraper', input);
+  return (items||[]).map(function(i){
+    return {
+      portal:'Wallapop',
+      titulo: i.title||i.name||'Sin título',
+      url: i.url||i.link||i.webUrl||i.itemUrl||'',
+      marca: i.brand||i.make||marca||'',
+      modelo: i.model||modelo||'',
+      anio: i.year||i.yearOfManufacture||'',
+      km: i.mileage||i.km||i.kilometers||0,
+      precio: i.price||0,
+      combustible: i.fuelType||i.engine||i.fuel||'',
+      zona: i.location||i.city||zona||'',
+      descripcion: (i.description||'').substring(0,200)
+    };
+  });
+}
+
+async function fetchMilanuncios(marca, modelo, pmax, anioMin, zona){
+  var searchUrl = 'https://www.milanuncios.com/coches-segunda-mano/';
+  var params = [];
+  if(marca)  params.push('marca='+encodeURIComponent(marca));
+  if(modelo) params.push('modelo='+encodeURIComponent(modelo));
+  if(pmax)   params.push('precioasta='+pmax);
+  if(anioMin)params.push('aniodesde='+anioMin);
+  if(zona && ZONA_MILA_PROV[zona]) params.push('provincia='+ZONA_MILA_PROV[zona]);
+  if(params.length) searchUrl += '?'+params.join('&');
+  var items = await callApify('lexis-solutions~milanuncios-cars-scraper', {startUrls:[{url:searchUrl}], maxItems:6});
+  return (items||[]).map(function(i){
+    return {
+      portal:'Milanuncios',
+      titulo: i.title||i.name||'Sin título',
+      url: i.url||i.link||i.adUrl||i.href||'',
+      marca: i.brand||i.make||marca||'',
+      modelo: i.model||modelo||'',
+      anio: i.year||'',
+      km: i.mileage||i.km||0,
+      precio: i.price||0,
+      combustible: i.fuelType||i.fuel||'',
+      zona: i.location||i.province||zona||'',
+      descripcion: (i.description||'').substring(0,200)
+    };
+  });
+}
+
+function renderLeadCard(l, idx){
+  var urlHtml = l.url
+    ? '<a href="'+l.url+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--gold);font-size:12px;text-decoration:none;border:1px solid rgba(201,168,76,.35);border-radius:6px;padding:4px 10px;margin-bottom:12px;transition:background .2s" onmouseover="this.style.background=\'rgba(201,168,76,.1)\'" onmouseout="this.style.background=\'transparent\'">🔗 Ver anuncio en '+l.portal+'</a>'
+    : '<span style="font-size:11px;color:var(--white3);display:inline-block;margin-bottom:12px">Sin URL disponible</span>';
+  return '<div class="lead-c">'+
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+      '<span style="background:var(--gold);color:var(--black);font-weight:700;font-size:11px;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center">'+(idx+1)+'</span>'+
+      '<span style="font-size:11px;color:var(--white3);text-transform:uppercase;letter-spacing:.5px">Posición por conversión</span>'+
+    '</div>'+
+    '<div class="lead-ch">'+
+      '<div>'+
+        '<div class="lead-title">'+l.titulo+'</div>'+
+        '<div style="margin-top:5px;display:flex;gap:7px;flex-wrap:wrap">'+
+          '<span class="src-badge">📍 '+l.portal+'</span>'+
+          '<span class="ltag">🚗 Particular vende</span>'+
+          (l.zona?'<span class="ltag">'+l.zona+'</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="lead-price">'+(l.precio?Number(l.precio).toLocaleString('es-ES')+'€':'—')+'</div>'+
+    '</div>'+
+    '<div class="lead-meta">'+
+      (l.marca||l.modelo?'<span class="ltag">'+(l.marca||'')+' '+(l.modelo||'')+'</span>':'')+
+      (l.anio?'<span class="ltag">'+l.anio+'</span>':'')+
+      (l.km?'<span class="ltag">'+Number(l.km).toLocaleString('es-ES')+' km</span>':'')+
+      (l.combustible?'<span class="ltag">'+l.combustible+'</span>':'')+
+    '</div>'+
+    (l.descripcion?'<div style="font-size:13px;color:var(--white3);margin-bottom:10px;line-height:1.6">'+l.descripcion+'</div>':'')+
+    urlHtml+
+    '<div class="prob-row">'+
+      '<div class="prob-bar"><div class="prob-fill" style="width:'+(l.conversion||0)+'%"></div></div>'+
+      '<div class="prob-lbl">'+(l.conversion||0)+'% conversión</div>'+
+    '</div>'+
+    (l.razon?'<div style="font-size:12px;color:var(--white3);margin-bottom:11px">💡 '+l.razon+'</div>':'')+
+    '<div class="lead-script">'+
+      '<div class="ls-ttl">✍ Guion de llamada</div>'+
+      (l.apertura?'<p style="margin-bottom:8px"><strong style="color:var(--gold-light)">Apertura:</strong> '+l.apertura+'</p>':'')+
+      (l.propuesta?'<p style="margin-bottom:8px"><strong style="color:var(--gold-light)">Propuesta:</strong> '+l.propuesta+'</p>':'')+
+      (l.cierre?'<p><strong style="color:var(--gold-light)">Cierre:</strong> '+l.cierre+'</p>':'')+
+    '</div>'+
+  '</div>';
 }
 
 async function buscarLeads(){
+  if(!APIFY_KEY){ showAlert('leadsAlert','❌ Configura tu API key de Apify en ⚙ Configurar API','err'); return; }
+  if(!API_KEY){   showAlert('leadsAlert','❌ Configura tu API key de Anthropic en ⚙ Configurar API','err'); return; }
+
   var marca  = document.getElementById('l_marca').value;
   var modelo = document.getElementById('l_modelo').value;
   var pmax   = document.getElementById('l_pmax').value;
   var anio   = document.getElementById('l_anio').value;
-  var tipo   = document.getElementById('l_tipo').value;
   var zona   = document.getElementById('l_zona').value;
 
   hideAlert('leadsAlert');
@@ -1402,56 +1480,26 @@ async function buscarLeads(){
   document.getElementById('leadsRes').innerHTML = '';
   showLoad('loadLeads');
 
-  var sys = 'Eres experto en captación de clientes para Prime Auto, empresa de importacion de vehiculos premium en Madrid.\n\nCRITERIOS DE FIABILIDAD (OBLIGATORIOS — descarta cualquier anuncio que no los cumpla):\n- Solo anuncios con garantía oficial de marca o de concesionario oficial\n- O con libro de revisiones sellado en taller oficial (historial completo)\n- Solo portales de alta reputación en España, en este orden preferente: Coches.net, AutoScout24, Motor.es, Autocasion.com, Automotor.es. Wallapop o Facebook solo si el anuncio tiene garantía oficial documentada.\n- Excluir anuncios sin fotos reales, sin historial, de particulares sin documentación, o con señales de odómetro manipulado.\n\nNO incluyas URLs en el JSON — se generan automáticamente.\nResponde UNICAMENTE con un JSON array de 6 objetos, sin texto adicional ni markdown, ORDENADOS de mayor a menor valor de "conversion":\n[{"id":1,"portal":"Coches.net","titulo":"titulo corto","marca":"string","modelo":"string","anio":2021,"km":45000,"precio":28000,"combustible":"Diesel","zona":"Madrid","tipo_lead":"vendedor","fiabilidad":"garantía oficial BMW hasta 2026","descripcion":"descripcion breve 20-30 palabras","conversion":75,"razon":"motivo breve","apertura":"frase apertura telefonica","propuesta":"frase propuesta valor","cierre":"frase cierre con CTA"}]';
-
-  var usr = 'Genera 6 leads de calidad, SOLO anuncios 100% fiables (garantía oficial o libro mantenimiento taller oficial completo).\nOrdenar de mayor a menor tasa de conversión.\nTipo: '+tipo+'\nMarca/Modelo: '+(marca||modelo ? (marca+' '+modelo).trim() : 'cualquier premium (BMW, Audi, Mercedes, Porsche, Volvo, Land Rover, Lexus)')+
-    '\nPrecio máx: '+(pmax ? pmax+'€' : 'sin límite')+'\nAño mínimo: '+anio+'\nZona: '+zona;
-
   try{
-    var leads = parseJSON(await callClaude(sys, usr));
-    if(!Array.isArray(leads)) throw new Error('Formato incorrecto.');
-    leads.sort(function(a,b){ return (b.conversion||0)-(a.conversion||0); });
-    document.getElementById('leadsRes').innerHTML = leads.map(function(l,idx){
-      var searchUrl = buildSearchUrl(l);
-      var urlHtml = '<a href="'+searchUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--gold);font-size:12px;text-decoration:none;border:1px solid rgba(201,168,76,.35);border-radius:6px;padding:4px 10px;margin-bottom:12px;transition:var(--t)" onmouseover="this.style.background=\'rgba(201,168,76,.1)\'" onmouseout="this.style.background=\'transparent\'">🔍 Buscar en '+l.portal+'</a>';
-      return '<div class="lead-c">'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
-          '<span style="background:var(--gold);color:var(--black);font-weight:700;font-size:11px;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center">'+(idx+1)+'</span>'+
-          '<span style="font-size:11px;color:var(--white3);text-transform:uppercase;letter-spacing:.5px">Posición por conversión</span>'+
-        '</div>'+
-        '<div class="lead-ch">'+
-          '<div>'+
-            '<div class="lead-title">'+l.titulo+'</div>'+
-            '<div style="margin-top:5px;display:flex;gap:7px;flex-wrap:wrap">'+
-              '<span class="src-badge">📍 '+l.portal+'</span>'+
-              '<span class="ltag">'+(l.tipo_lead==='vendedor'?'🚗 Vende':'🔍 Busca comprar')+'</span>'+
-              '<span class="ltag">'+l.zona+'</span>'+
-            '</div>'+
-          '</div>'+
-          '<div class="lead-price">'+Number(l.precio).toLocaleString('es-ES')+'€</div>'+
-        '</div>'+
-        '<div class="lead-meta">'+
-          '<span class="ltag">'+l.marca+' '+l.modelo+'</span>'+
-          '<span class="ltag">'+l.anio+'</span>'+
-          '<span class="ltag">'+Number(l.km).toLocaleString('es-ES')+' km</span>'+
-          '<span class="ltag">'+l.combustible+'</span>'+
-        '</div>'+
-        (l.fiabilidad ? '<div style="font-size:12px;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:5px">✅ '+l.fiabilidad+'</div>' : '')+
-        urlHtml+
-        '<div style="font-size:13px;color:var(--white3);margin-bottom:12px;line-height:1.6">'+(l.descripcion||l.descripcion_anuncio||'')+'</div>'+
-        '<div class="prob-row">'+
-          '<div class="prob-bar"><div class="prob-fill" style="width:'+(l.conversion||0)+'%"></div></div>'+
-          '<div class="prob-lbl">'+(l.conversion||0)+'% conversión</div>'+
-        '</div>'+
-        '<div style="font-size:12px;color:var(--white3);margin-bottom:11px">💡 '+(l.razon||l.razon_probabilidad||'')+'</div>'+
-        '<div class="lead-script">'+
-          '<div class="ls-ttl">✍ Guion de llamada</div>'+
-          '<p style="margin-bottom:8px"><strong style="color:var(--gold-light)">Apertura:</strong> '+(l.apertura||'')+'</p>'+
-          '<p style="margin-bottom:8px"><strong style="color:var(--gold-light)">Propuesta:</strong> '+(l.propuesta||'')+'</p>'+
-          '<p><strong style="color:var(--gold-light)">Cierre:</strong> '+(l.cierre||'')+'</p>'+
-        '</div>'+
-      '</div>';
-    }).join('');
+    // 1. Scraping real en paralelo
+    var results = await Promise.allSettled([
+      fetchWallapop(marca, modelo, pmax, anio, zona),
+      fetchMilanuncios(marca, modelo, pmax, anio, zona)
+    ]);
+    var rawLeads = [];
+    results.forEach(function(r){ if(r.status==='fulfilled') rawLeads = rawLeads.concat(r.value); });
+    if(rawLeads.length === 0) throw new Error('No se encontraron anuncios en Wallapop ni Milanuncios. Prueba con criterios más amplios.');
+
+    // 2. Claude puntúa y genera guiones
+    var sys = 'Eres experto en captación para Prime Auto (Madrid). Gestionamos la venta de coches de particulares ofreciendo: fotos profesionales, limpieza, revisión en taller colaborador y garantía contratada por nosotros.\nAnaliza estos anuncios reales y añade a cada objeto estos 5 campos:\n- conversion (0-100): probabilidad de que el vendedor acepte nuestro servicio\n- razon: motivo del score en 10-15 palabras\n- apertura: frase de apertura telefónica personalizada al anuncio\n- propuesta: cómo presentar el valor de Prime Auto a este vendedor concreto\n- cierre: frase de cierre con CTA\nDevuelve SOLO el JSON array con todos los campos originales más los 5 nuevos, sin markdown, ordenado de mayor a menor conversion.';
+    var usr = 'Anuncios reales de particulares:\n'+JSON.stringify(rawLeads);
+    var scored = parseJSON(await callClaude(sys, usr));
+    if(!Array.isArray(scored)) throw new Error('Error al analizar leads con IA.');
+    scored.sort(function(a,b){ return (b.conversion||0)-(a.conversion||0); });
+
+    // 3. Render
+    document.getElementById('leadsRes').innerHTML = scored.map(renderLeadCard).join('');
+
   } catch(e){
     showAlert('leadsAlert','❌ '+e.message,'err');
   } finally {
