@@ -1357,16 +1357,24 @@ async function buscarLeads(){
   document.getElementById('leadsRes').innerHTML = '';
   showLoad('loadLeads');
 
-  var sys = 'Eres experto en captación de clientes para Prime Auto, empresa de importacion de vehiculos premium en Madrid.\nResponde UNICAMENTE con un JSON array de 6 objetos, sin texto adicional ni markdown:\n[{"id":1,"portal":"Wallapop","titulo":"titulo corto","marca":"string","modelo":"string","anio":2021,"km":45000,"precio":28000,"combustible":"Diesel","zona":"Madrid","tipo_lead":"vendedor","descripcion":"descripcion breve 20-30 palabras","conversion":75,"razon":"motivo breve","apertura":"frase apertura telefonica","propuesta":"frase propuesta valor","cierre":"frase cierre con CTA"}]';
+  var sys = 'Eres experto en captación de clientes para Prime Auto, empresa de importacion de vehiculos premium en Madrid.\n\nCRITERIOS DE FIABILIDAD (OBLIGATORIOS — descarta cualquier anuncio que no los cumpla):\n- Solo anuncios con garantía oficial de marca o de concesionario oficial\n- O con libro de revisiones sellado en taller oficial (historial completo)\n- Solo portales de alta reputación en España, en este orden preferente: Coches.net, AutoScout24, Motor.es, Autocasion.com, Automotor.es. Wallapop o Facebook solo si el anuncio tiene garantía oficial documentada.\n- Excluir anuncios sin fotos reales, sin historial, de particulares sin documentación, o con señales de odómetro manipulado.\n\nResponde UNICAMENTE con un JSON array de 6 objetos, sin texto adicional ni markdown, ORDENADOS de mayor a menor valor de "conversion":\n[{"id":1,"portal":"Coches.net","url":"https://www.coches.net/anuncio/ejemplo-bmw-serie-3","titulo":"titulo corto","marca":"string","modelo":"string","anio":2021,"km":45000,"precio":28000,"combustible":"Diesel","zona":"Madrid","tipo_lead":"vendedor","fiabilidad":"garantía oficial BMW hasta 2026","descripcion":"descripcion breve 20-30 palabras","conversion":75,"razon":"motivo breve","apertura":"frase apertura telefonica","propuesta":"frase propuesta valor","cierre":"frase cierre con CTA"}]';
 
-  var usr = 'Genera 6 leads de calidad.\nTipo: '+tipo+'\nMarca/Modelo: '+(marca||modelo ? (marca+' '+modelo).trim() : 'cualquier premium (BMW, Audi, Mercedes, Porsche, Volvo, Land Rover, Lexus)')+
+  var usr = 'Genera 6 leads de calidad, SOLO anuncios 100% fiables (garantía oficial o libro mantenimiento taller oficial completo).\nOrdenar de mayor a menor tasa de conversión.\nTipo: '+tipo+'\nMarca/Modelo: '+(marca||modelo ? (marca+' '+modelo).trim() : 'cualquier premium (BMW, Audi, Mercedes, Porsche, Volvo, Land Rover, Lexus)')+
     '\nPrecio máx: '+(pmax ? pmax+'€' : 'sin límite')+'\nAño mínimo: '+anio+'\nZona: '+zona;
 
   try{
     var leads = parseJSON(await callClaude(sys, usr));
     if(!Array.isArray(leads)) throw new Error('Formato incorrecto.');
-    document.getElementById('leadsRes').innerHTML = leads.map(function(l){
+    leads.sort(function(a,b){ return (b.conversion||0)-(a.conversion||0); });
+    document.getElementById('leadsRes').innerHTML = leads.map(function(l,idx){
+      var urlHtml = l.url
+        ? '<a href="'+l.url+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--gold);font-size:12px;text-decoration:none;border:1px solid rgba(201,168,76,.35);border-radius:6px;padding:4px 10px;margin-bottom:12px;transition:var(--t)" onmouseover="this.style.background=\'rgba(201,168,76,.1)\'" onmouseout="this.style.background=\'transparent\'">🔗 Ver anuncio en '+l.portal+'</a>'
+        : '';
       return '<div class="lead-c">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+          '<span style="background:var(--gold);color:var(--black);font-weight:700;font-size:11px;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center">'+(idx+1)+'</span>'+
+          '<span style="font-size:11px;color:var(--white3);text-transform:uppercase;letter-spacing:.5px">Posición por conversión</span>'+
+        '</div>'+
         '<div class="lead-ch">'+
           '<div>'+
             '<div class="lead-title">'+l.titulo+'</div>'+
@@ -1384,10 +1392,12 @@ async function buscarLeads(){
           '<span class="ltag">'+Number(l.km).toLocaleString('es-ES')+' km</span>'+
           '<span class="ltag">'+l.combustible+'</span>'+
         '</div>'+
+        (l.fiabilidad ? '<div style="font-size:12px;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:5px">✅ '+l.fiabilidad+'</div>' : '')+
+        urlHtml+
         '<div style="font-size:13px;color:var(--white3);margin-bottom:12px;line-height:1.6">'+(l.descripcion||l.descripcion_anuncio||'')+'</div>'+
         '<div class="prob-row">'+
-          '<div class="prob-bar"><div class="prob-fill" style="width:'+(l.conversion||l.probabilidad_conversion||0)+'%"></div></div>'+
-          '<div class="prob-lbl">'+(l.conversion||l.probabilidad_conversion||0)+'% conversión</div>'+
+          '<div class="prob-bar"><div class="prob-fill" style="width:'+(l.conversion||0)+'%"></div></div>'+
+          '<div class="prob-lbl">'+(l.conversion||0)+'% conversión</div>'+
         '</div>'+
         '<div style="font-size:12px;color:var(--white3);margin-bottom:11px">💡 '+(l.razon||l.razon_probabilidad||'')+'</div>'+
         '<div class="lead-script">'+
