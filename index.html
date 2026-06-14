@@ -1240,7 +1240,7 @@ async function callClaude(sys, usr){
     },
     body: JSON.stringify({
       model:'claude-opus-4-8',
-      max_tokens:1200,
+      max_tokens:4096,
       system: sys,
       messages:[{role:'user',content:usr}]
     })
@@ -1254,10 +1254,12 @@ async function callClaude(sys, usr){
 }
 
 function parseJSON(raw){
-  try{ return JSON.parse(raw); } catch(e){
-    var m = raw.match(/[\[{][\s\S]*[\]}]/);
-    if(m) return JSON.parse(m[0]);
-    throw new Error('Respuesta inesperada de la IA.');
+  // Strip markdown code fences if present
+  var clean = raw.replace(/```(?:json)?\s*/gi,'').replace(/```\s*/g,'').trim();
+  try{ return JSON.parse(clean); } catch(e){
+    var m = clean.match(/[\[{][\s\S]*[\]}]/);
+    if(m) try{ return JSON.parse(m[0]); } catch(e2){}
+    throw new Error('Respuesta inesperada de la IA: '+e.message);
   }
 }
 
