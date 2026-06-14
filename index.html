@@ -378,6 +378,11 @@ input,select,textarea,button{font-family:inherit}
             <input type="number" id="c_pventa" placeholder="24000" oninput="calcImport()"/></div>
           <div class="fg full"><label>Coste transporte (€) — 0 = automático por país</label>
             <input type="number" id="c_trans" value="0" oninput="calcImport()"/></div>
+          <div class="fg full"><label>Tipo de vendedor en origen</label>
+            <select id="c_vendedor" onchange="calcImport()">
+              <option value="particular">Particular (sin IVA en factura)</option>
+              <option value="empresa">Empresa / Concesionario (con IVA o NIF-IVA intracomunitario)</option>
+            </select></div>
         </div>
         <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-p" onclick="calcImport()">🧮 Calcular</button>
@@ -1392,28 +1397,40 @@ function buildWallapopUrl(marca, modelo, pmax, zona){
   return base;
 }
 
+var MARCAS_PREMIUM = ['audi','bmw','mercedes','porsche','volvo','land rover','range rover','lexus','jaguar','maserati','bentley','ferrari','lamborghini','aston martin','rolls royce','infiniti','genesis','alfa romeo'];
+
+function matchesFiltro(titulo, marca, modelo){
+  var t = (titulo||'').toLowerCase();
+  // Filtro de marca
+  if(marca){
+    if(t.indexOf(marca.toLowerCase()) === -1) return false;
+  } else {
+    // Sin marca → solo premium
+    if(!MARCAS_PREMIUM.some(function(m){ return t.indexOf(m) !== -1; })) return false;
+  }
+  // Filtro de modelo (parcial)
+  if(modelo && t.indexOf(modelo.toLowerCase()) === -1) return false;
+  return true;
+}
+
 async function fetchWallapop(marca, modelo, pmax, anioMin, zona){
   var searchUrl = buildWallapopUrl(marca, modelo, pmax, zona);
-  // piotrv1001~wallapop-listings-scraper: devuelve URL real de cada anuncio, sin proxy especial
-  var items = await callApify('piotrv1001~wallapop-listings-scraper', {searchUrl: searchUrl, maxItems: 20});
+  var items = await callApify('piotrv1001~wallapop-listings-scraper', {searchUrl: searchUrl, maxItems: 50});
   return (items||[])
-    .filter(function(i){
-      // Solo coches (categoryId 100) y no vendidos/reservados
-      return i.categoryId === 100 && !i.sold && !i.reserved;
-    })
-    .filter(function(i){
-      // Filtro precio máximo si se especificó
-      return !pmax || !i.price || i.price <= Number(pmax);
-    })
+    .filter(function(i){ return i.categoryId === 100 && !i.sold && !i.reserved; })
+    .filter(function(i){ return matchesFiltro(i.title, marca, modelo); })
+    .filter(function(i){ return !pmax || !i.price || i.price <= Number(pmax); })
+    .filter(function(i){ return !anioMin || !i.title || extractAnio(i.title) === 0 || extractAnio(i.title) >= Number(anioMin); })
     .slice(0, 8)
     .map(function(i){
+      var anio = extractAnio(i.title);
       return {
         portal: 'Wallapop',
         titulo: i.title || 'Sin título',
         url: i.url || '',
         marca: marca || '',
         modelo: modelo || '',
-        anio: anioMin || '',
+        anio: anio || anioMin || '',
         km: 0,
         precio: i.price || 0,
         combustible: '',
@@ -1422,6 +1439,11 @@ async function fetchWallapop(marca, modelo, pmax, anioMin, zona){
         vendedor: (i.seller && i.seller.username) ? i.seller.username : 'Particular'
       };
     });
+}
+
+function extractAnio(titulo){
+  var m = (titulo||'').match(/\b(19[5-9]\d|20[0-2]\d)\b/);
+  return m ? Number(m[1]) : 0;
 }
 
 function renderLeadCard(l, idx){
@@ -1526,13 +1548,14 @@ function getIEDMT(co2, comb){
 function fmt(n){ return Math.round(n).toLocaleString('es-ES')+'€'; }
 
 function calcImport(){
-  var pc   = Number(document.getElementById('c_pcompra').value) || 0;
-  var pv   = Number(document.getElementById('c_pventa').value)  || 0;
-  var co2  = Number(document.getElementById('c_co2').value)     || 0;
-  var pais = document.getElementById('c_pais').value;
-  var trans= Number(document.getElementById('c_trans').value)   || 0;
-  var combEl = document.getElementById('c_comb');
-  var comb = combEl.options[combEl.selectedIndex] ? combEl.options[combEl.selectedIndex].value : '';
+  var pc       = Number(document.getElementById('c_pcompra').value) || 0;
+  var pv       = Number(document.getElementById('c_pventa').value)  || 0;
+  var co2      = Number(document.getElementById('c_co2').value)     || 0;
+  var pais     = document.getElementById('c_pais').value;
+  var trans    = Number(document.getElementById('c_trans').value)   || 0;
+  var vendedor = document.getElementById('c_vendedor').value;
+  var combEl   = document.getElementById('c_comb');
+  var comb     = combEl.options[combEl.selectedIndex] ? combEl.options[combEl.selectedIndex].value : '';
 
   if(!pc){
     document.getElementById('calcLines').innerHTML='<p style="color:var(--white3);font-size:13px;text-align:center;padding:20px 0">Introduce el precio de compra</p>';
@@ -1540,7 +1563,16 @@ function calcImport(){
   }
 
   var transFinal = trans > 0 ? trans : (TRANS[pais] || 900);
-  var iva        = pc * 0.21;
+
+  // IVA: solo se paga en España si el vendedor es un particular (no tiene NIF-IVA)
+  // Si es empresa/concesionario con factura de IVA, la operación intracomunitaria
+  // se liquida mediante inversión del sujeto pasivo → coste neto 0 para empresa registrada en IVA.
+  var ivaPaga   = (vendedor === 'particular');
+  var iva        = ivaPaga ? pc * 0.21 : 0;
+  var ivaTexto   = ivaPaga
+    ? 'El vendedor es un particular no sujeto a IVA en origen. España exige el pago del IVA (21%) sobre el precio de compra al matricular el vehículo (Art. 13 Ley 37/1992 del IVA).'
+    : 'Operación intracomunitaria entre empresas. El comprador aplica la inversión del sujeto pasivo: declara el IVA como soportado y repercutido simultáneamente → coste neto 0€ (Art. 84.Uno.2º Ley 37/1992).';
+
   var iedmtRate  = getIEDMT(co2, comb);
   var iedmt      = pc * iedmtRate;
   var homol      = 350;
@@ -1551,11 +1583,22 @@ function calcImport(){
   var total      = pc + transFinal + iva + iedmt + homol + itv + gest + dgt + otros;
   var margen     = pv > 0 ? pv - total : null;
 
+  var ivaLinea = ivaPaga
+    ? '<div class="cline"><span class="lbl">IVA España (21%)</span><span class="val">'+fmt(iva)+'</span></div>'+
+      '<div style="font-size:11px;color:var(--white3);margin:-8px 0 10px 0;line-height:1.5;padding:8px 10px;background:rgba(243,156,18,.07);border-left:2px solid var(--yellow);border-radius:0 4px 4px 0">⚠ '+ivaTexto+'</div>'
+    : '<div class="cline"><span class="lbl">IVA España</span><span class="val" style="color:var(--green)">0€ — exento</span></div>'+
+      '<div style="font-size:11px;color:var(--white3);margin:-8px 0 10px 0;line-height:1.5;padding:8px 10px;background:rgba(46,204,113,.07);border-left:2px solid var(--green);border-radius:0 4px 4px 0">✅ '+ivaTexto+'</div>';
+
+  var iedmtFuente = '<div style="font-size:11px;color:var(--white3);margin:-6px 0 10px 0;line-height:1.5;padding:8px 10px;background:rgba(201,168,76,.06);border-left:2px solid var(--gold-dark);border-radius:0 4px 4px 0">'+
+    '📋 Fuente: <a href="https://sede.agenciatributaria.gob.es/Sede/procedimientoini/GC13.shtml" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Agencia Tributaria — IEDMT (Impuesto Especial sobre Determinados Medios de Transporte)</a>. '+
+    'Tramos vigentes: ≤120 g CO₂ → 0% · 121-160 g → 4,75% · 161-200 g → 9,75% · >200 g → 14,75% · Eléctrico/PHEV → 0%. Art. 70 Ley 38/1992 (LIIEE).</div>';
+
   var html =
     '<div class="cline"><span class="lbl">Precio de compra</span><span class="val">'+fmt(pc)+'</span></div>'+
     '<div class="cline"><span class="lbl">Transporte desde '+pais+'</span><span class="val">'+fmt(transFinal)+'</span></div>'+
-    '<div class="cline"><span class="lbl">IVA (21%)</span><span class="val">'+fmt(iva)+'</span></div>'+
-    '<div class="cline"><span class="lbl">IEDMT ('+(iedmtRate*100).toFixed(2)+'%'+(co2?' · '+co2+' g/km CO₂':'')+')</span><span class="val">'+fmt(iedmt)+'</span></div>'+
+    ivaLinea+
+    '<div class="cline"><span class="lbl">IEDMT matriculación ('+(iedmtRate*100).toFixed(2)+'%'+(co2?' · '+co2+' g/km CO₂':'')+')</span><span class="val">'+fmt(iedmt)+'</span></div>'+
+    iedmtFuente+
     '<div class="cline"><span class="lbl">Homologación + ITV</span><span class="val">'+fmt(homol+itv)+'</span></div>'+
     '<div class="cline"><span class="lbl">Gestoría + DGT</span><span class="val">'+fmt(gest+dgt)+'</span></div>'+
     '<div class="cline"><span class="lbl">Otros gastos</span><span class="val">'+fmt(otros)+'</span></div>'+
