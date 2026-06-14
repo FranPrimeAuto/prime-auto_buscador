@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Prime Auto — Buscador Inteligente</title>
+<style>
+:root{
+  --black:#0a0a0a;--black2:#111111;--black3:#1a1a1a;--black4:#242424;--black5:#2e2e2e;
+  --gold:#c9a84c;--gold-light:#e2c078;--gold-dark:#a07730;
+  --white:#f5f5f5;--white2:#d4d4d4;--white3:#9a9a9a;
+  --green:#2ecc71;--yellow:#f39c12;--red:#e74c3c;
+  --radius:12px;--shadow:0 8px 32px rgba(0,0,0,.6);--shadow-gold:0 4px 20px rgba(201,168,76,.25);--t:.25s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+input,select,textarea,button{font-family:inherit}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--black2)}::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--black2),var(--black3));border-bottom:1px solid rgba(201,168,76,.3);padding:0 32px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;height:72px;box-shadow:var(--shadow)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--black);letter-spacing:-1px;box-shadow:var(--shadow-gold)}
+.logo-title{font-size:20px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.logo-sub{font-size:11px;color:var(--white3);letter-spacing:2px;text-transform:uppercase}
+.hdr-r{display:flex;align-items:center;gap:16px}
+.api-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--white3)}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--red);transition:var(--t)}
+.sdot.on{background:var(--green);box-shadow:0 0 8px var(--green)}
+.btn-cfg{background:transparent;border:1px solid rgba(201,168,76,.4);color:var(--gold);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:var(--t)}
+.btn-cfg:hover{background:rgba(201,168,76,.1);border-color:var(--gold)}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.modal{background:var(--black3);border:1px solid rgba(201,168,76,.3);border-radius:var(--radius);padding:32px;width:100%;max-width:520px;box-shadow:var(--shadow)}
+.modal h2{color:var(--gold);margin-bottom:8px;font-size:18px}
+.modal p{color:var(--white3);font-size:13px;margin-bottom:16px;line-height:1.5}
+.modal-hint{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--white3);margin-bottom:20px}
+.modal-hint strong{color:var(--gold-light)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.btn-cancel{background:transparent;border:1px solid var(--black5);color:var(--white3);padding:9px 20px;border-radius:6px;cursor:pointer;transition:var(--t)}
+.btn-cancel:hover{border-color:var(--white3);color:var(--white)}
+.btn-save{background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;color:var(--black);padding:9px 24px;border-radius:6px;cursor:pointer;font-weight:700;transition:var(--t)}
+.btn-save:hover{filter:brightness(1.1)}
+
+/* TABS */
+.tabs-nav{background:var(--black2);border-bottom:1px solid rgba(201,168,76,.15);padding:0 32px;display:flex;gap:0;overflow-x:auto}
+.tab-btn{background:transparent;border:none;color:var(--white3);padding:18px 22px;cursor:pointer;font-size:14px;font-weight:500;border-bottom:3px solid transparent;white-space:nowrap;transition:var(--t);display:flex;align-items:center;gap:8px}
+.tab-btn:hover{color:var(--gold-light)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tbadge{background:var(--black4);color:var(--white3);font-size:10px;padding:2px 6px;border-radius:10px;border:1px solid var(--black5)}
+.tbadge.off{background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.3);color:var(--red)}
+
+/* MAIN */
+.main{padding:32px;max-width:1200px;margin:0 auto}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.sec-hdr{margin-bottom:24px}
+.sec-hdr h2{font-size:22px;font-weight:700;color:var(--white);margin-bottom:4px}
+.sec-hdr h2 span{color:var(--gold)}
+.sec-hdr p{color:var(--white3);font-size:14px}
+
+/* CARD */
+.card{background:var(--black3);border:1px solid rgba(201,168,76,.12);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.card+.card{margin-top:20px}
+.card-title{font-size:15px;font-weight:600;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.card-title::before{content:'';display:block;width:3px;height:18px;background:var(--gold);border-radius:2px}
+
+/* FORM */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:11px;font-weight:600;color:var(--white3);text-transform:uppercase;letter-spacing:.5px}
+.fg select,.fg input{background:var(--black4);border:1px solid var(--black5);color:var(--white);padding:10px 12px;border-radius:8px;font-size:13px;transition:var(--t);width:100%}
+.fg select:focus,.fg input:focus{outline:none;border-color:var(--gold-dark);background:var(--black5);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+.fg select option{background:var(--black3)}
+.fg select:disabled{opacity:.4;cursor:not-allowed}
+
+/* BTNS */
+.btn-p{background:linear-gradient(135deg,var(--gold),var(--gold-dark));border:none;color:var(--black);padding:11px 26px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px;transition:var(--t);display:inline-flex;align-items:center;gap:7px}
+.btn-p:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:var(--shadow-gold)}
+.btn-p:active{transform:translateY(0)}
+.btn-p:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-s{background:transparent;border:1px solid rgba(201,168,76,.4);color:var(--gold);padding:9px 18px;border-radius:8px;cursor:pointer;font-size:14px;transition:var(--t)}
+.btn-s:hover{background:rgba(201,168,76,.1);border-color:var(--gold)}
+
+/* SEMÁFORO */
+.sem-result{display:none;margin-top:22px}
+.sem-result.vis{display:block}
+.sem-box{display:flex;align-items:center;gap:28px;background:var(--black4);border-radius:var(--radius);padding:26px 30px;border:1px solid var(--black5);flex-wrap:wrap}
+.sem-lights{display:flex;flex-direction:column;gap:9px}
+.slt{width:46px;height:46px;border-radius:50%;opacity:.14;transition:all .5s ease;box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+.slt.on{opacity:1}
+.slt.r{background:#e74c3c}.slt.r.on{box-shadow:0 0 20px rgba(231,76,60,.8)}
+.slt.y{background:#f39c12}.slt.y.on{box-shadow:0 0 20px rgba(243,156,18,.8)}
+.slt.g{background:#2ecc71}.slt.g.on{box-shadow:0 0 20px rgba(46,204,113,.8)}
+.sem-info{flex:1;min-width:240px}
+.sem-verdict{font-size:21px;font-weight:700;margin-bottom:7px}
+.sem-verdict.r{color:#e74c3c}.sem-verdict.y{color:#f39c12}.sem-verdict.g{color:#2ecc71}
+.sem-comment{color:var(--white2);font-size:14px;line-height:1.7}
+.sem-stats{display:flex;gap:20px;margin-top:16px;flex-wrap:wrap}
+.stat-b{background:var(--black5);border-radius:8px;padding:12px 16px;min-width:120px}
+.stat-b-lbl{font-size:11px;color:var(--white3);text-transform:uppercase;letter-spacing:.5px}
+.stat-b-val{font-size:19px;font-weight:700;color:var(--gold);margin-top:3px}
+
+/* LEADS */
+.leads-grid{display:grid;gap:14px;margin-top:20px}
+.lead-c{background:var(--black4);border:1px solid var(--black5);border-radius:var(--radius);padding:18px;transition:var(--t)}
+.lead-c:hover{border-color:rgba(201,168,76,.3);box-shadow:var(--shadow-gold)}
+.lead-ch{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.lead-title{font-size:15px;font-weight:600;color:var(--white)}
+.lead-price{font-size:19px;font-weight:700;color:var(--gold)}
+.lead-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.ltag{background:var(--black5);border:1px solid rgba(255,255,255,.07);color:var(--white3);padding:3px 9px;border-radius:6px;font-size:12px}
+.prob-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.prob-bar{flex:1;height:5px;background:var(--black5);border-radius:3px;overflow:hidden}
+.prob-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width .8s ease}
+.prob-lbl{font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap}
+.lead-script{background:var(--black3);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:13px;font-size:13px;color:var(--white2);line-height:1.6}
+.ls-ttl{font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.src-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);color:var(--gold-light);padding:3px 9px;border-radius:12px;font-size:11px}
+
+/* CALC */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:720px){.calc-grid{grid-template-columns:1fr}}
+.calc-res{background:var(--black4);border:1px solid rgba(201,168,76,.2);border-radius:var(--radius);padding:22px}
+.calc-res h3{color:var(--gold);margin-bottom:16px;font-size:15px}
+.cline{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--black5);font-size:14px}
+.cline:last-child{border-bottom:none}
+.cline .lbl{color:var(--white3)}
+.cline .val{color:var(--white);font-weight:500}
+.cline.tot{border-top:2px solid var(--gold-dark);border-bottom:none;margin-top:6px;padding-top:12px}
+.cline.tot .lbl{color:var(--gold);font-weight:700;font-size:14px}
+.cline.tot .val{color:var(--gold);font-weight:700;font-size:17px}
+.val.pos{color:var(--green)!important;font-weight:700!important}
+.val.neg{color:var(--red)!important;font-weight:700!important}
+.tax-box{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:13px;margin-top:14px}
+.tax-box-ttl{font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.tax-box p{font-size:12px;color:var(--white3);line-height:1.7}
+
+/* SOURCES */
+.src-panel{background:var(--black4);border:1px solid rgba(201,168,76,.12);border-radius:8px;padding:13px 16px;margin-bottom:18px}
+.src-panel-ttl{font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px}
+.src-grid{display:flex;gap:8px;flex-wrap:wrap}
+.src-item{display:flex;align-items:center;gap:5px;background:var(--black5);border:1px solid rgba(255,255,255,.06);border-radius:6px;padding:4px 11px;font-size:12px}
+.src-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* LOADING */
+.loading{display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:44px}
+.loading.vis{display:flex}
+.spin{width:44px;height:44px;border:3px solid var(--black5);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--white3);font-size:13px}
+
+/* ALERT */
+.alert{padding:13px 16px;border-radius:8px;font-size:13px;margin-top:14px;display:none}
+.alert.vis{display:block}
+.alert.err{background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);color:#ff8f85}
+.alert.info{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--gold-light)}
+
+/* DISABLED */
+.disabled-sec{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:18px;text-align:center}
+.d-icon{font-size:60px;opacity:.25}
+.d-badge{background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);color:var(--red);padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.d-title{font-size:19px;font-weight:600;color:var(--white3)}
+.d-desc{font-size:14px;color:var(--white3);max-width:400px;opacity:.7;line-height:1.7}
+
+/* MARKET */
+.mkt{display:none;margin-top:18px}
+.mkt.vis{display:block}
+
+@media(max-width:600px){
+  .hdr{padding:0 14px}.main{padding:14px}.tabs-nav{padding:0 6px}
+  .tab-btn{padding:13px 10px;font-size:12px}.sem-box{flex-direction:column;gap:16px}
+  .sem-lights{flex-direction:row}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-icon">PA</div>
+    <div>
+      <div class="logo-title">Prime Auto</div>
+      <div class="logo-sub">Buscador Inteligente</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="api-status"><div class="sdot" id="sdot"></div><span id="stxt">API no configurada</span></div>
+    <button class="btn-cfg" onclick="openCfg()">⚙ Configurar API</button>
+  </div>
+</header>
+
+<!-- CONFIG MODAL -->
+<div class="overlay" id="cfgModal">
+  <div class="modal">
+    <h2>⚙ Configuración de API</h2>
+    <p>Necesitas una clave API de Anthropic (Claude) para el análisis con IA. Se guarda solo en tu navegador.</p>
+    <div class="modal-hint">
+      <strong>¿Dónde conseguirla?</strong> → <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
+      Empieza por <strong>sk-ant-api03-...</strong>
+    </div>
+    <div class="fg"><label>Clave API de Anthropic</label><input type="password" id="apiIn" placeholder="sk-ant-api03-..."/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeCfg()">Cancelar</button>
+      <button class="btn-save" onclick="saveCfg()">Guardar y Activar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<nav class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('sem',this)">🚦 Semáforo de Precios</button>
+  <button class="tab-btn" onclick="switchTab('oport',this)">🔍 Oportunidades <span class="tbadge off">PRÓXIMAMENTE</span></button>
+  <button class="tab-btn" onclick="switchTab('leads',this)">🎯 Búsqueda de Leads</button>
+  <button class="tab-btn" onclick="switchTab('calc',this)">🧮 Calculadora Importación</button>
+</nav>
+
+<main class="main">
+
+<!-- ═══════ TAB SEMÁFORO ═══════ -->
+<div class="tab-panel active" id="tab-sem">
+  <div class="sec-hdr">
+    <h2>🚦 Semáforo de <span>Precios</span></h2>
+    <p>Selecciona el vehículo del anuncio. La IA comparará el precio con el mercado español actual.</p>
+  </div>
+  <div class="src-panel">
+    <div class="src-panel-ttl">Fuentes de mercado consultadas</div>
+    <div class="src-grid">
+      <div class="src-item"><div class="src-dot"></div>Autoscout24.es</div>
+      <div class="src-item"><div class="src-dot"></div>Wallapop</div>
+      <div class="src-item"><div class="src-dot"></div>Milanuncios</div>
+      <div class="src-item"><div class="src-dot"></div>Infocar</div>
+      <div class="src-item"><div class="src-dot"></div>Coches.com</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Datos del vehículo</div>
+    <div class="fgrid">
+      <div class="fg"><label>Marca</label>
+        <select id="s_marca" onchange="cascadeMarca('s')"><option value="">— Selecciona —</option></select></div>
+      <div class="fg"><label>Modelo</label>
+        <select id="s_modelo" onchange="cascadeModelo('s')" disabled><option value="">— Primero marca —</option></select></div>
+      <div class="fg"><label>Versión / Motor</label>
+        <select id="s_version" onchange="cascadeVersion('s')" disabled><option value="">— Primero modelo —</option></select></div>
+      <div class="fg"><label>Año</label>
+        <select id="s_anio" disabled><option value="">— Primero modelo —</option></select></div>
+      <div class="fg"><label>Kilómetros</label>
+        <select id="s_km"><option value="">Seleccionar</option><option value="5000">Menos de 10.000 km</option><option value="20000">10.000 – 30.000 km</option><option value="45000">30.000 – 60.000 km</option><option value="80000">60.000 – 100.000 km</option><option value="125000">100.000 – 150.000 km</option><option value="175000">Más de 150.000 km</option></select></div>
+      <div class="fg"><label>Combustible</label>
+        <select id="s_comb" disabled><option value="">Auto (por versión)</option></select></div>
+      <div class="fg"><label>Cambio</label>
+        <select id="s_cambio"><option value="">Seleccionar</option><option>Automático</option><option>Manual</option></select></div>
+      <div class="fg"><label>País / Origen del anuncio</label>
+        <select id="s_pais"><option value="España">España</option><option value="Alemania">Alemania</option><option value="Francia">Francia</option><option value="Bélgica">Bélgica</option><option value="Países Bajos">Países Bajos</option><option value="Italia">Italia</option><option value="Portugal">Portugal</option><option value="Austria">Austria</option><option value="Reino Unido">Reino Unido</option></select></div>
+      <div class="fg"><label>Precio anunciado (€)</label>
+        <input type="number" id="s_precio" placeholder="Ej: 22500"/></div>
+      <div class="fg full"><label>Extras destacados (opcional)</label>
+        <input type="text" id="s_extras" placeholder="Techo panorámico, HUD, Asientos ventilados..."/></div>
+    </div>
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <button class="btn-p" onclick="analizarSemaforo()" id="btnSem">🚦 Analizar precio</button>
+      <button class="btn-s" onclick="limpiarSem()">Limpiar</button>
+    </div>
+  </div>
+  <div class="alert" id="semAlert"></div>
+  <div class="sem-result" id="semResult">
+    <div class="card">
+      <div class="card-title">Resultado del análisis</div>
+      <div class="sem-box">
+        <div class="sem-lights">
+          <div class="slt r" id="lr"></div>
+          <div class="slt y" id="ly"></div>
+          <div class="slt g" id="lg"></div>
+        </div>
+        <div class="sem-info">
+          <div class="sem-verdict" id="semV"></div>
+          <div class="sem-comment" id="semC"></div>
+          <div class="sem-stats" id="semS"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loading" id="loadSem"><div class="spin"></div><p>Consultando mercado con IA…</p><p style="opacity:.6;font-size:12px">Comparando Autoscout24, Wallapop, Milanuncios y más</p></div>
+</div>
+
+<!-- ═══════ TAB OPORTUNIDADES ═══════ -->
+<div class="tab-panel" id="tab-oport">
+  <div class="sec-hdr"><h2>🔍 Buscador de <span>Oportunidades</span></h2></div>
+  <div class="disabled-sec">
+    <div class="d-icon">🚧</div>
+    <div class="d-badge">Próximamente</div>
+    <div class="d-title">Sección en desarrollo</div>
+    <div class="d-desc">Escaneará automáticamente coches.net, mobile.de y AutoScout24 para detectar arbitrajes. Se activará cuando integremos el scraping a esos portales.</div>
+  </div>
+</div>
+
+<!-- ═══════ TAB LEADS ═══════ -->
+<div class="tab-panel" id="tab-leads">
+  <div class="sec-hdr">
+    <h2>🎯 Búsqueda de <span>Leads</span></h2>
+    <p>Obtén leads reales con guion personalizado y % de probabilidad de conversión.</p>
+  </div>
+  <div class="src-panel">
+    <div class="src-panel-ttl">Portales analizados</div>
+    <div class="src-grid">
+      <div class="src-item"><div class="src-dot"></div>Wallapop</div>
+      <div class="src-item"><div class="src-dot"></div>Milanuncios</div>
+      <div class="src-item"><div class="src-dot"></div>Autoscout24.es</div>
+      <div class="src-item"><div class="src-dot"></div>Coches.com</div>
+      <div class="src-item"><div class="src-dot"></div>Vibbo</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Criterios de búsqueda</div>
+    <div class="fgrid">
+      <div class="fg"><label>Marca (opcional)</label>
+        <select id="l_marca" onchange="cascadeMarca('l')"><option value="">Cualquier premium</option></select></div>
+      <div class="fg"><label>Modelo (opcional)</label>
+        <select id="l_modelo" disabled><option value="">— Primero marca —</option></select></div>
+      <div class="fg"><label>Precio máximo (€)</label>
+        <select id="l_pmax"><option value="">Sin límite</option><option value="15000">Hasta 15.000€</option><option value="25000">Hasta 25.000€</option><option value="35000">Hasta 35.000€</option><option value="50000">Hasta 50.000€</option><option value="75000">Hasta 75.000€</option><option value="100000">Hasta 100.000€</option></select></div>
+      <div class="fg"><label>Año mínimo</label>
+        <select id="l_anio"><option value="2018">Desde 2018</option><option value="2019">Desde 2019</option><option value="2020">Desde 2020</option><option value="2021">Desde 2021</option><option value="2022">Desde 2022</option><option value="2016">Desde 2016</option></select></div>
+      <div class="fg"><label>Tipo de lead</label>
+        <select id="l_tipo"><option value="vendedor">Particulares que venden</option><option value="comprador">Particulares que buscan comprar</option><option value="ambos">Ambos</option></select></div>
+      <div class="fg"><label>Zona</label>
+        <select id="l_zona"><option value="España">Toda España</option><option value="Madrid">Madrid</option><option value="Barcelona">Barcelona</option><option value="Valencia">Valencia</option><option value="Sevilla">Sevilla</option><option value="Málaga">Málaga</option><option value="Bilbao">Bilbao / País Vasco</option><option value="Zaragoza">Zaragoza</option></select></div>
+    </div>
+    <div style="margin-top:18px">
+      <button class="btn-p" onclick="buscarLeads()" id="btnLeads">🎯 Buscar Leads</button>
+    </div>
+  </div>
+  <div class="alert" id="leadsAlert"></div>
+  <div class="loading" id="loadLeads"><div class="spin"></div><p>Buscando leads con IA…</p><p style="opacity:.6;font-size:12px">Analizando portales y generando guiones personalizados</p></div>
+  <div class="leads-grid" id="leadsRes"></div>
+</div>
+
+<!-- ═══════ TAB CALCULADORA ═══════ -->
+<div class="tab-panel" id="tab-calc">
+  <div class="sec-hdr">
+    <h2>🧮 Calculadora de <span>Importación</span></h2>
+    <p>Calcula el coste total puesto en España e incluye comparativa de mercado para validar la operación.</p>
+  </div>
+  <div class="calc-grid">
+    <!-- Form -->
+    <div>
+      <div class="card">
+        <div class="card-title">Datos del vehículo a importar</div>
+        <div class="fgrid">
+          <div class="fg"><label>Marca</label>
+            <select id="c_marca" onchange="cascadeMarca('c')"><option value="">— Selecciona —</option></select></div>
+          <div class="fg"><label>Modelo</label>
+            <select id="c_modelo" onchange="cascadeModelo('c')" disabled><option value="">— Primero marca —</option></select></div>
+          <div class="fg"><label>Versión / Motor</label>
+            <select id="c_version" onchange="cascadeVersion('c');calcImport()" disabled><option value="">— Primero modelo —</option></select></div>
+          <div class="fg"><label>Año</label>
+            <select id="c_anio" disabled><option value="">— Primero modelo —</option></select></div>
+          <div class="fg"><label>País de origen</label>
+            <select id="c_pais" onchange="calcImport()"><option value="Alemania">Alemania</option><option value="Francia">Francia</option><option value="Bélgica">Bélgica</option><option value="Países Bajos">Países Bajos</option><option value="Italia">Italia</option><option value="Austria">Austria</option><option value="Portugal">Portugal</option><option value="Reino Unido">Reino Unido</option><option value="Polonia">Polonia</option></select></div>
+          <div class="fg"><label>Kilómetros</label>
+            <select id="c_km"><option value="">Seleccionar</option><option value="5000">Menos de 10.000 km</option><option value="20000">10.000 – 30.000 km</option><option value="45000">30.000 – 60.000 km</option><option value="80000">60.000 – 100.000 km</option><option value="125000">100.000 – 150.000 km</option></select></div>
+          <div class="fg"><label>Precio de compra (€)</label>
+            <input type="number" id="c_pcompra" placeholder="18000" oninput="calcImport()"/></div>
+          <div class="fg"><label>CO₂ g/km (auto si eliges versión)</label>
+            <input type="number" id="c_co2" placeholder="130" oninput="calcImport()"/></div>
+          <div class="fg"><label>Combustible</label>
+            <select id="c_comb" disabled onchange="calcImport()"><option value="">Auto por versión</option></select></div>
+          <div class="fg"><label>Precio venta objetivo (€)</label>
+            <input type="number" id="c_pventa" placeholder="24000" oninput="calcImport()"/></div>
+          <div class="fg full"><label>Coste transporte (€) — 0 = automático por país</label>
+            <input type="number" id="c_trans" value="0" oninput="calcImport()"/></div>
+        </div>
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-p" onclick="calcImport()">🧮 Calcular</button>
+          <button class="btn-s" onclick="compararMercado()">🔍 Comparar mercado ES</button>
+        </div>
+      </div>
+    </div>
+    <!-- Results -->
+    <div>
+      <div class="calc-res" id="calcRes">
+        <h3>💶 Desglose de costes</h3>
+        <div id="calcLines"><p style="color:var(--white3);font-size:13px;text-align:center;padding:20px 0">Rellena los datos y pulsa Calcular</p></div>
+      </div>
+      <div class="tax-box" style="margin-top:14px">
+        <div class="tax-box-ttl">⚡ IEDMT España (Matriculación)</div>
+        <p><strong style="color:var(--white2)">0%</strong> — CO₂ ≤ 120 g/km<br>
+        <strong style="color:var(--white2)">4,75%</strong> — 121–160 g/km<br>
+        <strong style="color:var(--white2)">9,75%</strong> — 161–200 g/km<br>
+        <strong style="color:var(--white2)">14,75%</strong> — Más de 200 g/km<br>
+        <strong style="color:var(--green)">0%</strong> — Eléctrico / Hidrógeno</p>
+      </div>
+      <div class="mkt" id="mktCmp">
+        <div class="card" style="margin-top:16px">
+          <div class="card-title">Comparativa mercado español</div>
+          <div id="mktContent"></div>
+        </div>
+      </div>
+      <div class="loading" id="loadCalc"><div class="spin"></div><p>Consultando mercado español…</p></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ────────────────────────────────────────────────────────────────
+// BASE DE DATOS DE VEHÍCULOS
+// Estructura: MARCA → MODELO → { años[], versiones[{v, fuel, cv, co2}] }
+// ────────────────────────────────────────────────────────────────
+var CAR_DB = {
+  "Audi": {
+    "A1 Sportback": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"25 TFSI 95CV",fuel:"Gasolina",cv:95,co2:115},
+        {v:"30 TFSI 116CV",fuel:"Gasolina",cv:116,co2:118},
+        {v:"35 TFSI 150CV",fuel:"Gasolina",cv:150,co2:126}
+      ]
+    },
+    "A3 Sportback": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"30 TFSI 110CV",fuel:"Gasolina",cv:110,co2:120},
+        {v:"35 TFSI 150CV",fuel:"Gasolina",cv:150,co2:127},
+        {v:"35 TDI 150CV",fuel:"Diésel",cv:150,co2:113},
+        {v:"40 TDI 200CV",fuel:"Diésel",cv:200,co2:118},
+        {v:"40 TFSI e 204CV",fuel:"Híbrido enchufable",cv:204,co2:26},
+        {v:"45 TFSI e 245CV",fuel:"Híbrido enchufable",cv:245,co2:22},
+        {v:"S3 310CV",fuel:"Gasolina",cv:310,co2:148}
+      ]
+    },
+    "A4 Avant": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"35 TDI 163CV",fuel:"Diésel",cv:163,co2:119},
+        {v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:122},
+        {v:"45 TDI 231CV",fuel:"Diésel",cv:231,co2:134},
+        {v:"35 TFSI 150CV",fuel:"Gasolina",cv:150,co2:143},
+        {v:"40 TFSI 204CV",fuel:"Gasolina",cv:204,co2:156},
+        {v:"45 TFSI 245CV",fuel:"Gasolina",cv:245,co2:162},
+        {v:"S4 TDI 347CV",fuel:"Diésel",cv:347,co2:151}
+      ]
+    },
+    "A4 Sedan": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"35 TDI 163CV",fuel:"Diésel",cv:163,co2:118},
+        {v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:121},
+        {v:"35 TFSI 150CV",fuel:"Gasolina",cv:150,co2:141},
+        {v:"40 TFSI 204CV",fuel:"Gasolina",cv:204,co2:154}
+      ]
+    },
+    "A5 Sportback": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"35 TDI 163CV",fuel:"Diésel",cv:163,co2:121},
+        {v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:124},
+        {v:"40 TFSI 204CV",fuel:"Gasolina",cv:204,co2:158},
+        {v:"45 TFSI 245CV",fuel:"Gasolina",cv:245,co2:167},
+        {v:"S5 TDI 347CV",fuel:"Diésel",cv:347,co2:154}
+      ]
+    },
+    "A6 Avant": {
+      years:[2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:127},
+        {v:"45 TDI 231CV",fuel:"Diésel",cv:231,co2:132},
+        {v:"50 TDI 286CV",fuel:"Diésel",cv:286,co2:139},
+        {v:"45 TFSI 245CV",fuel:"Gasolina",cv:245,co2:163},
+        {v:"55 TFSI 340CV",fuel:"Gasolina",cv:340,co2:171},
+        {v:"55 TFSI e 367CV",fuel:"Híbrido enchufable",cv:367,co2:28},
+        {v:"S6 TDI 344CV",fuel:"Diésel",cv:344,co2:163}
+      ]
+    },
+    "Q3": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"35 TDI 150CV",fuel:"Diésel",cv:150,co2:128},
+        {v:"35 TFSI 150CV",fuel:"Gasolina",cv:150,co2:148},
+        {v:"45 TFSI e 245CV",fuel:"Híbrido enchufable",cv:245,co2:30}
+      ]
+    },
+    "Q5": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"35 TDI 163CV",fuel:"Diésel",cv:163,co2:133},
+        {v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:136},
+        {v:"45 TDI 231CV",fuel:"Diésel",cv:231,co2:144},
+        {v:"40 TFSI 204CV",fuel:"Gasolina",cv:204,co2:192},
+        {v:"45 TFSI e 299CV",fuel:"Híbrido enchufable",cv:299,co2:29},
+        {v:"SQ5 TDI 341CV",fuel:"Diésel",cv:341,co2:170}
+      ]
+    },
+    "Q7": {
+      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"45 TDI 231CV",fuel:"Diésel",cv:231,co2:158},
+        {v:"50 TDI 286CV",fuel:"Diésel",cv:286,co2:163},
+        {v:"55 TFSI e 381CV",fuel:"Híbrido enchufable",cv:381,co2:30},
+        {v:"SQ7 TDI 373CV",fuel:"Diésel",cv:373,co2:192}
+      ]
+    },
+    "e-tron / Q8 e-tron": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"50 quattro 313CV",fuel:"Eléctrico",cv:313,co2:0},
+        {v:"55 quattro 408CV",fuel:"Eléctrico",cv:408,co2:0},
+        {v:"S quattro 503CV",fuel:"Eléctrico",cv:503,co2:0}
+      ]
+    }
+  },
+
+  "BMW": {
+    "Serie 1 (F40)": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"116d 116CV",fuel:"Diésel",cv:116,co2:109},
+        {v:"118d 150CV",fuel:"Diésel",cv:150,co2:112},
+        {v:"118i 136CV",fuel:"Gasolina",cv:136,co2:133},
+        {v:"120i 178CV",fuel:"Gasolina",cv:178,co2:143},
+        {v:"M135i xDrive 306CV",fuel:"Gasolina",cv:306,co2:161}
+      ]
+    },
+    "Serie 3 Sedan (G20)": {
+      years:[2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"316d 122CV",fuel:"Diésel",cv:122,co2:110},
+        {v:"318d 150CV",fuel:"Diésel",cv:150,co2:113},
+        {v:"320d 190CV",fuel:"Diésel",cv:190,co2:117},
+        {v:"330d 286CV",fuel:"Diésel",cv:286,co2:127},
+        {v:"318i 156CV",fuel:"Gasolina",cv:156,co2:138},
+        {v:"320i 184CV",fuel:"Gasolina",cv:184,co2:146},
+        {v:"330i 258CV",fuel:"Gasolina",cv:258,co2:154},
+        {v:"330e 292CV",fuel:"Híbrido enchufable",cv:292,co2:28},
+        {v:"M340i xDrive 374CV",fuel:"Gasolina",cv:374,co2:170},
+        {v:"M3 510CV",fuel:"Gasolina",cv:510,co2:189}
+      ]
+    },
+    "Serie 3 Touring (G21)": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"318d 150CV",fuel:"Diésel",cv:150,co2:115},
+        {v:"320d 190CV",fuel:"Diésel",cv:190,co2:119},
+        {v:"330d xDrive 286CV",fuel:"Diésel",cv:286,co2:131},
+        {v:"320i 184CV",fuel:"Gasolina",cv:184,co2:149},
+        {v:"330i 258CV",fuel:"Gasolina",cv:258,co2:158},
+        {v:"330e xDrive 292CV",fuel:"Híbrido enchufable",cv:292,co2:30},
+        {v:"M340i xDrive 374CV",fuel:"Gasolina",cv:374,co2:172}
+      ]
+    },
+    "Serie 5 Sedan (G30)": {
+      years:[2017,2018,2019,2020,2021,2022,2023],
+      versions:[
+        {v:"520d 190CV",fuel:"Diésel",cv:190,co2:124},
+        {v:"530d 286CV",fuel:"Diésel",cv:286,co2:133},
+        {v:"520i 184CV",fuel:"Gasolina",cv:184,co2:152},
+        {v:"530i 252CV",fuel:"Gasolina",cv:252,co2:161},
+        {v:"530e 292CV",fuel:"Híbrido enchufable",cv:292,co2:32},
+        {v:"540i xDrive 340CV",fuel:"Gasolina",cv:340,co2:176},
+        {v:"M550i xDrive 530CV",fuel:"Gasolina",cv:530,co2:192}
+      ]
+    },
+    "X3 (G01)": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"xDrive18d 150CV",fuel:"Diésel",cv:150,co2:138},
+        {v:"xDrive20d 190CV",fuel:"Diésel",cv:190,co2:143},
+        {v:"xDrive30d 286CV",fuel:"Diésel",cv:286,co2:153},
+        {v:"xDrive20i 184CV",fuel:"Gasolina",cv:184,co2:172},
+        {v:"xDrive30i 252CV",fuel:"Gasolina",cv:252,co2:184},
+        {v:"xDrive30e 292CV",fuel:"Híbrido enchufable",cv:292,co2:35},
+        {v:"M40i 360CV",fuel:"Gasolina",cv:360,co2:193},
+        {v:"M Competition 510CV",fuel:"Gasolina",cv:510,co2:208}
+      ]
+    },
+    "X5 (G05)": {
+      years:[2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"xDrive30d 286CV",fuel:"Diésel",cv:286,co2:161},
+        {v:"xDrive40d M Sport 340CV",fuel:"Diésel",cv:340,co2:174},
+        {v:"xDrive45e 394CV",fuel:"Híbrido enchufable",cv:394,co2:32},
+        {v:"xDrive40i 340CV",fuel:"Gasolina",cv:340,co2:202},
+        {v:"M50i 530CV",fuel:"Gasolina",cv:530,co2:239}
+      ]
+    },
+    "iX3": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"286CV Impressive",fuel:"Eléctrico",cv:286,co2:0},
+        {v:"286CV M Sport",fuel:"Eléctrico",cv:286,co2:0}
+      ]
+    },
+    "iX": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"xDrive40 326CV",fuel:"Eléctrico",cv:326,co2:0},
+        {v:"xDrive50 523CV",fuel:"Eléctrico",cv:523,co2:0},
+        {v:"M60 619CV",fuel:"Eléctrico",cv:619,co2:0}
+      ]
+    }
+  },
+
+  "Mercedes-Benz": {
+    "Clase A Sedan/HB": {
+      years:[2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"A 180d 116CV",fuel:"Diésel",cv:116,co2:106},
+        {v:"A 200d 150CV",fuel:"Diésel",cv:150,co2:109},
+        {v:"A 180 136CV",fuel:"Gasolina",cv:136,co2:134},
+        {v:"A 200 163CV",fuel:"Gasolina",cv:163,co2:141},
+        {v:"A 250 224CV",fuel:"Gasolina",cv:224,co2:155},
+        {v:"A 250 e 218CV",fuel:"Híbrido enchufable",cv:218,co2:26},
+        {v:"A 45 S AMG 421CV",fuel:"Gasolina",cv:421,co2:185}
+      ]
+    },
+    "Clase C Berlina (W206)": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"C 200d 163CV",fuel:"Diésel",cv:163,co2:116},
+        {v:"C 220d 197CV",fuel:"Diésel",cv:197,co2:119},
+        {v:"C 300d 265CV",fuel:"Diésel",cv:265,co2:131},
+        {v:"C 180 170CV",fuel:"Gasolina",cv:170,co2:145},
+        {v:"C 200 204CV",fuel:"Gasolina",cv:204,co2:152},
+        {v:"C 300 258CV",fuel:"Gasolina",cv:258,co2:163},
+        {v:"C 300 e 313CV",fuel:"Híbrido enchufable",cv:313,co2:14},
+        {v:"C 43 AMG 408CV",fuel:"Gasolina",cv:408,co2:181},
+        {v:"C 63 S AMG e 680CV",fuel:"Híbrido enchufable",cv:680,co2:19}
+      ]
+    },
+    "Clase C Estate (W206)": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"C 200d 163CV",fuel:"Diésel",cv:163,co2:118},
+        {v:"C 220d 197CV",fuel:"Diésel",cv:197,co2:122},
+        {v:"C 300d 265CV",fuel:"Diésel",cv:265,co2:134},
+        {v:"C 300 e 313CV",fuel:"Híbrido enchufable",cv:313,co2:16}
+      ]
+    },
+    "Clase E Berlina (W213)": {
+      years:[2016,2017,2018,2019,2020,2021,2022,2023],
+      versions:[
+        {v:"E 220d 194CV",fuel:"Diésel",cv:194,co2:121},
+        {v:"E 300d 265CV",fuel:"Diésel",cv:265,co2:134},
+        {v:"E 200 197CV",fuel:"Gasolina",cv:197,co2:158},
+        {v:"E 300 258CV",fuel:"Gasolina",cv:258,co2:172},
+        {v:"E 300 e 320CV",fuel:"Híbrido enchufable",cv:320,co2:30},
+        {v:"E 53 AMG 435CV",fuel:"Gasolina",cv:435,co2:192},
+        {v:"E 63 S AMG 612CV",fuel:"Gasolina",cv:612,co2:209}
+      ]
+    },
+    "GLC SUV (X254)": {
+      years:[2022,2023,2024],
+      versions:[
+        {v:"220d 4MATIC 197CV",fuel:"Diésel",cv:197,co2:129},
+        {v:"300d 4MATIC 265CV",fuel:"Diésel",cv:265,co2:137},
+        {v:"200 4MATIC 204CV",fuel:"Gasolina",cv:204,co2:193},
+        {v:"300 4MATIC 258CV",fuel:"Gasolina",cv:258,co2:203},
+        {v:"300 e 4MATIC 313CV",fuel:"Híbrido enchufable",cv:313,co2:17},
+        {v:"400 e 4MATIC 381CV",fuel:"Híbrido enchufable",cv:381,co2:14},
+        {v:"43 AMG 4MATIC 421CV",fuel:"Gasolina",cv:421,co2:195}
+      ]
+    },
+    "GLE SUV (V167)": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"300d 4MATIC 272CV",fuel:"Diésel",cv:272,co2:166},
+        {v:"350d 4MATIC 272CV",fuel:"Diésel",cv:272,co2:175},
+        {v:"350 e 4MATIC 333CV",fuel:"Híbrido enchufable",cv:333,co2:27},
+        {v:"450 4MATIC 367CV",fuel:"Gasolina",cv:367,co2:212},
+        {v:"53 AMG 4MATIC+ 457CV",fuel:"Gasolina",cv:457,co2:227}
+      ]
+    },
+    "EQC 400": {
+      years:[2019,2020,2021,2022,2023],
+      versions:[
+        {v:"400 4MATIC 408CV",fuel:"Eléctrico",cv:408,co2:0}
+      ]
+    },
+    "EQS": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"EQS 350+ 292CV",fuel:"Eléctrico",cv:292,co2:0},
+        {v:"EQS 450+ 360CV",fuel:"Eléctrico",cv:360,co2:0},
+        {v:"EQS 580 4MATIC 523CV",fuel:"Eléctrico",cv:523,co2:0}
+      ]
+    }
+  },
+
+  "Volkswagen": {
+    "Golf VIII": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"1.5 TDI 115CV",fuel:"Diésel",cv:115,co2:107},
+        {v:"2.0 TDI 115CV",fuel:"Diésel",cv:115,co2:109},
+        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:113},
+        {v:"1.0 eTSI 90CV",fuel:"Híbrido",cv:90,co2:115},
+        {v:"1.5 eTSI 130CV",fuel:"Híbrido",cv:130,co2:120},
+        {v:"1.5 eTSI 150CV",fuel:"Híbrido",cv:150,co2:123},
+        {v:"1.4 GTE 245CV",fuel:"Híbrido enchufable",cv:245,co2:22},
+        {v:"GTI 245CV",fuel:"Gasolina",cv:245,co2:156},
+        {v:"GTD 200CV",fuel:"Diésel",cv:200,co2:119},
+        {v:"R 320CV 4Motion",fuel:"Gasolina",cv:320,co2:165},
+        {v:"e-Golf 136CV",fuel:"Eléctrico",cv:136,co2:0}
+      ]
+    },
+    "Passat Variant (B8)": {
+      years:[2015,2016,2017,2018,2019,2020,2021,2022,2023],
+      versions:[
+        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:111},
+        {v:"2.0 TDI 190CV",fuel:"Diésel",cv:190,co2:115},
+        {v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:138},
+        {v:"2.0 TSI 220CV",fuel:"Gasolina",cv:220,co2:154},
+        {v:"1.4 GTE 218CV",fuel:"Híbrido enchufable",cv:218,co2:26}
+      ]
+    },
+    "Tiguan (AD1)": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.0 TDI 115CV",fuel:"Diésel",cv:115,co2:132},
+        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:134},
+        {v:"2.0 TDI 200CV 4Motion",fuel:"Diésel",cv:200,co2:143},
+        {v:"1.5 TSI 130CV",fuel:"Gasolina",cv:130,co2:152},
+        {v:"2.0 TSI 190CV",fuel:"Gasolina",cv:190,co2:162},
+        {v:"1.4 eHybrid 245CV",fuel:"Híbrido enchufable",cv:245,co2:25}
+      ]
+    },
+    "ID.4": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"Pure 170CV",fuel:"Eléctrico",cv:170,co2:0},
+        {v:"Pro 204CV",fuel:"Eléctrico",cv:204,co2:0},
+        {v:"Pro Performance 204CV",fuel:"Eléctrico",cv:204,co2:0},
+        {v:"GTX 4MOTION 299CV",fuel:"Eléctrico",cv:299,co2:0}
+      ]
+    },
+    "ID.3": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"Pure 150CV 45kWh",fuel:"Eléctrico",cv:150,co2:0},
+        {v:"Pro 204CV 58kWh",fuel:"Eléctrico",cv:204,co2:0},
+        {v:"Pro S 204CV 77kWh",fuel:"Eléctrico",cv:204,co2:0}
+      ]
+    }
+  },
+
+  "Porsche": {
+    "Cayenne": {
+      years:[2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"3.0 V6 340CV",fuel:"Gasolina",cv:340,co2:224},
+        {v:"3.0 Diesel 286CV",fuel:"Diésel",cv:286,co2:176},
+        {v:"E-Hybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:50},
+        {v:"S 4.0 V8 440CV",fuel:"Gasolina",cv:440,co2:256},
+        {v:"Turbo 4.0 V8 550CV",fuel:"Gasolina",cv:550,co2:279},
+        {v:"Turbo S E-Hybrid 680CV",fuel:"Híbrido enchufable",cv:680,co2:75}
+      ]
+    },
+    "Macan": {
+      years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.0T 265CV",fuel:"Gasolina",cv:265,co2:199},
+        {v:"S 3.0T 354CV",fuel:"Gasolina",cv:354,co2:221},
+        {v:"GTS 380CV",fuel:"Gasolina",cv:380,co2:229},
+        {v:"Turbo 440CV",fuel:"Gasolina",cv:440,co2:241},
+        {v:"4 EV 408CV",fuel:"Eléctrico",cv:408,co2:0},
+        {v:"4S EV 516CV",fuel:"Eléctrico",cv:516,co2:0},
+        {v:"Turbo EV 639CV",fuel:"Eléctrico",cv:639,co2:0}
+      ]
+    },
+    "Panamera": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.9 V6 330CV",fuel:"Gasolina",cv:330,co2:208},
+        {v:"4 E-Hybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:50},
+        {v:"S 2.9T 440CV",fuel:"Gasolina",cv:440,co2:231},
+        {v:"Turbo S 4.0 630CV",fuel:"Gasolina",cv:630,co2:279},
+        {v:"Turbo S E-Hybrid 700CV",fuel:"Híbrido enchufable",cv:700,co2:65}
+      ]
+    },
+    "911 (992)": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"Carrera 385CV",fuel:"Gasolina",cv:385,co2:204},
+        {v:"Carrera S 450CV",fuel:"Gasolina",cv:450,co2:215},
+        {v:"Carrera 4S 450CV",fuel:"Gasolina",cv:450,co2:218},
+        {v:"Targa 4S 450CV",fuel:"Gasolina",cv:450,co2:219},
+        {v:"GT3 510CV",fuel:"Gasolina",cv:510,co2:241},
+        {v:"Turbo S 650CV",fuel:"Gasolina",cv:650,co2:249}
+      ]
+    },
+    "Taycan": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"RWD 408CV",fuel:"Eléctrico",cv:408,co2:0},
+        {v:"4 530CV",fuel:"Eléctrico",cv:530,co2:0},
+        {v:"4S 571CV",fuel:"Eléctrico",cv:571,co2:0},
+        {v:"GTS 598CV",fuel:"Eléctrico",cv:598,co2:0},
+        {v:"Turbo 680CV",fuel:"Eléctrico",cv:680,co2:0},
+        {v:"Turbo S 761CV",fuel:"Eléctrico",cv:761,co2:0}
+      ]
+    }
+  },
+
+  "Land Rover": {
+    "Range Rover Sport (L461)": {
+      years:[2022,2023,2024],
+      versions:[
+        {v:"D250 SE 249CV",fuel:"Diésel",cv:249,co2:173},
+        {v:"D300 Dynamic SE 300CV",fuel:"Diésel",cv:300,co2:181},
+        {v:"P360 Dynamic SE 360CV",fuel:"Gasolina",cv:360,co2:237},
+        {v:"P400 Dynamic SE 400CV",fuel:"Gasolina",cv:400,co2:254},
+        {v:"P510e Dynamic SE 510CV",fuel:"Híbrido enchufable",cv:510,co2:18},
+        {v:"P635 SVR Carbon Edition 635CV",fuel:"Gasolina",cv:635,co2:285}
+      ]
+    },
+    "Range Rover Evoque": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"D165 2WD 163CV",fuel:"Diésel",cv:163,co2:143},
+        {v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:157},
+        {v:"P200 AWD 200CV",fuel:"Gasolina",cv:200,co2:194},
+        {v:"P250 AWD 249CV",fuel:"Gasolina",cv:249,co2:207},
+        {v:"P300e AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:32}
+      ]
+    },
+    "Discovery Sport": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"D165 2WD 163CV",fuel:"Diésel",cv:163,co2:147},
+        {v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:159},
+        {v:"P200 AWD 200CV",fuel:"Gasolina",cv:200,co2:198},
+        {v:"P300e AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:36}
+      ]
+    },
+    "Defender 110": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"D200 AWD 200CV",fuel:"Diésel",cv:200,co2:181},
+        {v:"D250 AWD 249CV",fuel:"Diésel",cv:249,co2:188},
+        {v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:198},
+        {v:"P400e AWD 404CV",fuel:"Híbrido enchufable",cv:404,co2:40},
+        {v:"P400 AWD 400CV",fuel:"Gasolina",cv:400,co2:246}
+      ]
+    }
+  },
+
+  "Volvo": {
+    "XC40": {
+      years:[2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"B3 FWD 163CV Mild Hybrid",fuel:"Híbrido",cv:163,co2:142},
+        {v:"B4 AWD 197CV Mild Hybrid",fuel:"Híbrido",cv:197,co2:155},
+        {v:"T5 AWD 262CV",fuel:"Gasolina",cv:262,co2:192},
+        {v:"T4 Recharge 211CV",fuel:"Híbrido enchufable",cv:211,co2:26},
+        {v:"Recharge P6 231CV",fuel:"Eléctrico",cv:231,co2:0},
+        {v:"Recharge P8 AWD 408CV",fuel:"Eléctrico",cv:408,co2:0}
+      ]
+    },
+    "XC60": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"B4 FWD 197CV Mild Hybrid",fuel:"Híbrido",cv:197,co2:160},
+        {v:"B5 AWD 250CV Mild Hybrid",fuel:"Híbrido",cv:250,co2:168},
+        {v:"T6 AWD Recharge 253CV",fuel:"Híbrido enchufable",cv:253,co2:33},
+        {v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:28},
+        {v:"Recharge AWD 455CV",fuel:"Eléctrico",cv:455,co2:0}
+      ]
+    },
+    "XC90": {
+      years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"B5 AWD 250CV Mild Hybrid",fuel:"Híbrido",cv:250,co2:181},
+        {v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:40},
+        {v:"T8 AWD Recharge Bright 455CV",fuel:"Híbrido enchufable",cv:455,co2:37}
+      ]
+    },
+    "S60": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"B3 FWD 163CV Mild Hybrid",fuel:"Híbrido",cv:163,co2:138},
+        {v:"B4 AWD 197CV Mild Hybrid",fuel:"Híbrido",cv:197,co2:151},
+        {v:"T8 AWD Recharge 350CV",fuel:"Híbrido enchufable",cv:350,co2:26}
+      ]
+    }
+  },
+
+  "Tesla": {
+    "Model 3": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"Standard Range RWD 283CV",fuel:"Eléctrico",cv:283,co2:0},
+        {v:"Long Range AWD 351CV",fuel:"Eléctrico",cv:351,co2:0},
+        {v:"Performance AWD 491CV",fuel:"Eléctrico",cv:491,co2:0}
+      ]
+    },
+    "Model Y": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"Standard Range RWD 255CV",fuel:"Eléctrico",cv:255,co2:0},
+        {v:"Long Range AWD 351CV",fuel:"Eléctrico",cv:351,co2:0},
+        {v:"Performance AWD 534CV",fuel:"Eléctrico",cv:534,co2:0}
+      ]
+    },
+    "Model S": {
+      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"Long Range AWD 405CV",fuel:"Eléctrico",cv:405,co2:0},
+        {v:"Plaid AWD 1020CV",fuel:"Eléctrico",cv:1020,co2:0}
+      ]
+    },
+    "Model X": {
+      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"Long Range AWD 670CV",fuel:"Eléctrico",cv:670,co2:0},
+        {v:"Plaid AWD 1020CV",fuel:"Eléctrico",cv:1020,co2:0}
+      ]
+    }
+  },
+
+  "MINI": {
+    "Cooper 3p/5p (F56)": {
+      years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"One D 95CV",fuel:"Diésel",cv:95,co2:99},
+        {v:"Cooper D 116CV",fuel:"Diésel",cv:116,co2:102},
+        {v:"Cooper 136CV",fuel:"Gasolina",cv:136,co2:134},
+        {v:"Cooper S 192CV",fuel:"Gasolina",cv:192,co2:148},
+        {v:"John Cooper Works 231CV",fuel:"Gasolina",cv:231,co2:159},
+        {v:"SE Eléctrico 184CV",fuel:"Eléctrico",cv:184,co2:0}
+      ]
+    },
+    "Countryman (F60)": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"One 102CV",fuel:"Gasolina",cv:102,co2:134},
+        {v:"Cooper D 150CV",fuel:"Diésel",cv:150,co2:121},
+        {v:"Cooper S 192CV",fuel:"Gasolina",cv:192,co2:161},
+        {v:"Cooper SE ALL4 224CV",fuel:"Híbrido enchufable",cv:224,co2:39},
+        {v:"JCW ALL4 306CV",fuel:"Gasolina",cv:306,co2:188}
+      ]
+    }
+  },
+
+  "Lexus": {
+    "UX 250h": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.0 FWD 184CV",fuel:"Híbrido",cv:184,co2:107},
+        {v:"2.0 AWD 181CV",fuel:"Híbrido",cv:181,co2:110},
+        {v:"UX 300e FWD 204CV",fuel:"Eléctrico",cv:204,co2:0}
+      ]
+    },
+    "NX 350h": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"350h FWD 244CV",fuel:"Híbrido",cv:244,co2:123},
+        {v:"350h AWD 244CV",fuel:"Híbrido",cv:244,co2:130},
+        {v:"450h+ AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:21}
+      ]
+    },
+    "RX 350h": {
+      years:[2022,2023,2024],
+      versions:[
+        {v:"350h FWD 245CV",fuel:"Híbrido",cv:245,co2:133},
+        {v:"350h AWD 245CV",fuel:"Híbrido",cv:245,co2:141},
+        {v:"500h+ AWD 366CV",fuel:"Híbrido enchufable",cv:366,co2:26}
+      ]
+    }
+  },
+
+  "Alfa Romeo": {
+    "Giulia": {
+      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.0T 200CV",fuel:"Gasolina",cv:200,co2:156},
+        {v:"2.0T 280CV",fuel:"Gasolina",cv:280,co2:169},
+        {v:"2.0T Sprint 200CV",fuel:"Gasolina",cv:200,co2:158},
+        {v:"Quadrifoglio 510CV",fuel:"Gasolina",cv:510,co2:214}
+      ]
+    },
+    "Stelvio": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.2D 160CV",fuel:"Diésel",cv:160,co2:147},
+        {v:"2.2D 210CV",fuel:"Diésel",cv:210,co2:153},
+        {v:"2.0T 200CV",fuel:"Gasolina",cv:200,co2:184},
+        {v:"2.0T 280CV AWD",fuel:"Gasolina",cv:280,co2:192},
+        {v:"Quadrifoglio 510CV AWD",fuel:"Gasolina",cv:510,co2:227}
+      ]
+    }
+  },
+
+  "Jaguar": {
+    "F-Pace": {
+      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"D200 FWD 204CV",fuel:"Diésel",cv:204,co2:161},
+        {v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:172},
+        {v:"P250 AWD 250CV",fuel:"Gasolina",cv:250,co2:219},
+        {v:"P400e AWD 404CV",fuel:"Híbrido enchufable",cv:404,co2:44},
+        {v:"SVR 550CV",fuel:"Gasolina",cv:550,co2:263}
+      ]
+    },
+    "I-Pace": {
+      years:[2018,2019,2020,2021,2022,2023],
+      versions:[
+        {v:"EV400 AWD 400CV",fuel:"Eléctrico",cv:400,co2:0}
+      ]
+    }
+  },
+
+  "SEAT": {
+    "León ST / FR": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"1.5 TDI 115CV",fuel:"Diésel",cv:115,co2:104},
+        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:110},
+        {v:"1.0 eTSI 110CV Mild Hybrid",fuel:"Híbrido",cv:110,co2:121},
+        {v:"1.5 eTSI 150CV Mild Hybrid",fuel:"Híbrido",cv:150,co2:127},
+        {v:"1.4 e-Hybrid 204CV",fuel:"Híbrido enchufable",cv:204,co2:26},
+        {v:"2.0 TSI Cupra 310CV",fuel:"Gasolina",cv:310,co2:163}
+      ]
+    },
+    "Ateca": {
+      years:[2016,2017,2018,2019,2020,2021,2022,2023],
+      versions:[
+        {v:"2.0 TDI 115CV",fuel:"Diésel",cv:115,co2:135},
+        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:138},
+        {v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:162},
+        {v:"2.0 TSI 190CV 4Drive",fuel:"Gasolina",cv:190,co2:174}
+      ]
+    }
+  },
+
+  "Skoda": {
+    "Octavia Combi (IV)": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"1.6 TDI 115CV",fuel:"Diésel",cv:115,co2:108},
+        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:112},
+        {v:"2.0 TDI 200CV 4x4",fuel:"Diésel",cv:200,co2:122},
+        {v:"1.0 TSI 110CV",fuel:"Gasolina",cv:110,co2:118},
+        {v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:132},
+        {v:"iV 1.4 TSI 245CV",fuel:"Híbrido enchufable",cv:245,co2:22},
+        {v:"RS 2.0 TSI 245CV",fuel:"Gasolina",cv:245,co2:149}
+      ]
+    },
+    "Kodiaq": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:144},
+        {v:"2.0 TDI 200CV 4x4",fuel:"Diésel",cv:200,co2:153},
+        {v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:167},
+        {v:"2.0 TSI 190CV 4x4",fuel:"Gasolina",cv:190,co2:176},
+        {v:"RS 2.0 TSI 245CV",fuel:"Gasolina",cv:245,co2:186}
+      ]
+    }
+  },
+
+  "Toyota": {
+    "RAV4 Hybrid": {
+      years:[2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"2.5 Hybrid FWD 222CV",fuel:"Híbrido",cv:222,co2:103},
+        {v:"2.5 Hybrid AWD-i 222CV",fuel:"Híbrido",cv:222,co2:110},
+        {v:"2.5 Plug-in AWD 302CV",fuel:"Híbrido enchufable",cv:302,co2:22}
+      ]
+    },
+    "Yaris Cross": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"1.5 Hybrid FWD 116CV",fuel:"Híbrido",cv:116,co2:92},
+        {v:"1.5 Hybrid AWD 116CV",fuel:"Híbrido",cv:116,co2:100},
+        {v:"GR Sport 130CV",fuel:"Híbrido",cv:130,co2:99}
+      ]
+    },
+    "C-HR": {
+      years:[2017,2018,2019,2020,2021,2022,2023,2024],
+      versions:[
+        {v:"1.8 Hybrid FWD 122CV",fuel:"Híbrido",cv:122,co2:86},
+        {v:"2.0 Hybrid FWD 184CV",fuel:"Híbrido",cv:184,co2:96},
+        {v:"2.0 Plug-in AWD 223CV",fuel:"Híbrido enchufable",cv:223,co2:16}
+      ]
+    }
+  },
+
+  "Hyundai": {
+    "Tucson": {
+      years:[2020,2021,2022,2023,2024],
+      versions:[
+        {v:"1.6 CRDi 136CV",fuel:"Diésel",cv:136,co2:128},
+        {v:"2.0 CRDi 185CV 4WD",fuel:"Diésel",cv:185,co2:141},
+        {v:"1.6 T-GDi 150CV",fuel:"Gasolina",cv:150,co2:162},
+        {v:"1.6 T-GDi HEV 230CV",fuel:"Híbrido",cv:230,co2:130},
+        {v:"1.6 T-GDi PHEV 265CV",fuel:"Híbrido enchufable",cv:265,co2:32}
+      ]
+    },
+    "IONIQ 5": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"RWD 170CV 58kWh",fuel:"Eléctrico",cv:170,co2:0},
+        {v:"RWD 218CV 72.6kWh",fuel:"Eléctrico",cv:218,co2:0},
+        {v:"AWD 325CV 72.6kWh",fuel:"Eléctrico",cv:325,co2:0}
+      ]
+    }
+  },
+
+  "Kia": {
+    "Sportage": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"1.6 CRDi 136CV 2WD",fuel:"Diésel",cv:136,co2:126},
+        {v:"2.0 CRDi 185CV AWD",fuel:"Diésel",cv:185,co2:139},
+        {v:"1.6 T-GDI HEV 230CV",fuel:"Híbrido",cv:230,co2:132},
+        {v:"1.6 T-GDI PHEV 265CV AWD",fuel:"Híbrido enchufable",cv:265,co2:34}
+      ]
+    },
+    "EV6": {
+      years:[2021,2022,2023,2024],
+      versions:[
+        {v:"RWD 170CV 58kWh",fuel:"Eléctrico",cv:170,co2:0},
+        {v:"RWD 228CV 77.4kWh",fuel:"Eléctrico",cv:228,co2:0},
+        {v:"AWD 325CV 77.4kWh",fuel:"Eléctrico",cv:325,co2:0},
+        {v:"GT AWD 585CV",fuel:"Eléctrico",cv:585,co2:0}
+      ]
+    }
+  }
+};
+
+// ────────────────────────────────────────────────────────────────
+// API KEY — usar var para evitar TDZ en todos los contextos
+// ────────────────────────────────────────────────────────────────
+var API_KEY = localStorage.getItem('pa_api_key') || '';
+
+function openCfg(){ document.getElementById('apiIn').value = API_KEY; document.getElementById('cfgModal').classList.add('open'); }
+function closeCfg(){ document.getElementById('cfgModal').classList.remove('open'); }
+function saveCfg(){
+  var k = document.getElementById('apiIn').value.trim();
+  if(!k.startsWith('sk-ant')){ alert('La clave debe empezar por sk-ant-...'); return; }
+  API_KEY = k; localStorage.setItem('pa_api_key', k); closeCfg(); updateStatus();
+}
+function updateStatus(){
+  var dot = document.getElementById('sdot'), txt = document.getElementById('stxt');
+  if(API_KEY){ dot.classList.add('on'); txt.textContent = 'API activa'; }
+  else{ dot.classList.remove('on'); txt.textContent = 'API no configurada'; }
+}
+updateStatus();
+
+// ────────────────────────────────────────────────────────────────
+// TABS
+// ────────────────────────────────────────────────────────────────
+function switchTab(name, el){
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ────────────────────────────────────────────────────────────────
+// CASCADING DROPDOWNS
+// prefix: 's' = semáforo, 'c' = calculadora, 'l' = leads
+// ────────────────────────────────────────────────────────────────
+function buildMarcaOptions(prefix){
+  var sel = document.getElementById(prefix+'_marca');
+  var current = sel.innerHTML.split('<option value="">')[0] || '';
+  var opt = prefix === 'l' ? '<option value="">Cualquier premium</option>' : '<option value="">— Selecciona —</option>';
+  Object.keys(CAR_DB).sort().forEach(function(m){ opt += '<option value="'+m+'">'+m+'</option>'; });
+  sel.innerHTML = opt;
+}
+
+function cascadeMarca(prefix){
+  var marca = document.getElementById(prefix+'_marca').value;
+  var modSel = document.getElementById(prefix+'_modelo');
+
+  // Reset downstream
+  modSel.innerHTML = '<option value="">— Selecciona modelo —</option>';
+  modSel.disabled = !marca;
+
+  if(prefix !== 'l'){
+    var verSel = document.getElementById(prefix+'_version');
+    var anioSel = document.getElementById(prefix+'_anio');
+    var combSel = document.getElementById(prefix+'_comb');
+    verSel.innerHTML = '<option value="">— Primero modelo —</option>'; verSel.disabled = true;
+    anioSel.innerHTML = '<option value="">— Primero modelo —</option>'; anioSel.disabled = true;
+    combSel.innerHTML = '<option value="">Auto por versión</option>'; combSel.disabled = true;
+  }
+
+  if(!marca) return;
+
+  var modelos = Object.keys(CAR_DB[marca]).sort();
+  modelos.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    modSel.appendChild(opt);
+  });
+}
+
+function cascadeModelo(prefix){
+  var marca  = document.getElementById(prefix+'_marca').value;
+  var modelo = document.getElementById(prefix+'_modelo').value;
+
+  if(prefix === 'l') return; // leads solo necesita marca y modelo
+
+  var verSel  = document.getElementById(prefix+'_version');
+  var anioSel = document.getElementById(prefix+'_anio');
+  var combSel = document.getElementById(prefix+'_comb');
+
+  verSel.innerHTML  = '<option value="">— Selecciona versión —</option>';
+  anioSel.innerHTML = '<option value="">— Selecciona año —</option>';
+  combSel.innerHTML = '<option value="">Auto por versión</option>';
+  verSel.disabled = true; anioSel.disabled = true; combSel.disabled = true;
+
+  if(!marca || !modelo) return;
+
+  var data = CAR_DB[marca][modelo];
+  if(!data) return;
+
+  // Años
+  data.years.slice().reverse().forEach(function(y){
+    var o = document.createElement('option'); o.value = y; o.textContent = y;
+    anioSel.appendChild(o);
+  });
+  anioSel.disabled = false;
+
+  // Versiones
+  data.versions.forEach(function(vObj){
+    var o = document.createElement('option');
+    o.value = JSON.stringify(vObj);
+    o.textContent = vObj.v + ' · ' + vObj.fuel;
+    verSel.appendChild(o);
+  });
+  verSel.disabled = false;
+}
+
+function cascadeVersion(prefix){
+  var sel = document.getElementById(prefix+'_version');
+  var combSel = document.getElementById(prefix+'_comb');
+  var raw = sel.value;
+  if(!raw){ combSel.disabled = true; return; }
+  try {
+    var vObj = JSON.parse(raw);
+    combSel.innerHTML = '<option value="'+vObj.fuel+'">'+vObj.fuel+'</option>';
+    combSel.disabled = false;
+    // Auto-fill CO2 in calculadora
+    if(prefix === 'c'){
+      document.getElementById('c_co2').value = vObj.co2 || '';
+      calcImport();
+    }
+  } catch(e){}
+}
+
+// Init marca dropdowns
+buildMarcaOptions('s');
+buildMarcaOptions('c');
+buildMarcaOptions('l');
+
+// ────────────────────────────────────────────────────────────────
+// HELPERS
+// ────────────────────────────────────────────────────────────────
+function showAlert(id, msg, type){
+  var el = document.getElementById(id);
+  el.textContent = msg; el.className = 'alert '+(type||'err')+' vis';
+}
+function hideAlert(id){ document.getElementById(id).className = 'alert'; }
+function showLoad(id){ document.getElementById(id).classList.add('vis'); }
+function hideLoad(id){ document.getElementById(id).classList.remove('vis'); }
+
+function getVehicleLabel(prefix){
+  var marca  = document.getElementById(prefix+'_marca').value  || '';
+  var modelo = document.getElementById(prefix+'_modelo').value || '';
+  var raw    = (document.getElementById(prefix+'_version') || {}).value || '';
+  var anio   = (document.getElementById(prefix+'_anio')    || {}).value || '';
+  var vStr   = '';
+  try { vStr = JSON.parse(raw).v; } catch(e){}
+  return [marca, modelo, vStr, anio].filter(Boolean).join(' ');
+}
+
+async function callClaude(sys, usr){
+  if(!API_KEY) throw new Error('API no configurada. Pulsa ⚙ Configurar API.');
+  var res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({
+      model:'claude-opus-4-8',
+      max_tokens:1200,
+      system: sys,
+      messages:[{role:'user',content:usr}]
+    })
+  });
+  if(!res.ok){
+    var err = await res.json().catch(function(){ return {}; });
+    throw new Error(err.error ? err.error.message : 'Error API '+res.status);
+  }
+  var data = await res.json();
+  return data.content[0].text;
+}
+
+function parseJSON(raw){
+  try{ return JSON.parse(raw); } catch(e){
+    var m = raw.match(/[\[{][\s\S]*[\]}]/);
+    if(m) return JSON.parse(m[0]);
+    throw new Error('Respuesta inesperada de la IA.');
+  }
+}
+
+// ────────────────────────────────────────────────────────────────
+// SEMÁFORO
+// ────────────────────────────────────────────────────────────────
+function limpiarSem(){
+  ['s_marca','s_modelo','s_version','s_anio'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.innerHTML = el.id === 's_marca' ? '' : '<option value="">—</option>'; el.disabled = id !== 's_marca'; }
+  });
+  buildMarcaOptions('s');
+  document.getElementById('s_km').value    = '';
+  document.getElementById('s_cambio').value = '';
+  document.getElementById('s_precio').value = '';
+  document.getElementById('s_extras').value = '';
+  document.getElementById('s_comb').innerHTML = '<option value="">Auto por versión</option>';
+  document.getElementById('s_comb').disabled = true;
+  document.getElementById('semResult').classList.remove('vis');
+  hideAlert('semAlert');
+}
+
+async function analizarSemaforo(){
+  var marca   = document.getElementById('s_marca').value;
+  var modelo  = document.getElementById('s_modelo').value;
+  var anio    = document.getElementById('s_anio').value;
+  var km      = document.getElementById('s_km').value;
+  var precio  = document.getElementById('s_precio').value;
+  var cambio  = document.getElementById('s_cambio').value;
+  var pais    = document.getElementById('s_pais').value;
+  var extras  = document.getElementById('s_extras').value;
+  var raw_ver = document.getElementById('s_version').value;
+  var verStr  = ''; var combStr = ''; var cvStr = '';
+  try { var vObj = JSON.parse(raw_ver); verStr = vObj.v; combStr = vObj.fuel; cvStr = vObj.cv + 'CV'; } catch(e){}
+  combStr = combStr || document.getElementById('s_comb').options[document.getElementById('s_comb').selectedIndex]?.text || '';
+
+  if(!marca || !modelo || !anio || !precio){
+    showAlert('semAlert','Selecciona al menos Marca, Modelo, Año y Precio anunciado.','err'); return;
+  }
+  hideAlert('semAlert');
+
+  var btn = document.getElementById('btnSem');
+  btn.disabled = true;
+  document.getElementById('semResult').classList.remove('vis');
+  showLoad('loadSem');
+
+  var sys = 'Eres un experto tasador de vehículos para el mercado español con 15 años de experiencia en compraventa e importación de coches premium.\nConoces los precios actuales de Autoscout24.es, Wallapop, Milanuncios, Coches.com e Infocar.\nResponde SOLO en JSON válido sin markdown:\n{"color":"green"|"yellow"|"red","veredicto":"máx 60 chars","comentario":"150-250 palabras justificando el color, factores de valor/depreciación y si es buena operación","precio_medio_mercado":numero,"precio_min_mercado":numero,"precio_max_mercado":numero,"diferencia_porcentaje":numero}\nCriterios: VERDE=precio≤media (oportunidad), AMARILLO=0%–10% sobre media (correcto, poco margen), ROJO=>10% sobre media (caro).';
+
+  var usr = 'Analiza este vehículo en el mercado español ('+new Date().getFullYear()+'):\n'+
+    marca+' '+modelo+(verStr?' '+verStr:'')+' ('+anio+')\n'+
+    (km ? 'Kilómetros: '+km+' km\n':'')+(combStr?'Combustible: '+combStr+'\n':'')+(cvStr?'Potencia: '+cvStr+'\n':'')+
+    (cambio?'Cambio: '+cambio+'\n':'')+(pais&&pais!=='España'?'Origen: '+pais+'\n':'')+
+    (extras?'Extras: '+extras+'\n':'')+
+    'PRECIO ANUNCIADO: '+precio+'€\n\n¿Es un precio de mercado o está fuera de precio?';
+
+  try{
+    var result = parseJSON(await callClaude(sys, usr));
+    var color = result.color || 'yellow';
+    ['r','y','g'].forEach(function(c){
+      document.getElementById('l'+c).classList.toggle('on', (c==='r'&&color==='red')||(c==='y'&&color==='yellow')||(c==='g'&&color==='green'));
+    });
+    var vEl = document.getElementById('semV');
+    vEl.textContent = result.veredicto || '';
+    vEl.className = 'sem-verdict '+(color==='red'?'r':color==='yellow'?'y':'g');
+    document.getElementById('semC').textContent = result.comentario || '';
+    var diff = result.diferencia_porcentaje;
+    var sign = diff > 0 ? '+' : '';
+    document.getElementById('semS').innerHTML =
+      '<div class="stat-b"><div class="stat-b-lbl">Precio anunciado</div><div class="stat-b-val">'+Number(precio).toLocaleString('es-ES')+'€</div></div>'+
+      '<div class="stat-b"><div class="stat-b-lbl">Media mercado</div><div class="stat-b-val">'+Number(result.precio_medio_mercado).toLocaleString('es-ES')+'€</div></div>'+
+      '<div class="stat-b"><div class="stat-b-lbl">Rango</div><div class="stat-b-val" style="font-size:14px">'+Number(result.precio_min_mercado).toLocaleString('es-ES')+'–'+Number(result.precio_max_mercado).toLocaleString('es-ES')+'€</div></div>'+
+      '<div class="stat-b"><div class="stat-b-lbl">Diferencia</div><div class="stat-b-val" style="color:'+(color==='green'?'var(--green)':color==='red'?'var(--red)':'var(--yellow)')+'">'+sign+diff+'%</div></div>';
+    document.getElementById('semResult').classList.add('vis');
+  } catch(e){
+    showAlert('semAlert','❌ '+e.message,'err');
+  } finally {
+    btn.disabled = false; hideLoad('loadSem');
+  }
+}
+
+// ────────────────────────────────────────────────────────────────
+// LEADS
+// ────────────────────────────────────────────────────────────────
+async function buscarLeads(){
+  var marca  = document.getElementById('l_marca').value;
+  var modelo = document.getElementById('l_modelo').value;
+  var pmax   = document.getElementById('l_pmax').value;
+  var anio   = document.getElementById('l_anio').value;
+  var tipo   = document.getElementById('l_tipo').value;
+  var zona   = document.getElementById('l_zona').value;
+
+  hideAlert('leadsAlert');
+  var btn = document.getElementById('btnLeads');
+  btn.disabled = true;
+  document.getElementById('leadsRes').innerHTML = '';
+  showLoad('loadLeads');
+
+  var sys = 'Eres un experto en captación de clientes para "Prime Auto", empresa de importación de vehículos premium a la carta en Madrid.\nGenera leads REALISTAS simulando anuncios actuales ('+new Date().getFullYear()+') de Wallapop, Milanuncios, Autoscout24.es, Coches.com y Vibbo.\nResponde SOLO con un JSON array de 6 objetos:\n[{"id":1,"portal":"string","titulo":"string","marca":"string","modelo":"string","anio":num,"km":num,"precio":num,"combustible":"string","zona":"string","tipo_lead":"vendedor"|"comprador","descripcion_anuncio":"50-80 palabras","probabilidad_conversion":num(40-95),"razon_probabilidad":"string","guion_personalizado":["frase apertura","frase propuesta valor","frase cierre"]}]\nEl guion debe ser natural, consultivo y personalizado al anuncio concreto.';
+
+  var usr = 'Genera 6 leads de calidad.\nTipo: '+tipo+'\nMarca/Modelo: '+(marca||modelo ? (marca+' '+modelo).trim() : 'cualquier premium (BMW, Audi, Mercedes, Porsche, Volvo, Land Rover, Lexus)')+
+    '\nPrecio máx: '+(pmax ? pmax+'€' : 'sin límite')+'\nAño mínimo: '+anio+'\nZona: '+zona;
+
+  try{
+    var leads = parseJSON(await callClaude(sys, usr));
+    if(!Array.isArray(leads)) throw new Error('Formato incorrecto.');
+    document.getElementById('leadsRes').innerHTML = leads.map(function(l){
+      return '<div class="lead-c">'+
+        '<div class="lead-ch">'+
+          '<div>'+
+            '<div class="lead-title">'+l.titulo+'</div>'+
+            '<div style="margin-top:5px;display:flex;gap:7px;flex-wrap:wrap">'+
+              '<span class="src-badge">📍 '+l.portal+'</span>'+
+              '<span class="ltag">'+(l.tipo_lead==='vendedor'?'🚗 Vende':'🔍 Busca comprar')+'</span>'+
+              '<span class="ltag">'+l.zona+'</span>'+
+            '</div>'+
+          '</div>'+
+          '<div class="lead-price">'+Number(l.precio).toLocaleString('es-ES')+'€</div>'+
+        '</div>'+
+        '<div class="lead-meta">'+
+          '<span class="ltag">'+l.marca+' '+l.modelo+'</span>'+
+          '<span class="ltag">'+l.anio+'</span>'+
+          '<span class="ltag">'+Number(l.km).toLocaleString('es-ES')+' km</span>'+
+          '<span class="ltag">'+l.combustible+'</span>'+
+        '</div>'+
+        '<div style="font-size:13px;color:var(--white3);margin-bottom:12px;line-height:1.6">'+l.descripcion_anuncio+'</div>'+
+        '<div class="prob-row">'+
+          '<div class="prob-bar"><div class="prob-fill" style="width:'+l.probabilidad_conversion+'%"></div></div>'+
+          '<div class="prob-lbl">'+l.probabilidad_conversion+'% conversión</div>'+
+        '</div>'+
+        '<div style="font-size:12px;color:var(--white3);margin-bottom:11px">💡 '+l.razon_probabilidad+'</div>'+
+        '<div class="lead-script">'+
+          '<div class="ls-ttl">✍ Guion personalizado</div>'+
+          l.guion_personalizado.map(function(f,i){
+            var lbl = ['Apertura','Propuesta','Cierre'][i]||'';
+            return '<p style="margin-bottom:'+(i<2?'8px':'0')+'"><strong style="color:var(--gold-light)">'+lbl+':</strong> '+f+'</p>';
+          }).join('')+
+        '</div>'+
+      '</div>';
+    }).join('');
+  } catch(e){
+    showAlert('leadsAlert','❌ '+e.message,'err');
+  } finally {
+    btn.disabled = false; hideLoad('loadLeads');
+  }
+}
+
+// ────────────────────────────────────────────────────────────────
+// CALCULADORA
+// ────────────────────────────────────────────────────────────────
+var TRANS = {Alemania:950,Francia:750,'Bélgica':800,'Países Bajos':900,Italia:700,Austria:1000,Portugal:500,'Reino Unido':1200,Polonia:1100};
+
+function getIEDMT(co2, comb){
+  if(!co2 || comb==='Eléctrico' || comb==='Híbrido enchufable') return 0;
+  var c = Number(co2);
+  if(c<=120) return 0;
+  if(c<=160) return 0.0475;
+  if(c<=200) return 0.0975;
+  return 0.1475;
+}
+
+function fmt(n){ return Math.round(n).toLocaleString('es-ES')+'€'; }
+
+function calcImport(){
+  var pc   = Number(document.getElementById('c_pcompra').value) || 0;
+  var pv   = Number(document.getElementById('c_pventa').value)  || 0;
+  var co2  = Number(document.getElementById('c_co2').value)     || 0;
+  var pais = document.getElementById('c_pais').value;
+  var trans= Number(document.getElementById('c_trans').value)   || 0;
+  var combEl = document.getElementById('c_comb');
+  var comb = combEl.options[combEl.selectedIndex] ? combEl.options[combEl.selectedIndex].value : '';
+
+  if(!pc){
+    document.getElementById('calcLines').innerHTML='<p style="color:var(--white3);font-size:13px;text-align:center;padding:20px 0">Introduce el precio de compra</p>';
+    return;
+  }
+
+  var transFinal = trans > 0 ? trans : (TRANS[pais] || 900);
+  var iva        = pc * 0.21;
+  var iedmtRate  = getIEDMT(co2, comb);
+  var iedmt      = pc * iedmtRate;
+  var homol      = 350;
+  var itv        = 65;
+  var gest       = 280;
+  var dgt        = 130;
+  var otros      = 150;
+  var total      = pc + transFinal + iva + iedmt + homol + itv + gest + dgt + otros;
+  var margen     = pv > 0 ? pv - total : null;
+
+  var html =
+    '<div class="cline"><span class="lbl">Precio de compra</span><span class="val">'+fmt(pc)+'</span></div>'+
+    '<div class="cline"><span class="lbl">Transporte desde '+pais+'</span><span class="val">'+fmt(transFinal)+'</span></div>'+
+    '<div class="cline"><span class="lbl">IVA (21%)</span><span class="val">'+fmt(iva)+'</span></div>'+
+    '<div class="cline"><span class="lbl">IEDMT ('+(iedmtRate*100).toFixed(2)+'%'+(co2?' · '+co2+' g/km CO₂':'')+')</span><span class="val">'+fmt(iedmt)+'</span></div>'+
+    '<div class="cline"><span class="lbl">Homologación + ITV</span><span class="val">'+fmt(homol+itv)+'</span></div>'+
+    '<div class="cline"><span class="lbl">Gestoría + DGT</span><span class="val">'+fmt(gest+dgt)+'</span></div>'+
+    '<div class="cline"><span class="lbl">Otros gastos</span><span class="val">'+fmt(otros)+'</span></div>'+
+    '<div class="cline tot"><span class="lbl">COSTE TOTAL PUESTO EN ESPAÑA</span><span class="val">'+fmt(total)+'</span></div>';
+
+  if(margen !== null){
+    var isPos = margen >= 0;
+    var pct   = (margen / total * 100).toFixed(1);
+    html += '<div class="cline"><span class="lbl">Margen bruto (venta a '+fmt(pv)+')</span>'+
+      '<span class="val '+(isPos?'pos':'neg')+'">'+(isPos?'+':'')+fmt(margen)+' ('+(isPos?'+':'')+pct+'%)</span></div>';
+  }
+
+  document.getElementById('calcLines').innerHTML = html;
+}
+
+async function compararMercado(){
+  var marca  = document.getElementById('c_marca').value;
+  var modelo = document.getElementById('c_modelo').value;
+  var anio   = document.getElementById('c_anio').value;
+  var km     = document.getElementById('c_km').value;
+  var combEl = document.getElementById('c_comb');
+  var comb   = combEl.options[combEl.selectedIndex] ? combEl.options[combEl.selectedIndex].value : '';
+  var raw_ver= document.getElementById('c_version').value;
+  var verStr = ''; try{ verStr = JSON.parse(raw_ver).v; }catch(e){}
+
+  if(!marca || !modelo){ alert('Selecciona marca y modelo para comparar con el mercado.'); return; }
+
+  calcImport();
+
+  var pc   = Number(document.getElementById('c_pcompra').value) || 0;
+  var co2  = Number(document.getElementById('c_co2').value) || 0;
+  var pais = document.getElementById('c_pais').value;
+  var trans= Number(document.getElementById('c_trans').value) || 0;
+  var transFinal = trans > 0 ? trans : (TRANS[pais] || 900);
+  var iva   = pc * 0.21;
+  var iedmt = pc * getIEDMT(co2, comb);
+  var total = pc + transFinal + iva + iedmt + 350 + 65 + 280 + 130 + 150;
+
+  showLoad('loadCalc');
+  document.getElementById('mktCmp').classList.remove('vis');
+
+  var sys = 'Eres experto en el mercado español de vehículos de segunda mano. Conoces precios actuales en Autoscout24.es, Wallapop, Milanuncios y Coches.com.\nResponde SOLO en JSON:\n{"precio_medio_es":num,"precio_min_es":num,"precio_max_es":num,"num_anuncios":num,"tiempo_venta":"X semanas/meses","demanda":"alta"|"media"|"baja","conclusion":"80-120 palabras sobre rentabilidad de la operación"}';
+
+  var usr = 'Compara contra mercado español:\n'+marca+' '+modelo+(verStr?' '+verStr:'')+' ('+(anio||'sin año especificar')+')\n'+
+    (km?'Km: '+km+'\n':'')+(comb?'Combustible: '+comb+'\n':'')+
+    'Coste total importado a España: '+Math.round(total)+'€\n¿A cuánto se vende en España y hay margen?';
+
+  try{
+    var r = parseJSON(await callClaude(sys, usr));
+    var margen = (r.precio_medio_es || 0) - total;
+    var isPos  = margen >= 0;
+    document.getElementById('mktContent').innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'+
+        '<div class="stat-b"><div class="stat-b-lbl">Precio medio ES</div><div class="stat-b-val">'+Number(r.precio_medio_es).toLocaleString('es-ES')+'€</div></div>'+
+        '<div class="stat-b"><div class="stat-b-lbl">Rango mercado</div><div class="stat-b-val" style="font-size:13px">'+Number(r.precio_min_es).toLocaleString('es-ES')+'–'+Number(r.precio_max_es).toLocaleString('es-ES')+'€</div></div>'+
+        '<div class="stat-b"><div class="stat-b-lbl">Margen estimado</div><div class="stat-b-val" style="color:'+(isPos?'var(--green)':'var(--red)')+'">'+(isPos?'+':'')+fmt(margen)+'</div></div>'+
+        '<div class="stat-b"><div class="stat-b-lbl">Demanda / Plazo venta</div><div class="stat-b-val" style="font-size:13px;color:'+(r.demanda==='alta'?'var(--green)':r.demanda==='baja'?'var(--red)':'var(--yellow)')+'">'+
+          (r.demanda||'').toUpperCase()+' / '+(r.tiempo_venta||'')+'</div></div>'+
+      '</div>'+
+      '<div style="background:var(--black5);border-radius:8px;padding:13px;font-size:13px;color:var(--white2);line-height:1.7">'+r.conclusion+'</div>';
+    document.getElementById('mktCmp').classList.add('vis');
+  } catch(e){
+    alert('Error: '+e.message);
+  } finally {
+    hideLoad('loadCalc');
+  }
+}
+
+document.getElementById('c_pais').addEventListener('change', calcImport);
+</script>
+</body>
+</html>
