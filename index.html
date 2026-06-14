@@ -1341,8 +1341,53 @@ async function analizarSemaforo(){
 }
 
 // ────────────────────────────────────────────────────────────────
-// LEADS
+// LEADS — generador de URLs de búsqueda reales por portal
 // ────────────────────────────────────────────────────────────────
+function buildSearchUrl(l){
+  var m  = encodeURIComponent((l.marca||'').toLowerCase());
+  var mo = encodeURIComponent((l.modelo||'').toLowerCase());
+  var q  = encodeURIComponent(((l.marca||'')+' '+(l.modelo||'')).trim());
+  var anio = l.anio ? l.anio : '';
+  var pmax = l.precio ? Math.round(l.precio * 1.15) : '';
+  var p = (l.portal||'').toLowerCase();
+  if(p.includes('coches.net')){
+    // https://www.coches.net/segunda-mano/coches/?marca=bmw&modelo=serie-3&precioMax=40000&anioMin=2020
+    var url = 'https://www.coches.net/segunda-mano/coches/?';
+    if(l.marca) url += 'marca='+m+'&';
+    if(l.modelo) url += 'modelo='+mo+'&';
+    if(anio)  url += 'anioMin='+anio+'&';
+    if(pmax)  url += 'precioMax='+pmax;
+    return url;
+  }
+  if(p.includes('autoscout24')){
+    // https://www.autoscout24.es/lst/bmw/m3?atype=C&fregfrom=2020&priceto=50000
+    var url = 'https://www.autoscout24.es/lst/'+m+(mo ? '/'+mo : '')+'?atype=C&';
+    if(anio)  url += 'fregfrom='+anio+'&';
+    if(pmax)  url += 'priceto='+pmax;
+    return url;
+  }
+  if(p.includes('autocasion')){
+    // https://www.autocasion.com/coches-ocasion/?marca=BMW&modelo=M3&preciomax=50000&anyodesde=2020
+    var url = 'https://www.autocasion.com/coches-ocasion/?';
+    if(l.marca)  url += 'marca='+encodeURIComponent(l.marca)+'&';
+    if(l.modelo) url += 'modelo='+encodeURIComponent(l.modelo)+'&';
+    if(anio)     url += 'anyodesde='+anio+'&';
+    if(pmax)     url += 'preciomax='+pmax;
+    return url;
+  }
+  if(p.includes('motor.es')){
+    return 'https://www.motor.es/segunda-mano/?q='+q+(anio?'&ano_desde='+anio:'')+(pmax?'&precio_hasta='+pmax:'');
+  }
+  if(p.includes('automotor')){
+    return 'https://www.automotor.es/coches-segunda-mano/?q='+q+(anio?'&year_from='+anio:'')+(pmax?'&price_to='+pmax:'');
+  }
+  if(p.includes('wallapop')){
+    return 'https://es.wallapop.com/coches?keywords='+q+(pmax?'&max_sale_price='+pmax:'');
+  }
+  // fallback genérico: búsqueda en Google del anuncio
+  return 'https://www.google.es/search?q='+encodeURIComponent((l.marca||'')+' '+(l.modelo||'')+' '+anio+' segunda mano '+l.zona);
+}
+
 async function buscarLeads(){
   var marca  = document.getElementById('l_marca').value;
   var modelo = document.getElementById('l_modelo').value;
@@ -1357,7 +1402,7 @@ async function buscarLeads(){
   document.getElementById('leadsRes').innerHTML = '';
   showLoad('loadLeads');
 
-  var sys = 'Eres experto en captación de clientes para Prime Auto, empresa de importacion de vehiculos premium en Madrid.\n\nCRITERIOS DE FIABILIDAD (OBLIGATORIOS — descarta cualquier anuncio que no los cumpla):\n- Solo anuncios con garantía oficial de marca o de concesionario oficial\n- O con libro de revisiones sellado en taller oficial (historial completo)\n- Solo portales de alta reputación en España, en este orden preferente: Coches.net, AutoScout24, Motor.es, Autocasion.com, Automotor.es. Wallapop o Facebook solo si el anuncio tiene garantía oficial documentada.\n- Excluir anuncios sin fotos reales, sin historial, de particulares sin documentación, o con señales de odómetro manipulado.\n\nResponde UNICAMENTE con un JSON array de 6 objetos, sin texto adicional ni markdown, ORDENADOS de mayor a menor valor de "conversion":\n[{"id":1,"portal":"Coches.net","url":"https://www.coches.net/anuncio/ejemplo-bmw-serie-3","titulo":"titulo corto","marca":"string","modelo":"string","anio":2021,"km":45000,"precio":28000,"combustible":"Diesel","zona":"Madrid","tipo_lead":"vendedor","fiabilidad":"garantía oficial BMW hasta 2026","descripcion":"descripcion breve 20-30 palabras","conversion":75,"razon":"motivo breve","apertura":"frase apertura telefonica","propuesta":"frase propuesta valor","cierre":"frase cierre con CTA"}]';
+  var sys = 'Eres experto en captación de clientes para Prime Auto, empresa de importacion de vehiculos premium en Madrid.\n\nCRITERIOS DE FIABILIDAD (OBLIGATORIOS — descarta cualquier anuncio que no los cumpla):\n- Solo anuncios con garantía oficial de marca o de concesionario oficial\n- O con libro de revisiones sellado en taller oficial (historial completo)\n- Solo portales de alta reputación en España, en este orden preferente: Coches.net, AutoScout24, Motor.es, Autocasion.com, Automotor.es. Wallapop o Facebook solo si el anuncio tiene garantía oficial documentada.\n- Excluir anuncios sin fotos reales, sin historial, de particulares sin documentación, o con señales de odómetro manipulado.\n\nNO incluyas URLs en el JSON — se generan automáticamente.\nResponde UNICAMENTE con un JSON array de 6 objetos, sin texto adicional ni markdown, ORDENADOS de mayor a menor valor de "conversion":\n[{"id":1,"portal":"Coches.net","titulo":"titulo corto","marca":"string","modelo":"string","anio":2021,"km":45000,"precio":28000,"combustible":"Diesel","zona":"Madrid","tipo_lead":"vendedor","fiabilidad":"garantía oficial BMW hasta 2026","descripcion":"descripcion breve 20-30 palabras","conversion":75,"razon":"motivo breve","apertura":"frase apertura telefonica","propuesta":"frase propuesta valor","cierre":"frase cierre con CTA"}]';
 
   var usr = 'Genera 6 leads de calidad, SOLO anuncios 100% fiables (garantía oficial o libro mantenimiento taller oficial completo).\nOrdenar de mayor a menor tasa de conversión.\nTipo: '+tipo+'\nMarca/Modelo: '+(marca||modelo ? (marca+' '+modelo).trim() : 'cualquier premium (BMW, Audi, Mercedes, Porsche, Volvo, Land Rover, Lexus)')+
     '\nPrecio máx: '+(pmax ? pmax+'€' : 'sin límite')+'\nAño mínimo: '+anio+'\nZona: '+zona;
@@ -1367,9 +1412,8 @@ async function buscarLeads(){
     if(!Array.isArray(leads)) throw new Error('Formato incorrecto.');
     leads.sort(function(a,b){ return (b.conversion||0)-(a.conversion||0); });
     document.getElementById('leadsRes').innerHTML = leads.map(function(l,idx){
-      var urlHtml = l.url
-        ? '<a href="'+l.url+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--gold);font-size:12px;text-decoration:none;border:1px solid rgba(201,168,76,.35);border-radius:6px;padding:4px 10px;margin-bottom:12px;transition:var(--t)" onmouseover="this.style.background=\'rgba(201,168,76,.1)\'" onmouseout="this.style.background=\'transparent\'">🔗 Ver anuncio en '+l.portal+'</a>'
-        : '';
+      var searchUrl = buildSearchUrl(l);
+      var urlHtml = '<a href="'+searchUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--gold);font-size:12px;text-decoration:none;border:1px solid rgba(201,168,76,.35);border-radius:6px;padding:4px 10px;margin-bottom:12px;transition:var(--t)" onmouseover="this.style.background=\'rgba(201,168,76,.1)\'" onmouseout="this.style.background=\'transparent\'">🔍 Buscar en '+l.portal+'</a>';
       return '<div class="lead-c">'+
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
           '<span style="background:var(--gold);color:var(--black);font-weight:700;font-size:11px;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center">'+(idx+1)+'</span>'+
