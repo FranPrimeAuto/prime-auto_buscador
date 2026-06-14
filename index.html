@@ -413,8 +413,30 @@ input,select,textarea,button{font-family:inherit}
 // Estructura: MARCA → MODELO → { años[], versiones[{v, fuel, cv, co2}] }
 // ────────────────────────────────────────────────────────────────
 var CAR_DB = {
+
+  "Alfa Romeo": {
+    "147": {years:[2001,2002,2003,2004,2005,2006,2007,2008,2009,2010],versions:[{v:"1.6 TS 105CV",fuel:"Gasolina",cv:105,co2:159},{v:"2.0 TS 150CV",fuel:"Gasolina",cv:150,co2:186},{v:"1.9 JTD 115CV",fuel:"Diésel",cv:115,co2:127},{v:"GTA 250CV",fuel:"Gasolina",cv:250,co2:253}]},
+    "156": {years:[1997,1998,1999,2000,2001,2002,2003,2004,2005,2006],versions:[{v:"1.8 TS 144CV",fuel:"Gasolina",cv:144,co2:182},{v:"2.0 JTS 165CV",fuel:"Gasolina",cv:165,co2:196},{v:"1.9 JTD 115CV",fuel:"Diésel",cv:115,co2:129},{v:"2.4 JTD 150CV",fuel:"Diésel",cv:150,co2:157}]},
+    "159": {years:[2005,2006,2007,2008,2009,2010,2011],versions:[{v:"1.8 MPI 140CV",fuel:"Gasolina",cv:140,co2:183},{v:"2.2 JTS 185CV",fuel:"Gasolina",cv:185,co2:204},{v:"1.9 JTDM 120CV",fuel:"Diésel",cv:120,co2:132},{v:"2.0 JTDM 136CV",fuel:"Diésel",cv:136,co2:143},{v:"2.4 JTDM 200CV",fuel:"Diésel",cv:200,co2:163}]},
+    "Giulia (952)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.0T 200CV",fuel:"Gasolina",cv:200,co2:156},{v:"2.0T 280CV",fuel:"Gasolina",cv:280,co2:169},{v:"2.0T Sprint 200CV",fuel:"Gasolina",cv:200,co2:158},{v:"2.2D 150CV",fuel:"Diésel",cv:150,co2:110},{v:"2.2D 180CV",fuel:"Diésel",cv:180,co2:117},{v:"2.2D 210CV",fuel:"Diésel",cv:210,co2:121},{v:"Quadrifoglio 510CV",fuel:"Gasolina",cv:510,co2:214}]},
+    "Stelvio (949)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.2D 160CV",fuel:"Diésel",cv:160,co2:147},{v:"2.2D 180CV",fuel:"Diésel",cv:180,co2:152},{v:"2.2D 210CV AWD",fuel:"Diésel",cv:210,co2:157},{v:"2.0T 200CV",fuel:"Gasolina",cv:200,co2:184},{v:"2.0T 280CV AWD",fuel:"Gasolina",cv:280,co2:192},{v:"Quadrifoglio 510CV AWD",fuel:"Gasolina",cv:510,co2:227}]},
+    "Giulietta": {years:[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020],versions:[{v:"1.4 TB 120CV",fuel:"Gasolina",cv:120,co2:139},{v:"1.4 TB 170CV",fuel:"Gasolina",cv:170,co2:149},{v:"1.75 TBI 240CV",fuel:"Gasolina",cv:240,co2:178},{v:"1.6 JTDM 105CV",fuel:"Diésel",cv:105,co2:109},{v:"2.0 JTDM 150CV",fuel:"Diésel",cv:150,co2:119},{v:"2.0 JTDM 170CV",fuel:"Diésel",cv:170,co2:127},{v:"QV 240CV",fuel:"Gasolina",cv:240,co2:178}]},
+    "Mito": {years:[2008,2009,2010,2011,2012,2013,2014,2015,2016],versions:[{v:"1.4 TB 120CV",fuel:"Gasolina",cv:120,co2:139},{v:"1.4 TB 155CV",fuel:"Gasolina",cv:155,co2:156},{v:"1.3 JTDm 85CV",fuel:"Diésel",cv:85,co2:99},{v:"1.6 JTDm 120CV",fuel:"Diésel",cv:120,co2:115}]},
+    "Tonale": {years:[2022,2023,2024],versions:[{v:"1.5 VGT 160CV Mild Hybrid",fuel:"Híbrido",cv:160,co2:146},{v:"1.3 PHEV 280CV AWD",fuel:"Híbrido enchufable",cv:280,co2:26}]}
+  },
+
   "Audi": {
-    "A1 Sportback": {
+    "A1 Sportback (8X)": {
+      years:[2010,2011,2012,2013,2014,2015,2016,2017,2018],
+      versions:[
+        {v:"1.2 TFSI 86CV",fuel:"Gasolina",cv:86,co2:110},
+        {v:"1.4 TFSI 122CV",fuel:"Gasolina",cv:122,co2:122},
+        {v:"1.6 TDI 105CV",fuel:"Diésel",cv:105,co2:98},
+        {v:"2.0 TDI 143CV",fuel:"Diésel",cv:143,co2:109},
+        {v:"S1 231CV",fuel:"Gasolina",cv:231,co2:163}
+      ]
+    },
+    "A1 Sportback (GB)": {
       years:[2019,2020,2021,2022,2023,2024],
       versions:[
         {v:"25 TFSI 95CV",fuel:"Gasolina",cv:95,co2:115},
@@ -505,14 +527,26 @@ var CAR_DB = {
         {v:"SQ7 TDI 373CV",fuel:"Diésel",cv:373,co2:192}
       ]
     },
-    "e-tron / Q8 e-tron": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"50 quattro 313CV",fuel:"Eléctrico",cv:313,co2:0},
-        {v:"55 quattro 408CV",fuel:"Eléctrico",cv:408,co2:0},
-        {v:"S quattro 503CV",fuel:"Eléctrico",cv:503,co2:0}
-      ]
-    }
+    "e-tron / Q8 e-tron": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"50 quattro 313CV",fuel:"Eléctrico",cv:313,co2:0},{v:"55 quattro 408CV",fuel:"Eléctrico",cv:408,co2:0},{v:"S quattro 503CV",fuel:"Eléctrico",cv:503,co2:0}]},
+    "A2 (8Z 2000-2005)": {years:[2000,2001,2002,2003,2004,2005],versions:[{v:"1.4 75CV",fuel:"Gasolina",cv:75,co2:152},{v:"1.6 FSI 110CV",fuel:"Gasolina",cv:110,co2:153},{v:"1.4 TDI 75CV",fuel:"Diésel",cv:75,co2:99},{v:"1.2 TDI 61CV",fuel:"Diésel",cv:61,co2:81}]},
+    "A3 Sedan (8VS)": {years:[2013,2014,2015,2016,2017,2018,2019,2020],versions:[{v:"1.4 TFSI 122CV",fuel:"Gasolina",cv:122,co2:127},{v:"1.8 TFSI 180CV",fuel:"Gasolina",cv:180,co2:141},{v:"2.0 TFSI 190CV",fuel:"Gasolina",cv:190,co2:148},{v:"1.6 TDI 110CV",fuel:"Diésel",cv:110,co2:103},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:108},{v:"1.4 TFSI e 204CV",fuel:"Híbrido enchufable",cv:204,co2:35},{v:"S3 300CV",fuel:"Gasolina",cv:300,co2:144},{v:"RS3 367CV",fuel:"Gasolina",cv:367,co2:165}]},
+    "A3 Cabrio (8V)": {years:[2014,2015,2016,2017,2018,2019,2020],versions:[{v:"1.4 TFSI 150CV",fuel:"Gasolina",cv:150,co2:131},{v:"2.0 TFSI 190CV",fuel:"Gasolina",cv:190,co2:152},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:116},{v:"S3 310CV",fuel:"Gasolina",cv:310,co2:151}]},
+    "RS3 (8Y 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"RS3 Sportback 400CV",fuel:"Gasolina",cv:400,co2:179},{v:"RS3 Sedan 400CV",fuel:"Gasolina",cv:400,co2:178}]},
+    "A4 (B8/B8.5 2007-2015)": {years:[2007,2008,2009,2010,2011,2012,2013,2014,2015],versions:[{v:"1.8 TFSI 160CV",fuel:"Gasolina",cv:160,co2:161},{v:"2.0 TFSI 211CV",fuel:"Gasolina",cv:211,co2:172},{v:"3.0 TFSI 272CV",fuel:"Gasolina",cv:272,co2:206},{v:"2.0 TDI 143CV",fuel:"Diésel",cv:143,co2:119},{v:"2.0 TDI 177CV",fuel:"Diésel",cv:177,co2:129},{v:"3.0 TDI 245CV",fuel:"Diésel",cv:245,co2:139},{v:"S4 333CV",fuel:"Gasolina",cv:333,co2:196},{v:"RS4 450CV",fuel:"Gasolina",cv:450,co2:249}]},
+    "RS4 Avant (B9 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"RS4 Avant 450CV",fuel:"Gasolina",cv:450,co2:197}]},
+    "A5 Coupe (F53)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"35 TFSI 150CV",fuel:"Gasolina",cv:150,co2:155},{v:"40 TFSI 204CV",fuel:"Gasolina",cv:204,co2:163},{v:"45 TFSI 245CV",fuel:"Gasolina",cv:245,co2:172},{v:"35 TDI 163CV",fuel:"Diésel",cv:163,co2:120},{v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:124},{v:"S5 354CV",fuel:"Gasolina",cv:354,co2:187},{v:"RS5 450CV",fuel:"Gasolina",cv:450,co2:205}]},
+    "A5 Cabrio (F57)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"40 TFSI 204CV",fuel:"Gasolina",cv:204,co2:168},{v:"45 TFSI 245CV",fuel:"Gasolina",cv:245,co2:177},{v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:129},{v:"S5 354CV",fuel:"Gasolina",cv:354,co2:194}]},
+    "RS5 Sportback (F5 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"RS5 Coupe 450CV",fuel:"Gasolina",cv:450,co2:205},{v:"RS5 Sportback 450CV",fuel:"Gasolina",cv:450,co2:207}]},
+    "A6 Sedan (C8)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"35 TDI 163CV",fuel:"Diésel",cv:163,co2:124},{v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:127},{v:"45 TDI 231CV",fuel:"Diésel",cv:231,co2:133},{v:"40 TFSI 204CV",fuel:"Gasolina",cv:204,co2:158},{v:"45 TFSI 245CV",fuel:"Gasolina",cv:245,co2:167},{v:"55 TFSI 340CV",fuel:"Gasolina",cv:340,co2:178},{v:"55 TFSI e 367CV",fuel:"Híbrido enchufable",cv:367,co2:27},{v:"RS6 Avant 600CV",fuel:"Gasolina",cv:600,co2:216}]},
+    "RS6 Avant (C8 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"RS6 Avant 600CV",fuel:"Gasolina",cv:600,co2:216},{v:"RS6 Avant Performance 630CV",fuel:"Gasolina",cv:630,co2:218}]},
+    "A7 Sportback (4K)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"40 TDI 204CV",fuel:"Diésel",cv:204,co2:132},{v:"45 TDI 231CV",fuel:"Diésel",cv:231,co2:138},{v:"50 TDI 286CV",fuel:"Diésel",cv:286,co2:143},{v:"45 TFSI 245CV",fuel:"Gasolina",cv:245,co2:170},{v:"55 TFSI 340CV",fuel:"Gasolina",cv:340,co2:181},{v:"55 TFSI e 367CV",fuel:"Híbrido enchufable",cv:367,co2:31},{v:"RS7 591CV",fuel:"Gasolina",cv:591,co2:213}]},
+    "A8 (D5 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"50 TDI 286CV",fuel:"Diésel",cv:286,co2:153},{v:"55 TFSI 340CV",fuel:"Gasolina",cv:340,co2:193},{v:"60 TFSI e 449CV",fuel:"Híbrido enchufable",cv:449,co2:33},{v:"S8 571CV",fuel:"Gasolina",cv:571,co2:226}]},
+    "Q2 (GA 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 TFSI 115CV",fuel:"Gasolina",cv:115,co2:129},{v:"1.5 TFSI 150CV",fuel:"Gasolina",cv:150,co2:136},{v:"35 TFSI 150CV",fuel:"Gasolina",cv:150,co2:138},{v:"30 TDI 116CV",fuel:"Diésel",cv:116,co2:104},{v:"35 TDI 150CV",fuel:"Diésel",cv:150,co2:111},{v:"SQ2 300CV",fuel:"Gasolina",cv:300,co2:161}]},
+    "Q4 e-tron (2021+)": {years:[2021,2022,2023,2024],versions:[{v:"35 RWD 170CV",fuel:"Eléctrico",cv:170,co2:0},{v:"40 RWD 204CV",fuel:"Eléctrico",cv:204,co2:0},{v:"45 AWD 265CV",fuel:"Eléctrico",cv:265,co2:0},{v:"50 AWD 299CV",fuel:"Eléctrico",cv:299,co2:0},{v:"Sportback 50 AWD 299CV",fuel:"Eléctrico",cv:299,co2:0}]},
+    "Q8 (4MN 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"45 TDI 231CV",fuel:"Diésel",cv:231,co2:166},{v:"50 TDI 286CV",fuel:"Diésel",cv:286,co2:174},{v:"55 TFSI 340CV",fuel:"Gasolina",cv:340,co2:214},{v:"60 TFSI e 462CV",fuel:"Híbrido enchufable",cv:462,co2:39},{v:"SQ8 TDI 435CV",fuel:"Diésel",cv:435,co2:195},{v:"RS Q8 600CV",fuel:"Gasolina",cv:600,co2:249}]},
+    "TT Coupé/Roadster (8S 2014+)": {years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"1.8 TFSI 180CV",fuel:"Gasolina",cv:180,co2:152},{v:"2.0 TFSI 230CV",fuel:"Gasolina",cv:230,co2:159},{v:"TTS 310CV",fuel:"Gasolina",cv:310,co2:166},{v:"TT RS 400CV",fuel:"Gasolina",cv:400,co2:183}]},
+    "R8 (4S 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"V10 RWD 540CV",fuel:"Gasolina",cv:540,co2:289},{v:"V10 quattro 570CV",fuel:"Gasolina",cv:570,co2:287},{v:"V10 Performance 620CV",fuel:"Gasolina",cv:620,co2:296},{v:"e-tron 610CV",fuel:"Eléctrico",cv:610,co2:0}]},
+    "e-tron GT / RS e-tron GT": {years:[2021,2022,2023,2024],versions:[{v:"e-tron GT 476CV",fuel:"Eléctrico",cv:476,co2:0},{v:"RS e-tron GT 598CV",fuel:"Eléctrico",cv:598,co2:0},{v:"RS e-tron GT Performance 640CV",fuel:"Eléctrico",cv:640,co2:0}]}
   },
 
   "BMW": {
@@ -602,7 +636,41 @@ var CAR_DB = {
         {v:"xDrive50 523CV",fuel:"Eléctrico",cv:523,co2:0},
         {v:"M60 619CV",fuel:"Eléctrico",cv:619,co2:0}
       ]
-    }
+    },
+    "Serie 1 (E87 2004-2011)": {years:[2004,2005,2006,2007,2008,2009,2010,2011],versions:[{v:"116i 122CV",fuel:"Gasolina",cv:122,co2:148},{v:"118i 143CV",fuel:"Gasolina",cv:143,co2:153},{v:"120i 170CV",fuel:"Gasolina",cv:170,co2:163},{v:"130i 265CV",fuel:"Gasolina",cv:265,co2:204},{v:"116d 116CV",fuel:"Diésel",cv:116,co2:109},{v:"118d 143CV",fuel:"Diésel",cv:143,co2:119},{v:"120d 177CV",fuel:"Diésel",cv:177,co2:127},{v:"M 340CV",fuel:"Gasolina",cv:340,co2:248}]},
+    "Serie 1 (F20/F21 2011-2019)": {years:[2011,2012,2013,2014,2015,2016,2017,2018,2019],versions:[{v:"116i 136CV",fuel:"Gasolina",cv:136,co2:139},{v:"118i 136CV",fuel:"Gasolina",cv:136,co2:140},{v:"120i 184CV",fuel:"Gasolina",cv:184,co2:147},{v:"125i 218CV",fuel:"Gasolina",cv:218,co2:155},{v:"M140i 340CV",fuel:"Gasolina",cv:340,co2:168},{v:"116d 116CV",fuel:"Diésel",cv:116,co2:99},{v:"118d 150CV",fuel:"Diésel",cv:150,co2:107},{v:"120d 190CV",fuel:"Diésel",cv:190,co2:112},{v:"125d 224CV",fuel:"Diésel",cv:224,co2:121}]},
+    "Serie 2 Coupé (F22 2014-2021)": {years:[2014,2015,2016,2017,2018,2019,2020,2021],versions:[{v:"218i 136CV",fuel:"Gasolina",cv:136,co2:139},{v:"220i 184CV",fuel:"Gasolina",cv:184,co2:147},{v:"228i 245CV",fuel:"Gasolina",cv:245,co2:158},{v:"M240i 340CV",fuel:"Gasolina",cv:340,co2:165},{v:"218d 150CV",fuel:"Diésel",cv:150,co2:108},{v:"220d 190CV",fuel:"Diésel",cv:190,co2:114}]},
+    "Serie 2 Coupé (G42 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"220i 184CV",fuel:"Gasolina",cv:184,co2:147},{v:"230i 245CV",fuel:"Gasolina",cv:245,co2:155},{v:"M240i xDrive 374CV",fuel:"Gasolina",cv:374,co2:171},{v:"220d 190CV",fuel:"Diésel",cv:190,co2:115}]},
+    "Serie 2 Active Tourer (F45 2014-2021)": {years:[2014,2015,2016,2017,2018,2019,2020,2021],versions:[{v:"218i 136CV",fuel:"Gasolina",cv:136,co2:135},{v:"220i 192CV",fuel:"Gasolina",cv:192,co2:143},{v:"225xe 224CV",fuel:"Híbrido enchufable",cv:224,co2:41},{v:"216d 116CV",fuel:"Diésel",cv:116,co2:100},{v:"218d 150CV",fuel:"Diésel",cv:150,co2:104},{v:"220d 190CV",fuel:"Diésel",cv:190,co2:110}]},
+    "Serie 2 Active Tourer (U06 2022+)": {years:[2022,2023,2024],versions:[{v:"218i 136CV",fuel:"Gasolina",cv:136,co2:133},{v:"220i 204CV",fuel:"Gasolina",cv:204,co2:140},{v:"230e 245CV",fuel:"Híbrido enchufable",cv:245,co2:24},{v:"216d 116CV",fuel:"Diésel",cv:116,co2:98},{v:"218d 150CV",fuel:"Diésel",cv:150,co2:102},{v:"220d 190CV",fuel:"Diésel",cv:190,co2:108},{v:"M35i xDrive 300CV",fuel:"Gasolina",cv:300,co2:158}]},
+    "Serie 2 Gran Coupé (F44 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"218i 140CV",fuel:"Gasolina",cv:140,co2:140},{v:"220i 178CV",fuel:"Gasolina",cv:178,co2:148},{v:"M235i xDrive 306CV",fuel:"Gasolina",cv:306,co2:162},{v:"216d 116CV",fuel:"Diésel",cv:116,co2:102},{v:"218d 150CV",fuel:"Diésel",cv:150,co2:108}]},
+    "M2 (F87 2016-2021)": {years:[2016,2017,2018,2019,2020,2021],versions:[{v:"M2 370CV",fuel:"Gasolina",cv:370,co2:194},{v:"M2 Competition 410CV",fuel:"Gasolina",cv:410,co2:199},{v:"M2 CS 450CV",fuel:"Gasolina",cv:450,co2:204}]},
+    "M2 (G87 2022+)": {years:[2022,2023,2024],versions:[{v:"M2 460CV",fuel:"Gasolina",cv:460,co2:206}]},
+    "Serie 3 (E90/E91 2005-2012)": {years:[2005,2006,2007,2008,2009,2010,2011,2012],versions:[{v:"316i 122CV",fuel:"Gasolina",cv:122,co2:160},{v:"318i 143CV",fuel:"Gasolina",cv:143,co2:162},{v:"320i 170CV",fuel:"Gasolina",cv:170,co2:168},{v:"325i 218CV",fuel:"Gasolina",cv:218,co2:192},{v:"330i 272CV",fuel:"Gasolina",cv:272,co2:208},{v:"316d 116CV",fuel:"Diésel",cv:116,co2:109},{v:"318d 143CV",fuel:"Diésel",cv:143,co2:120},{v:"320d 177CV",fuel:"Diésel",cv:177,co2:129},{v:"325d 197CV",fuel:"Diésel",cv:197,co2:139},{v:"330d 245CV",fuel:"Diésel",cv:245,co2:152},{v:"M3 420CV",fuel:"Gasolina",cv:420,co2:289}]},
+    "Serie 3 (F30/F31 2012-2019)": {years:[2012,2013,2014,2015,2016,2017,2018,2019],versions:[{v:"316i 136CV",fuel:"Gasolina",cv:136,co2:143},{v:"318i 136CV",fuel:"Gasolina",cv:136,co2:145},{v:"320i 184CV",fuel:"Gasolina",cv:184,co2:148},{v:"328i 245CV",fuel:"Gasolina",cv:245,co2:160},{v:"330i 252CV",fuel:"Gasolina",cv:252,co2:165},{v:"340i 326CV",fuel:"Gasolina",cv:326,co2:172},{v:"316d 116CV",fuel:"Diésel",cv:116,co2:104},{v:"318d 143CV",fuel:"Diésel",cv:143,co2:111},{v:"320d 190CV",fuel:"Diésel",cv:190,co2:117},{v:"325d 218CV",fuel:"Diésel",cv:218,co2:127},{v:"330d 258CV",fuel:"Diésel",cv:258,co2:134},{v:"M3 431CV",fuel:"Gasolina",cv:431,co2:197}]},
+    "M3 (G80 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"M3 510CV",fuel:"Gasolina",cv:510,co2:186},{v:"M3 Competition 510CV",fuel:"Gasolina",cv:510,co2:186},{v:"M3 Competition xDrive 510CV",fuel:"Gasolina",cv:510,co2:189},{v:"M3 CS 550CV",fuel:"Gasolina",cv:550,co2:196}]},
+    "Serie 4 Coupé (G22 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"420i 184CV",fuel:"Gasolina",cv:184,co2:149},{v:"430i 258CV",fuel:"Gasolina",cv:258,co2:158},{v:"M440i xDrive 374CV",fuel:"Gasolina",cv:374,co2:173},{v:"420d 190CV",fuel:"Diésel",cv:190,co2:120},{v:"430d 286CV",fuel:"Diésel",cv:286,co2:131}]},
+    "Serie 4 Cabrio (G23 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"420i 184CV",fuel:"Gasolina",cv:184,co2:153},{v:"430i 258CV",fuel:"Gasolina",cv:258,co2:162},{v:"M440i xDrive 374CV",fuel:"Gasolina",cv:374,co2:178},{v:"420d 190CV",fuel:"Diésel",cv:190,co2:124}]},
+    "Serie 4 Gran Coupé (G26 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"420i 184CV",fuel:"Gasolina",cv:184,co2:149},{v:"430i 258CV",fuel:"Gasolina",cv:258,co2:158},{v:"M440i xDrive 374CV",fuel:"Gasolina",cv:374,co2:173},{v:"420d 190CV",fuel:"Diésel",cv:190,co2:120},{v:"i4 eDrive40 340CV",fuel:"Eléctrico",cv:340,co2:0},{v:"i4 xDrive40 340CV",fuel:"Eléctrico",cv:340,co2:0},{v:"i4 M50 544CV",fuel:"Eléctrico",cv:544,co2:0}]},
+    "M4 (F82/F83 2014-2020)": {years:[2014,2015,2016,2017,2018,2019,2020],versions:[{v:"M4 431CV",fuel:"Gasolina",cv:431,co2:199},{v:"M4 CS 460CV",fuel:"Gasolina",cv:460,co2:208},{v:"M4 GTS 500CV",fuel:"Gasolina",cv:500,co2:212}]},
+    "M4 (G82/G83 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"M4 Competition 510CV",fuel:"Gasolina",cv:510,co2:193},{v:"M4 Competition xDrive 510CV",fuel:"Gasolina",cv:510,co2:196},{v:"M4 CS 550CV",fuel:"Gasolina",cv:550,co2:204}]},
+    "Serie 5 Touring (G31)": {years:[2017,2018,2019,2020,2021,2022,2023],versions:[{v:"520d 190CV",fuel:"Diésel",cv:190,co2:127},{v:"530d 286CV",fuel:"Diésel",cv:286,co2:138},{v:"520i 184CV",fuel:"Gasolina",cv:184,co2:155},{v:"530i 252CV",fuel:"Gasolina",cv:252,co2:163},{v:"530e 292CV",fuel:"Híbrido enchufable",cv:292,co2:34},{v:"540i xDrive 340CV",fuel:"Gasolina",cv:340,co2:181},{v:"M550d xDrive 400CV",fuel:"Diésel",cv:400,co2:175}]},
+    "M5 (F90 2018+)": {years:[2018,2019,2020,2021,2022,2023],versions:[{v:"M5 600CV",fuel:"Gasolina",cv:600,co2:234},{v:"M5 Competition 625CV",fuel:"Gasolina",cv:625,co2:234},{v:"M5 CS 635CV",fuel:"Gasolina",cv:635,co2:249}]},
+    "Serie 6 Gran Turismo (G32)": {years:[2017,2018,2019,2020,2021,2022,2023],versions:[{v:"620d 190CV",fuel:"Diésel",cv:190,co2:127},{v:"630d 265CV",fuel:"Diésel",cv:265,co2:140},{v:"630i 258CV",fuel:"Gasolina",cv:258,co2:162},{v:"640i 340CV",fuel:"Gasolina",cv:340,co2:180}]},
+    "Serie 7 (G11/G12 2015-2022)": {years:[2015,2016,2017,2018,2019,2020,2021,2022],versions:[{v:"730d 265CV",fuel:"Diésel",cv:265,co2:147},{v:"740d 320CV",fuel:"Diésel",cv:320,co2:158},{v:"730i 258CV",fuel:"Gasolina",cv:258,co2:179},{v:"740i 340CV",fuel:"Gasolina",cv:340,co2:188},{v:"745e 394CV",fuel:"Híbrido enchufable",cv:394,co2:51},{v:"750i 530CV",fuel:"Gasolina",cv:530,co2:225},{v:"M760i 609CV",fuel:"Gasolina",cv:609,co2:251}]},
+    "Serie 7 (G70 2022+)": {years:[2022,2023,2024],versions:[{v:"730d 298CV",fuel:"Diésel",cv:298,co2:152},{v:"740d 300CV",fuel:"Diésel",cv:300,co2:155},{v:"740i 381CV",fuel:"Gasolina",cv:381,co2:195},{v:"750e xDrive 489CV",fuel:"Híbrido enchufable",cv:489,co2:30},{v:"760i xDrive 544CV",fuel:"Gasolina",cv:544,co2:235},{v:"M70 xDrive 660CV",fuel:"Gasolina",cv:660,co2:252},{v:"i7 xDrive60 544CV",fuel:"Eléctrico",cv:544,co2:0},{v:"i7 M70 xDrive 660CV",fuel:"Eléctrico",cv:660,co2:0}]},
+    "Serie 8 (G14/G15/G16)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"840i 340CV",fuel:"Gasolina",cv:340,co2:196},{v:"840d xDrive 320CV",fuel:"Diésel",cv:320,co2:166},{v:"850i xDrive 530CV",fuel:"Gasolina",cv:530,co2:243},{v:"M8 600CV",fuel:"Gasolina",cv:600,co2:262},{v:"M8 Competition 625CV",fuel:"Gasolina",cv:625,co2:262}]},
+    "X1 (E84 2009-2015)": {years:[2009,2010,2011,2012,2013,2014,2015],versions:[{v:"sDrive18i 150CV",fuel:"Gasolina",cv:150,co2:158},{v:"xDrive20i 184CV",fuel:"Gasolina",cv:184,co2:166},{v:"xDrive28i 245CV",fuel:"Gasolina",cv:245,co2:193},{v:"sDrive18d 143CV",fuel:"Diésel",cv:143,co2:119},{v:"xDrive20d 177CV",fuel:"Diésel",cv:177,co2:129},{v:"xDrive25d 218CV",fuel:"Diésel",cv:218,co2:139}]},
+    "X1 (F48 2015-2022)": {years:[2015,2016,2017,2018,2019,2020,2021,2022],versions:[{v:"sDrive18i 140CV",fuel:"Gasolina",cv:140,co2:145},{v:"xDrive20i 192CV",fuel:"Gasolina",cv:192,co2:152},{v:"xDrive25i 231CV",fuel:"Gasolina",cv:231,co2:162},{v:"xDrive25e 220CV",fuel:"Híbrido enchufable",cv:220,co2:36},{v:"sDrive18d 150CV",fuel:"Diésel",cv:150,co2:118},{v:"xDrive20d 190CV",fuel:"Diésel",cv:190,co2:124},{v:"xDrive25d 231CV",fuel:"Diésel",cv:231,co2:133}]},
+    "X1 (U11 2022+)": {years:[2022,2023,2024],versions:[{v:"sDrive18i 136CV",fuel:"Gasolina",cv:136,co2:140},{v:"xDrive23i 218CV",fuel:"Gasolina",cv:218,co2:150},{v:"xDrive30e 326CV",fuel:"Híbrido enchufable",cv:326,co2:22},{v:"sDrive18d 150CV",fuel:"Diésel",cv:150,co2:116},{v:"xDrive23d 211CV",fuel:"Diésel",cv:211,co2:125},{v:"iX1 xDrive30 313CV",fuel:"Eléctrico",cv:313,co2:0}]},
+    "X2 (F39 2018-2023)": {years:[2018,2019,2020,2021,2022,2023],versions:[{v:"sDrive18i 140CV",fuel:"Gasolina",cv:140,co2:148},{v:"xDrive20i 192CV",fuel:"Gasolina",cv:192,co2:155},{v:"M35i xDrive 306CV",fuel:"Gasolina",cv:306,co2:173},{v:"sDrive18d 150CV",fuel:"Diésel",cv:150,co2:120},{v:"xDrive20d 190CV",fuel:"Diésel",cv:190,co2:128},{v:"xDrive25e 220CV",fuel:"Híbrido enchufable",cv:220,co2:37}]},
+    "X4 (G02 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"xDrive20i 184CV",fuel:"Gasolina",cv:184,co2:180},{v:"xDrive30i 252CV",fuel:"Gasolina",cv:252,co2:189},{v:"M40i 360CV",fuel:"Gasolina",cv:360,co2:199},{v:"xDrive20d 190CV",fuel:"Diésel",cv:190,co2:148},{v:"xDrive30d 286CV",fuel:"Diésel",cv:286,co2:160},{v:"M Competition 510CV",fuel:"Gasolina",cv:510,co2:216}]},
+    "X6 (G06 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"xDrive30d 286CV",fuel:"Diésel",cv:286,co2:172},{v:"xDrive40d 340CV",fuel:"Diésel",cv:340,co2:181},{v:"xDrive40i 340CV",fuel:"Gasolina",cv:340,co2:214},{v:"M60i 530CV",fuel:"Gasolina",cv:530,co2:253},{v:"M Competition 625CV",fuel:"Gasolina",cv:625,co2:278}]},
+    "X7 (G07)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"xDrive30d 286CV",fuel:"Diésel",cv:286,co2:183},{v:"xDrive40d 340CV",fuel:"Diésel",cv:340,co2:193},{v:"xDrive40i 340CV",fuel:"Gasolina",cv:340,co2:222},{v:"xDrive50i 530CV",fuel:"Gasolina",cv:530,co2:261},{v:"M60i 530CV",fuel:"Gasolina",cv:530,co2:262}]},
+    "Z4 (G29 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"sDrive20i 197CV",fuel:"Gasolina",cv:197,co2:152},{v:"sDrive30i 258CV",fuel:"Gasolina",cv:258,co2:159},{v:"M40i 340CV",fuel:"Gasolina",cv:340,co2:166}]},
+    "i3 (2013-2022)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022],versions:[{v:"i3 170CV",fuel:"Eléctrico",cv:170,co2:0},{v:"i3s 184CV",fuel:"Eléctrico",cv:184,co2:0},{v:"i3 Rex 170CV",fuel:"Híbrido",cv:170,co2:13}]},
+    "i4 (G26 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"eDrive40 340CV",fuel:"Eléctrico",cv:340,co2:0},{v:"xDrive40 340CV",fuel:"Eléctrico",cv:340,co2:0},{v:"M50 544CV",fuel:"Eléctrico",cv:544,co2:0}]},
+    "i5 (G60 2023+)": {years:[2023,2024],versions:[{v:"eDrive40 340CV",fuel:"Eléctrico",cv:340,co2:0},{v:"xDrive40 340CV",fuel:"Eléctrico",cv:340,co2:0},{v:"M60 xDrive 601CV",fuel:"Eléctrico",cv:601,co2:0}]}
   },
 
   "Mercedes-Benz": {
@@ -681,14 +749,27 @@ var CAR_DB = {
         {v:"400 4MATIC 408CV",fuel:"Eléctrico",cv:408,co2:0}
       ]
     },
-    "EQS": {
-      years:[2021,2022,2023,2024],
-      versions:[
-        {v:"EQS 350+ 292CV",fuel:"Eléctrico",cv:292,co2:0},
-        {v:"EQS 450+ 360CV",fuel:"Eléctrico",cv:360,co2:0},
-        {v:"EQS 580 4MATIC 523CV",fuel:"Eléctrico",cv:523,co2:0}
-      ]
-    }
+    "EQS": {years:[2021,2022,2023,2024],versions:[{v:"EQS 350+ 292CV",fuel:"Eléctrico",cv:292,co2:0},{v:"EQS 450+ 360CV",fuel:"Eléctrico",cv:360,co2:0},{v:"EQS 580 4MATIC 523CV",fuel:"Eléctrico",cv:523,co2:0}]},
+    "Clase A (W176 2012-2018)": {years:[2012,2013,2014,2015,2016,2017,2018],versions:[{v:"A 180 122CV",fuel:"Gasolina",cv:122,co2:129},{v:"A 200 156CV",fuel:"Gasolina",cv:156,co2:138},{v:"A 250 211CV",fuel:"Gasolina",cv:211,co2:152},{v:"A 180 CDI 109CV",fuel:"Diésel",cv:109,co2:98},{v:"A 200 CDI 136CV",fuel:"Diésel",cv:136,co2:104},{v:"A 45 AMG 360CV",fuel:"Gasolina",cv:360,co2:175}]},
+    "Clase B (W246 2011-2018)": {years:[2011,2012,2013,2014,2015,2016,2017,2018],versions:[{v:"B 180 122CV",fuel:"Gasolina",cv:122,co2:132},{v:"B 200 156CV",fuel:"Gasolina",cv:156,co2:141},{v:"B 180 CDI 109CV",fuel:"Diésel",cv:109,co2:100},{v:"B 200 CDI 136CV",fuel:"Diésel",cv:136,co2:107},{v:"B 250 e 132CV",fuel:"Híbrido enchufable",cv:132,co2:27}]},
+    "Clase B (W247 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"B 180 136CV",fuel:"Gasolina",cv:136,co2:134},{v:"B 200 163CV",fuel:"Gasolina",cv:163,co2:141},{v:"B 250 224CV",fuel:"Gasolina",cv:224,co2:155},{v:"B 180d 116CV",fuel:"Diésel",cv:116,co2:107},{v:"B 200d 150CV",fuel:"Diésel",cv:150,co2:111},{v:"B 250 e 218CV",fuel:"Híbrido enchufable",cv:218,co2:26}]},
+    "CLA Coupé (C117 2013-2019)": {years:[2013,2014,2015,2016,2017,2018,2019],versions:[{v:"CLA 180 122CV",fuel:"Gasolina",cv:122,co2:131},{v:"CLA 200 156CV",fuel:"Gasolina",cv:156,co2:140},{v:"CLA 250 211CV",fuel:"Gasolina",cv:211,co2:157},{v:"CLA 180d 109CV",fuel:"Diésel",cv:109,co2:101},{v:"CLA 200d 136CV",fuel:"Diésel",cv:136,co2:107},{v:"CLA 45 AMG 381CV",fuel:"Gasolina",cv:381,co2:176}]},
+    "CLA Coupé (C118 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"CLA 180 136CV",fuel:"Gasolina",cv:136,co2:134},{v:"CLA 200 163CV",fuel:"Gasolina",cv:163,co2:141},{v:"CLA 250 224CV",fuel:"Gasolina",cv:224,co2:155},{v:"CLA 200d 150CV",fuel:"Diésel",cv:150,co2:109},{v:"CLA 250 e 218CV",fuel:"Híbrido enchufable",cv:218,co2:26},{v:"CLA 45 S AMG 421CV",fuel:"Gasolina",cv:421,co2:185}]},
+    "Clase C (W205 2014-2021)": {years:[2014,2015,2016,2017,2018,2019,2020,2021],versions:[{v:"C 180 156CV",fuel:"Gasolina",cv:156,co2:145},{v:"C 200 184CV",fuel:"Gasolina",cv:184,co2:152},{v:"C 300 258CV",fuel:"Gasolina",cv:258,co2:167},{v:"C 180d 116CV",fuel:"Diésel",cv:116,co2:102},{v:"C 200d 136CV",fuel:"Diésel",cv:136,co2:107},{v:"C 220d 194CV",fuel:"Diésel",cv:194,co2:113},{v:"C 300d 245CV",fuel:"Diésel",cv:245,co2:123},{v:"C 300 e 320CV",fuel:"Híbrido enchufable",cv:320,co2:32},{v:"C 43 AMG 390CV",fuel:"Gasolina",cv:390,co2:178},{v:"C 63 AMG 476CV",fuel:"Gasolina",cv:476,co2:203},{v:"C 63 S AMG 510CV",fuel:"Gasolina",cv:510,co2:206}]},
+    "CLS (C257 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"CLS 220d 194CV",fuel:"Diésel",cv:194,co2:139},{v:"CLS 300d 265CV",fuel:"Diésel",cv:265,co2:152},{v:"CLS 350d 286CV",fuel:"Diésel",cv:286,co2:161},{v:"CLS 450 367CV",fuel:"Gasolina",cv:367,co2:196},{v:"CLS 53 AMG 435CV",fuel:"Gasolina",cv:435,co2:200}]},
+    "Clase E (W212 2009-2016)": {years:[2009,2010,2011,2012,2013,2014,2015,2016],versions:[{v:"E 200 184CV",fuel:"Gasolina",cv:184,co2:164},{v:"E 250 211CV",fuel:"Gasolina",cv:211,co2:172},{v:"E 350 306CV",fuel:"Gasolina",cv:306,co2:193},{v:"E 200 CDI 136CV",fuel:"Diésel",cv:136,co2:119},{v:"E 220 CDI 170CV",fuel:"Diésel",cv:170,co2:129},{v:"E 250 CDI 204CV",fuel:"Diésel",cv:204,co2:134},{v:"E 350 CDI 265CV",fuel:"Diésel",cv:265,co2:152},{v:"E 63 AMG 557CV",fuel:"Gasolina",cv:557,co2:249}]},
+    "GLA (H247 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"GLA 180 136CV",fuel:"Gasolina",cv:136,co2:133},{v:"GLA 200 163CV",fuel:"Gasolina",cv:163,co2:140},{v:"GLA 250 224CV",fuel:"Gasolina",cv:224,co2:154},{v:"GLA 200d 150CV",fuel:"Diésel",cv:150,co2:109},{v:"GLA 220d 190CV",fuel:"Diésel",cv:190,co2:117},{v:"GLA 250 e 218CV",fuel:"Híbrido enchufable",cv:218,co2:26},{v:"AMG GLA 45 S 421CV",fuel:"Gasolina",cv:421,co2:184}]},
+    "GLB (X247 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"GLB 180 136CV",fuel:"Gasolina",cv:136,co2:138},{v:"GLB 200 163CV",fuel:"Gasolina",cv:163,co2:143},{v:"GLB 250 224CV",fuel:"Gasolina",cv:224,co2:158},{v:"GLB 200d 150CV",fuel:"Diésel",cv:150,co2:115},{v:"GLB 220d 190CV",fuel:"Diésel",cv:190,co2:123},{v:"GLB 250 e 218CV",fuel:"Híbrido enchufable",cv:218,co2:28},{v:"AMG GLB 35 306CV",fuel:"Gasolina",cv:306,co2:175}]},
+    "GLS (X167 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"GLS 350d 4MATIC 286CV",fuel:"Diésel",cv:286,co2:201},{v:"GLS 400d 4MATIC 330CV",fuel:"Diésel",cv:330,co2:215},{v:"GLS 450 4MATIC 367CV",fuel:"Gasolina",cv:367,co2:253},{v:"GLS 580 4MATIC 489CV",fuel:"Gasolina",cv:489,co2:280},{v:"GLS 63 AMG 612CV",fuel:"Gasolina",cv:612,co2:296}]},
+    "Clase G (W463)": {years:[2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"G 350d 245CV",fuel:"Diésel",cv:245,co2:230},{v:"G 400d 330CV",fuel:"Diésel",cv:330,co2:243},{v:"G 500 422CV",fuel:"Gasolina",cv:422,co2:299},{v:"G 63 AMG 585CV",fuel:"Gasolina",cv:585,co2:299}]},
+    "SL (R232 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"SL 43 381CV Mild Hybrid",fuel:"Híbrido",cv:381,co2:210},{v:"SL 55 AMG 476CV",fuel:"Gasolina",cv:476,co2:236},{v:"SL 63 AMG 585CV",fuel:"Gasolina",cv:585,co2:258}]},
+    "AMG GT (C190 2014+)": {years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"AMG GT 476CV",fuel:"Gasolina",cv:476,co2:249},{v:"AMG GT S 522CV",fuel:"Gasolina",cv:522,co2:265},{v:"AMG GT C 557CV",fuel:"Gasolina",cv:557,co2:270},{v:"AMG GT R 585CV",fuel:"Gasolina",cv:585,co2:285}]},
+    "EQA (H243 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"EQA 250 190CV",fuel:"Eléctrico",cv:190,co2:0},{v:"EQA 250+ 215CV",fuel:"Eléctrico",cv:215,co2:0},{v:"EQA 300 4MATIC 228CV",fuel:"Eléctrico",cv:228,co2:0},{v:"EQA 350 4MATIC 292CV",fuel:"Eléctrico",cv:292,co2:0}]},
+    "EQB (X243 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"EQB 250 190CV",fuel:"Eléctrico",cv:190,co2:0},{v:"EQB 300 4MATIC 228CV",fuel:"Eléctrico",cv:228,co2:0},{v:"EQB 350 4MATIC 292CV",fuel:"Eléctrico",cv:292,co2:0}]},
+    "EQE (V295 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"EQE 300 245CV",fuel:"Eléctrico",cv:245,co2:0},{v:"EQE 350+ 292CV",fuel:"Eléctrico",cv:292,co2:0},{v:"EQE 350 4MATIC 292CV",fuel:"Eléctrico",cv:292,co2:0},{v:"AMG EQE 43 476CV",fuel:"Eléctrico",cv:476,co2:0},{v:"AMG EQE 53 626CV",fuel:"Eléctrico",cv:626,co2:0}]},
+    "EQE SUV (X294 2022+)": {years:[2022,2023,2024],versions:[{v:"EQE 350 SUV 292CV",fuel:"Eléctrico",cv:292,co2:0},{v:"EQE 350+ SUV 292CV",fuel:"Eléctrico",cv:292,co2:0},{v:"AMG EQE 53 SUV 626CV",fuel:"Eléctrico",cv:626,co2:0}]},
+    "EQS SUV (X296 2022+)": {years:[2022,2023,2024],versions:[{v:"EQS 450 SUV 360CV",fuel:"Eléctrico",cv:360,co2:0},{v:"EQS 450 4MATIC SUV 360CV",fuel:"Eléctrico",cv:360,co2:0},{v:"AMG EQS 53 SUV 761CV",fuel:"Eléctrico",cv:761,co2:0}]},
+    "Clase V / Marco Polo (447)": {years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"V 220d 163CV",fuel:"Diésel",cv:163,co2:167},{v:"V 250d 190CV",fuel:"Diésel",cv:190,co2:175},{v:"V 300d 239CV",fuel:"Diésel",cv:239,co2:184}]}
   },
 
   "Volkswagen": {
@@ -738,397 +819,264 @@ var CAR_DB = {
         {v:"GTX 4MOTION 299CV",fuel:"Eléctrico",cv:299,co2:0}
       ]
     },
-    "ID.3": {
-      years:[2020,2021,2022,2023,2024],
-      versions:[
-        {v:"Pure 150CV 45kWh",fuel:"Eléctrico",cv:150,co2:0},
-        {v:"Pro 204CV 58kWh",fuel:"Eléctrico",cv:204,co2:0},
-        {v:"Pro S 204CV 77kWh",fuel:"Eléctrico",cv:204,co2:0}
-      ]
-    }
+    "ID.3": {years:[2020,2021,2022,2023,2024],versions:[{v:"Pure 150CV 45kWh",fuel:"Eléctrico",cv:150,co2:0},{v:"Pro 204CV 58kWh",fuel:"Eléctrico",cv:204,co2:0},{v:"Pro S 204CV 77kWh",fuel:"Eléctrico",cv:204,co2:0}]},
+    "Polo (AW 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 MPI 65CV",fuel:"Gasolina",cv:65,co2:103},{v:"1.0 TSI 95CV",fuel:"Gasolina",cv:95,co2:107},{v:"1.0 TSI 110CV",fuel:"Gasolina",cv:110,co2:112},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:125},{v:"1.6 TDI 95CV",fuel:"Diésel",cv:95,co2:91},{v:"GTI 2.0 TSI 207CV",fuel:"Gasolina",cv:207,co2:144}]},
+    "T-Roc (A1 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 TSI 115CV",fuel:"Gasolina",cv:115,co2:137},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:144},{v:"2.0 TSI 190CV 4Motion",fuel:"Gasolina",cv:190,co2:162},{v:"1.6 TDI 115CV",fuel:"Diésel",cv:115,co2:120},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:127},{v:"R 300CV 4Motion",fuel:"Gasolina",cv:300,co2:168},{v:"Cabrio 1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:148}]},
+    "T-Cross (C11 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 TSI 95CV",fuel:"Gasolina",cv:95,co2:120},{v:"1.0 TSI 115CV",fuel:"Gasolina",cv:115,co2:126},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:138},{v:"1.6 TDI 95CV",fuel:"Diésel",cv:95,co2:105}]},
+    "Touareg (CR 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"3.0 TDI 231CV",fuel:"Diésel",cv:231,co2:178},{v:"3.0 TDI 286CV",fuel:"Diésel",cv:286,co2:186},{v:"eHybrid 381CV",fuel:"Híbrido enchufable",cv:381,co2:42},{v:"3.0 V6 TSI 340CV",fuel:"Gasolina",cv:340,co2:228},{v:"R eHybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:40}]},
+    "Arteon (3H 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:138},{v:"2.0 TSI 190CV",fuel:"Gasolina",cv:190,co2:154},{v:"2.0 TSI 280CV 4Motion",fuel:"Gasolina",cv:280,co2:171},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:118},{v:"2.0 TDI 200CV 4Motion",fuel:"Diésel",cv:200,co2:131},{v:"eHybrid 218CV",fuel:"Híbrido enchufable",cv:218,co2:28},{v:"R 320CV 4Motion",fuel:"Gasolina",cv:320,co2:178}]},
+    "Sharan (7N 2010+)": {years:[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020],versions:[{v:"1.4 TSI 150CV",fuel:"Gasolina",cv:150,co2:153},{v:"2.0 TSI 200CV",fuel:"Gasolina",cv:200,co2:189},{v:"2.0 TDI 115CV",fuel:"Diésel",cv:115,co2:127},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:133},{v:"2.0 TDI 184CV 4Motion",fuel:"Diésel",cv:184,co2:144}]},
+    "Touran (5T 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"1.0 TSI 115CV",fuel:"Gasolina",cv:115,co2:128},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:137},{v:"1.6 TDI 115CV",fuel:"Diésel",cv:115,co2:109},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:117},{v:"2.0 TDI 190CV",fuel:"Diésel",cv:190,co2:127}]},
+    "Golf (VII 2012-2019)": {years:[2012,2013,2014,2015,2016,2017,2018,2019],versions:[{v:"1.2 TSI 85CV",fuel:"Gasolina",cv:85,co2:109},{v:"1.4 TSI 122CV",fuel:"Gasolina",cv:122,co2:119},{v:"1.4 TSI 140CV",fuel:"Gasolina",cv:140,co2:127},{v:"2.0 TSI 220CV",fuel:"Gasolina",cv:220,co2:152},{v:"1.6 TDI 105CV",fuel:"Diésel",cv:105,co2:99},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:109},{v:"GTE 204CV",fuel:"Híbrido enchufable",cv:204,co2:29},{v:"GTI 220CV",fuel:"Gasolina",cv:220,co2:152},{v:"GTD 184CV",fuel:"Diésel",cv:184,co2:114},{v:"R 300CV",fuel:"Gasolina",cv:300,co2:163}]},
+    "ID.5 (2021+)": {years:[2021,2022,2023,2024],versions:[{v:"Pro 204CV",fuel:"Eléctrico",cv:204,co2:0},{v:"Pro Performance 204CV",fuel:"Eléctrico",cv:204,co2:0},{v:"GTX AWD 299CV",fuel:"Eléctrico",cv:299,co2:0}]},
+    "ID.7 (2023+)": {years:[2023,2024],versions:[{v:"Pro 286CV",fuel:"Eléctrico",cv:286,co2:0},{v:"Pro S 286CV",fuel:"Eléctrico",cv:286,co2:0},{v:"GTX AWD 340CV",fuel:"Eléctrico",cv:340,co2:0}]},
+    "Multivan (T7 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"1.5 TSI 136CV",fuel:"Gasolina",cv:136,co2:167},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:152},{v:"eHybrid 218CV",fuel:"Híbrido enchufable",cv:218,co2:31}]}
   },
 
   "Porsche": {
-    "Cayenne": {
-      years:[2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"3.0 V6 340CV",fuel:"Gasolina",cv:340,co2:224},
-        {v:"3.0 Diesel 286CV",fuel:"Diésel",cv:286,co2:176},
-        {v:"E-Hybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:50},
-        {v:"S 4.0 V8 440CV",fuel:"Gasolina",cv:440,co2:256},
-        {v:"Turbo 4.0 V8 550CV",fuel:"Gasolina",cv:550,co2:279},
-        {v:"Turbo S E-Hybrid 680CV",fuel:"Híbrido enchufable",cv:680,co2:75}
-      ]
-    },
-    "Macan": {
-      years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"2.0T 265CV",fuel:"Gasolina",cv:265,co2:199},
-        {v:"S 3.0T 354CV",fuel:"Gasolina",cv:354,co2:221},
-        {v:"GTS 380CV",fuel:"Gasolina",cv:380,co2:229},
-        {v:"Turbo 440CV",fuel:"Gasolina",cv:440,co2:241},
-        {v:"4 EV 408CV",fuel:"Eléctrico",cv:408,co2:0},
-        {v:"4S EV 516CV",fuel:"Eléctrico",cv:516,co2:0},
-        {v:"Turbo EV 639CV",fuel:"Eléctrico",cv:639,co2:0}
-      ]
-    },
-    "Panamera": {
-      years:[2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"2.9 V6 330CV",fuel:"Gasolina",cv:330,co2:208},
-        {v:"4 E-Hybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:50},
-        {v:"S 2.9T 440CV",fuel:"Gasolina",cv:440,co2:231},
-        {v:"Turbo S 4.0 630CV",fuel:"Gasolina",cv:630,co2:279},
-        {v:"Turbo S E-Hybrid 700CV",fuel:"Híbrido enchufable",cv:700,co2:65}
-      ]
-    },
-    "911 (992)": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"Carrera 385CV",fuel:"Gasolina",cv:385,co2:204},
-        {v:"Carrera S 450CV",fuel:"Gasolina",cv:450,co2:215},
-        {v:"Carrera 4S 450CV",fuel:"Gasolina",cv:450,co2:218},
-        {v:"Targa 4S 450CV",fuel:"Gasolina",cv:450,co2:219},
-        {v:"GT3 510CV",fuel:"Gasolina",cv:510,co2:241},
-        {v:"Turbo S 650CV",fuel:"Gasolina",cv:650,co2:249}
-      ]
-    },
-    "Taycan": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"RWD 408CV",fuel:"Eléctrico",cv:408,co2:0},
-        {v:"4 530CV",fuel:"Eléctrico",cv:530,co2:0},
-        {v:"4S 571CV",fuel:"Eléctrico",cv:571,co2:0},
-        {v:"GTS 598CV",fuel:"Eléctrico",cv:598,co2:0},
-        {v:"Turbo 680CV",fuel:"Eléctrico",cv:680,co2:0},
-        {v:"Turbo S 761CV",fuel:"Eléctrico",cv:761,co2:0}
-      ]
-    }
+    "718 Boxster (982)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"718 Boxster 300CV",fuel:"Gasolina",cv:300,co2:168},{v:"718 Boxster S 350CV",fuel:"Gasolina",cv:350,co2:178},{v:"718 Boxster GTS 400CV",fuel:"Gasolina",cv:400,co2:188},{v:"718 Boxster Spyder 420CV",fuel:"Gasolina",cv:420,co2:192},{v:"718 Boxster GTS 4.0 400CV",fuel:"Gasolina",cv:400,co2:188},{v:"718 Boxster E (eléctrico) 300CV",fuel:"Eléctrico",cv:300,co2:0}]},
+    "718 Cayman (982)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"718 Cayman 300CV",fuel:"Gasolina",cv:300,co2:167},{v:"718 Cayman S 350CV",fuel:"Gasolina",cv:350,co2:177},{v:"718 Cayman GTS 400CV",fuel:"Gasolina",cv:400,co2:186},{v:"718 Cayman GT4 420CV",fuel:"Gasolina",cv:420,co2:191},{v:"718 Cayman GT4 RS 500CV",fuel:"Gasolina",cv:500,co2:204}]},
+    "Cayenne (9YA 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"3.0 V6 340CV",fuel:"Gasolina",cv:340,co2:224},{v:"E-Hybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:50},{v:"S 4.0 V8 440CV",fuel:"Gasolina",cv:440,co2:256},{v:"GTS 4.0 V8 460CV",fuel:"Gasolina",cv:460,co2:271},{v:"Turbo 4.0 V8 550CV",fuel:"Gasolina",cv:550,co2:279},{v:"Turbo E-Hybrid 680CV",fuel:"Híbrido enchufable",cv:680,co2:75},{v:"Turbo GT 640CV",fuel:"Gasolina",cv:640,co2:290}]},
+    "Cayenne (9YB Coupé 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"3.0 V6 340CV",fuel:"Gasolina",cv:340,co2:229},{v:"E-Hybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:52},{v:"S 440CV",fuel:"Gasolina",cv:440,co2:261},{v:"GTS 460CV",fuel:"Gasolina",cv:460,co2:275},{v:"Turbo 550CV",fuel:"Gasolina",cv:550,co2:284},{v:"Turbo GT 640CV",fuel:"Gasolina",cv:640,co2:294}]},
+    "Macan (95B 2013-2024)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.0T 265CV",fuel:"Gasolina",cv:265,co2:199},{v:"S 3.0T 354CV",fuel:"Gasolina",cv:354,co2:221},{v:"GTS 381CV",fuel:"Gasolina",cv:381,co2:229},{v:"Turbo 440CV",fuel:"Gasolina",cv:440,co2:241},{v:"S Diesel 258CV",fuel:"Diésel",cv:258,co2:164}]},
+    "Macan Eléctrico (2024+)": {years:[2024],versions:[{v:"Macan 4 408CV",fuel:"Eléctrico",cv:408,co2:0},{v:"Macan 4S 516CV",fuel:"Eléctrico",cv:516,co2:0},{v:"Macan Turbo 639CV",fuel:"Eléctrico",cv:639,co2:0}]},
+    "Panamera (971 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.9 V6 330CV",fuel:"Gasolina",cv:330,co2:208},{v:"4 E-Hybrid 462CV",fuel:"Híbrido enchufable",cv:462,co2:50},{v:"S 2.9T 440CV",fuel:"Gasolina",cv:440,co2:231},{v:"GTS 4.0 V8 480CV",fuel:"Gasolina",cv:480,co2:252},{v:"Turbo S 4.0 630CV",fuel:"Gasolina",cv:630,co2:279},{v:"Turbo S E-Hybrid 700CV",fuel:"Híbrido enchufable",cv:700,co2:65}]},
+    "911 (991 2011-2019)": {years:[2011,2012,2013,2014,2015,2016,2017,2018,2019],versions:[{v:"Carrera 370CV",fuel:"Gasolina",cv:370,co2:194},{v:"Carrera S 400CV",fuel:"Gasolina",cv:400,co2:205},{v:"Carrera 4S 400CV",fuel:"Gasolina",cv:400,co2:208},{v:"Targa 4S 400CV",fuel:"Gasolina",cv:400,co2:210},{v:"GT3 500CV",fuel:"Gasolina",cv:500,co2:238},{v:"Turbo S 580CV",fuel:"Gasolina",cv:580,co2:246},{v:"R 500CV",fuel:"Gasolina",cv:500,co2:249}]},
+    "911 (992 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"Carrera 385CV",fuel:"Gasolina",cv:385,co2:204},{v:"Carrera S 450CV",fuel:"Gasolina",cv:450,co2:215},{v:"Carrera 4S 450CV",fuel:"Gasolina",cv:450,co2:218},{v:"Targa 4S 450CV",fuel:"Gasolina",cv:450,co2:219},{v:"GTS 480CV",fuel:"Gasolina",cv:480,co2:220},{v:"GT3 510CV",fuel:"Gasolina",cv:510,co2:241},{v:"GT3 RS 525CV",fuel:"Gasolina",cv:525,co2:249},{v:"Turbo S 650CV",fuel:"Gasolina",cv:650,co2:249},{v:"Dakar 480CV",fuel:"Gasolina",cv:480,co2:226}]},
+    "Taycan (2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"RWD 408CV",fuel:"Eléctrico",cv:408,co2:0},{v:"4 530CV",fuel:"Eléctrico",cv:530,co2:0},{v:"4S 571CV",fuel:"Eléctrico",cv:571,co2:0},{v:"GTS 598CV",fuel:"Eléctrico",cv:598,co2:0},{v:"Turbo 680CV",fuel:"Eléctrico",cv:680,co2:0},{v:"Turbo S 761CV",fuel:"Eléctrico",cv:761,co2:0},{v:"Sport Turismo GTS 598CV",fuel:"Eléctrico",cv:598,co2:0},{v:"Cross Turismo 4S 571CV",fuel:"Eléctrico",cv:571,co2:0}]}
   },
 
   "Land Rover": {
-    "Range Rover Sport (L461)": {
-      years:[2022,2023,2024],
-      versions:[
-        {v:"D250 SE 249CV",fuel:"Diésel",cv:249,co2:173},
-        {v:"D300 Dynamic SE 300CV",fuel:"Diésel",cv:300,co2:181},
-        {v:"P360 Dynamic SE 360CV",fuel:"Gasolina",cv:360,co2:237},
-        {v:"P400 Dynamic SE 400CV",fuel:"Gasolina",cv:400,co2:254},
-        {v:"P510e Dynamic SE 510CV",fuel:"Híbrido enchufable",cv:510,co2:18},
-        {v:"P635 SVR Carbon Edition 635CV",fuel:"Gasolina",cv:635,co2:285}
-      ]
-    },
-    "Range Rover Evoque": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"D165 2WD 163CV",fuel:"Diésel",cv:163,co2:143},
-        {v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:157},
-        {v:"P200 AWD 200CV",fuel:"Gasolina",cv:200,co2:194},
-        {v:"P250 AWD 249CV",fuel:"Gasolina",cv:249,co2:207},
-        {v:"P300e AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:32}
-      ]
-    },
-    "Discovery Sport": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"D165 2WD 163CV",fuel:"Diésel",cv:163,co2:147},
-        {v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:159},
-        {v:"P200 AWD 200CV",fuel:"Gasolina",cv:200,co2:198},
-        {v:"P300e AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:36}
-      ]
-    },
-    "Defender 110": {
-      years:[2020,2021,2022,2023,2024],
-      versions:[
-        {v:"D200 AWD 200CV",fuel:"Diésel",cv:200,co2:181},
-        {v:"D250 AWD 249CV",fuel:"Diésel",cv:249,co2:188},
-        {v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:198},
-        {v:"P400e AWD 404CV",fuel:"Híbrido enchufable",cv:404,co2:40},
-        {v:"P400 AWD 400CV",fuel:"Gasolina",cv:400,co2:246}
-      ]
-    }
+    "Range Rover (L460 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"D250 SE 249CV",fuel:"Diésel",cv:249,co2:183},{v:"D300 HSE 300CV",fuel:"Diésel",cv:300,co2:193},{v:"D350 HSE 350CV",fuel:"Diésel",cv:350,co2:202},{v:"P400 SE 400CV",fuel:"Gasolina",cv:400,co2:254},{v:"P530 V8 Autobiography 530CV",fuel:"Gasolina",cv:530,co2:296},{v:"P440e AWD 440CV",fuel:"Híbrido enchufable",cv:440,co2:18},{v:"P550e AWD 550CV",fuel:"Híbrido enchufable",cv:550,co2:18}]},
+    "Range Rover Sport (L461 2022+)": {years:[2022,2023,2024],versions:[{v:"D250 SE 249CV",fuel:"Diésel",cv:249,co2:173},{v:"D300 Dynamic SE 300CV",fuel:"Diésel",cv:300,co2:181},{v:"P360 Dynamic SE 360CV",fuel:"Gasolina",cv:360,co2:237},{v:"P400 Dynamic HSE 400CV",fuel:"Gasolina",cv:400,co2:254},{v:"P510e Dynamic SE 510CV",fuel:"Híbrido enchufable",cv:510,co2:18},{v:"P635 SVR 635CV",fuel:"Gasolina",cv:635,co2:285}]},
+    "Range Rover Sport (L320 2005-2013)": {years:[2005,2006,2007,2008,2009,2010,2011,2012,2013],versions:[{v:"TDV6 190CV",fuel:"Diésel",cv:190,co2:209},{v:"TDV8 272CV",fuel:"Diésel",cv:272,co2:224},{v:"3.6 TDV8 272CV",fuel:"Diésel",cv:272,co2:224},{v:"4.4 V8 305CV",fuel:"Gasolina",cv:305,co2:299},{v:"Supercharged 5.0 510CV",fuel:"Gasolina",cv:510,co2:324}]},
+    "Range Rover Sport (L494 2013-2022)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022],versions:[{v:"SDV6 306CV",fuel:"Diésel",cv:306,co2:169},{v:"SDV8 340CV",fuel:"Diésel",cv:340,co2:183},{v:"Si4 340CV",fuel:"Gasolina",cv:340,co2:232},{v:"Si6 380CV",fuel:"Gasolina",cv:380,co2:249},{v:"P400e 404CV",fuel:"Híbrido enchufable",cv:404,co2:64},{v:"SVR 575CV",fuel:"Gasolina",cv:575,co2:280}]},
+    "Range Rover Velar (L560 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"D180 FWD 180CV",fuel:"Diésel",cv:180,co2:149},{v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:158},{v:"D240 AWD 240CV",fuel:"Diésel",cv:240,co2:169},{v:"P250 AWD 250CV",fuel:"Gasolina",cv:250,co2:213},{v:"P380 AWD 380CV",fuel:"Gasolina",cv:380,co2:246},{v:"P400e AWD 404CV",fuel:"Híbrido enchufable",cv:404,co2:44}]},
+    "Range Rover Evoque (L538 2011-2018)": {years:[2011,2012,2013,2014,2015,2016,2017,2018],versions:[{v:"eD4 150CV 2WD",fuel:"Diésel",cv:150,co2:129},{v:"TD4 180CV",fuel:"Diésel",cv:180,co2:139},{v:"SD4 190CV",fuel:"Diésel",cv:190,co2:142},{v:"Si4 240CV",fuel:"Gasolina",cv:240,co2:186}]},
+    "Range Rover Evoque (L551 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"D165 2WD 163CV",fuel:"Diésel",cv:163,co2:143},{v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:157},{v:"P200 AWD 200CV",fuel:"Gasolina",cv:200,co2:194},{v:"P250 AWD 249CV",fuel:"Gasolina",cv:249,co2:207},{v:"P300e AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:32}]},
+    "Discovery Sport (L550 2014+)": {years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"D165 2WD 163CV",fuel:"Diésel",cv:163,co2:147},{v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:159},{v:"D240 AWD 240CV",fuel:"Diésel",cv:240,co2:167},{v:"P200 AWD 200CV",fuel:"Gasolina",cv:200,co2:198},{v:"P250 AWD 249CV",fuel:"Gasolina",cv:249,co2:211},{v:"P300e AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:36}]},
+    "Discovery 5 (L462 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"D250 AWD 249CV",fuel:"Diésel",cv:249,co2:189},{v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:199},{v:"Si6 340CV",fuel:"Gasolina",cv:340,co2:268},{v:"P360 AWD 360CV",fuel:"Gasolina",cv:360,co2:276}]},
+    "Defender 90/110/130 (L663 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"D200 AWD 200CV",fuel:"Diésel",cv:200,co2:181},{v:"D250 AWD 249CV",fuel:"Diésel",cv:249,co2:188},{v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:198},{v:"P400e AWD 404CV",fuel:"Híbrido enchufable",cv:404,co2:40},{v:"P400 AWD 400CV",fuel:"Gasolina",cv:400,co2:246},{v:"V8 525CV",fuel:"Gasolina",cv:525,co2:296}]}
   },
 
   "Volvo": {
-    "XC40": {
-      years:[2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"B3 FWD 163CV Mild Hybrid",fuel:"Híbrido",cv:163,co2:142},
-        {v:"B4 AWD 197CV Mild Hybrid",fuel:"Híbrido",cv:197,co2:155},
-        {v:"T5 AWD 262CV",fuel:"Gasolina",cv:262,co2:192},
-        {v:"T4 Recharge 211CV",fuel:"Híbrido enchufable",cv:211,co2:26},
-        {v:"Recharge P6 231CV",fuel:"Eléctrico",cv:231,co2:0},
-        {v:"Recharge P8 AWD 408CV",fuel:"Eléctrico",cv:408,co2:0}
-      ]
-    },
-    "XC60": {
-      years:[2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"B4 FWD 197CV Mild Hybrid",fuel:"Híbrido",cv:197,co2:160},
-        {v:"B5 AWD 250CV Mild Hybrid",fuel:"Híbrido",cv:250,co2:168},
-        {v:"T6 AWD Recharge 253CV",fuel:"Híbrido enchufable",cv:253,co2:33},
-        {v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:28},
-        {v:"Recharge AWD 455CV",fuel:"Eléctrico",cv:455,co2:0}
-      ]
-    },
-    "XC90": {
-      years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"B5 AWD 250CV Mild Hybrid",fuel:"Híbrido",cv:250,co2:181},
-        {v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:40},
-        {v:"T8 AWD Recharge Bright 455CV",fuel:"Híbrido enchufable",cv:455,co2:37}
-      ]
-    },
-    "S60": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"B3 FWD 163CV Mild Hybrid",fuel:"Híbrido",cv:163,co2:138},
-        {v:"B4 AWD 197CV Mild Hybrid",fuel:"Híbrido",cv:197,co2:151},
-        {v:"T8 AWD Recharge 350CV",fuel:"Híbrido enchufable",cv:350,co2:26}
-      ]
-    }
+    "V40 (525/526 2012-2019)": {years:[2012,2013,2014,2015,2016,2017,2018,2019],versions:[{v:"T2 122CV",fuel:"Gasolina",cv:122,co2:127},{v:"T3 152CV",fuel:"Gasolina",cv:152,co2:134},{v:"T4 190CV",fuel:"Gasolina",cv:190,co2:147},{v:"T5 245CV",fuel:"Gasolina",cv:245,co2:158},{v:"D2 120CV",fuel:"Diésel",cv:120,co2:92},{v:"D3 150CV",fuel:"Diésel",cv:150,co2:99},{v:"D4 190CV",fuel:"Diésel",cv:190,co2:109},{v:"Polestar 367CV",fuel:"Gasolina",cv:367,co2:166}]},
+    "V60 (224/225 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"B3 FWD 163CV",fuel:"Híbrido",cv:163,co2:140},{v:"B4 AWD 197CV",fuel:"Híbrido",cv:197,co2:148},{v:"B5 AWD 250CV",fuel:"Híbrido",cv:250,co2:158},{v:"T6 AWD Recharge 253CV",fuel:"Híbrido enchufable",cv:253,co2:29},{v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:25},{v:"Polestar 469CV",fuel:"Híbrido enchufable",cv:469,co2:56}]},
+    "V90 (235 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"B4 FWD 197CV",fuel:"Híbrido",cv:197,co2:163},{v:"B5 AWD 250CV",fuel:"Híbrido",cv:250,co2:171},{v:"T6 AWD Recharge 253CV",fuel:"Híbrido enchufable",cv:253,co2:34},{v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:30},{v:"Cross Country B6 AWD 300CV",fuel:"Híbrido",cv:300,co2:188}]},
+    "S60 (224 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"B3 FWD 163CV",fuel:"Híbrido",cv:163,co2:138},{v:"B4 AWD 197CV",fuel:"Híbrido",cv:197,co2:151},{v:"T8 AWD Recharge 350CV",fuel:"Híbrido enchufable",cv:350,co2:26},{v:"Polestar 469CV",fuel:"Híbrido enchufable",cv:469,co2:54}]},
+    "S90 (234 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"B4 FWD 197CV",fuel:"Híbrido",cv:197,co2:159},{v:"B5 AWD 250CV",fuel:"Híbrido",cv:250,co2:169},{v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:32}]},
+    "XC40 (536 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"B3 FWD 163CV",fuel:"Híbrido",cv:163,co2:142},{v:"B4 AWD 197CV",fuel:"Híbrido",cv:197,co2:155},{v:"T5 AWD 262CV",fuel:"Gasolina",cv:262,co2:192},{v:"T4 Recharge 211CV",fuel:"Híbrido enchufable",cv:211,co2:26},{v:"Recharge P6 FWD 231CV",fuel:"Eléctrico",cv:231,co2:0},{v:"Recharge P8 AWD 408CV",fuel:"Eléctrico",cv:408,co2:0}]},
+    "XC60 (246 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"B4 FWD 197CV",fuel:"Híbrido",cv:197,co2:160},{v:"B5 AWD 250CV",fuel:"Híbrido",cv:250,co2:168},{v:"B6 AWD 300CV",fuel:"Híbrido",cv:300,co2:182},{v:"T6 AWD Recharge 253CV",fuel:"Híbrido enchufable",cv:253,co2:33},{v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:28},{v:"Recharge AWD 455CV",fuel:"Eléctrico",cv:455,co2:0}]},
+    "XC90 (256 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"B5 AWD 250CV",fuel:"Híbrido",cv:250,co2:181},{v:"B6 AWD 300CV",fuel:"Híbrido",cv:300,co2:194},{v:"T8 AWD Recharge 390CV",fuel:"Híbrido enchufable",cv:390,co2:40},{v:"T8 AWD Recharge Bright 455CV",fuel:"Híbrido enchufable",cv:455,co2:37}]},
+    "C40 Recharge (2021+)": {years:[2021,2022,2023,2024],versions:[{v:"Recharge FWD 231CV",fuel:"Eléctrico",cv:231,co2:0},{v:"Recharge AWD Twin 408CV",fuel:"Eléctrico",cv:408,co2:0}]},
+    "EX30 (2023+)": {years:[2023,2024],versions:[{v:"Single Motor ER 272CV",fuel:"Eléctrico",cv:272,co2:0},{v:"Twin Motor Performance 428CV",fuel:"Eléctrico",cv:428,co2:0}]},
+    "EX90 (2024+)": {years:[2024],versions:[{v:"Twin Motor 517CV",fuel:"Eléctrico",cv:517,co2:0},{v:"Twin Motor Performance 680CV",fuel:"Eléctrico",cv:680,co2:0}]}
   },
 
-  "Tesla": {
-    "Model 3": {
-      years:[2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"Standard Range RWD 283CV",fuel:"Eléctrico",cv:283,co2:0},
-        {v:"Long Range AWD 351CV",fuel:"Eléctrico",cv:351,co2:0},
-        {v:"Performance AWD 491CV",fuel:"Eléctrico",cv:491,co2:0}
-      ]
-    },
-    "Model Y": {
-      years:[2021,2022,2023,2024],
-      versions:[
-        {v:"Standard Range RWD 255CV",fuel:"Eléctrico",cv:255,co2:0},
-        {v:"Long Range AWD 351CV",fuel:"Eléctrico",cv:351,co2:0},
-        {v:"Performance AWD 534CV",fuel:"Eléctrico",cv:534,co2:0}
-      ]
-    },
-    "Model S": {
-      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"Long Range AWD 405CV",fuel:"Eléctrico",cv:405,co2:0},
-        {v:"Plaid AWD 1020CV",fuel:"Eléctrico",cv:1020,co2:0}
-      ]
-    },
-    "Model X": {
-      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"Long Range AWD 670CV",fuel:"Eléctrico",cv:670,co2:0},
-        {v:"Plaid AWD 1020CV",fuel:"Eléctrico",cv:1020,co2:0}
-      ]
-    }
+  "Bentley": {
+    "Continental GT (3S 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"V8 550CV",fuel:"Gasolina",cv:550,co2:265},{v:"W12 635CV",fuel:"Gasolina",cv:635,co2:275},{v:"Speed W12 659CV",fuel:"Gasolina",cv:659,co2:282},{v:"S V8 550CV",fuel:"Gasolina",cv:550,co2:266}]},
+    "Continental GT (3W 2003-2011)": {years:[2003,2004,2005,2006,2007,2008,2009,2010,2011],versions:[{v:"W12 560CV",fuel:"Gasolina",cv:560,co2:398},{v:"Speed W12 610CV",fuel:"Gasolina",cv:610,co2:393},{v:"Supersports W12 630CV",fuel:"Gasolina",cv:630,co2:388}]},
+    "Bentayga (2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"W12 608CV",fuel:"Gasolina",cv:608,co2:292},{v:"V8 550CV",fuel:"Gasolina",cv:550,co2:257},{v:"Hybrid V6 449CV",fuel:"Híbrido enchufable",cv:449,co2:75},{v:"Speed W12 635CV",fuel:"Gasolina",cv:635,co2:299},{v:"EWB Hybrid 449CV",fuel:"Híbrido enchufable",cv:449,co2:75}]},
+    "Flying Spur (3S 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"V8 550CV",fuel:"Gasolina",cv:550,co2:259},{v:"W12 635CV",fuel:"Gasolina",cv:635,co2:270},{v:"Hybrid V6 449CV",fuel:"Híbrido enchufable",cv:449,co2:75},{v:"Speed W12 659CV",fuel:"Gasolina",cv:659,co2:271}]},
+    "Mulsanne (2009-2020)": {years:[2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020],versions:[{v:"V8 512CV",fuel:"Gasolina",cv:512,co2:348},{v:"Speed V8 537CV",fuel:"Gasolina",cv:537,co2:364}]}
   },
 
-  "MINI": {
-    "Cooper 3p/5p (F56)": {
-      years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"One D 95CV",fuel:"Diésel",cv:95,co2:99},
-        {v:"Cooper D 116CV",fuel:"Diésel",cv:116,co2:102},
-        {v:"Cooper 136CV",fuel:"Gasolina",cv:136,co2:134},
-        {v:"Cooper S 192CV",fuel:"Gasolina",cv:192,co2:148},
-        {v:"John Cooper Works 231CV",fuel:"Gasolina",cv:231,co2:159},
-        {v:"SE Eléctrico 184CV",fuel:"Eléctrico",cv:184,co2:0}
-      ]
-    },
-    "Countryman (F60)": {
-      years:[2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"One 102CV",fuel:"Gasolina",cv:102,co2:134},
-        {v:"Cooper D 150CV",fuel:"Diésel",cv:150,co2:121},
-        {v:"Cooper S 192CV",fuel:"Gasolina",cv:192,co2:161},
-        {v:"Cooper SE ALL4 224CV",fuel:"Híbrido enchufable",cv:224,co2:39},
-        {v:"JCW ALL4 306CV",fuel:"Gasolina",cv:306,co2:188}
-      ]
-    }
-  },
-
-  "Lexus": {
-    "UX 250h": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"2.0 FWD 184CV",fuel:"Híbrido",cv:184,co2:107},
-        {v:"2.0 AWD 181CV",fuel:"Híbrido",cv:181,co2:110},
-        {v:"UX 300e FWD 204CV",fuel:"Eléctrico",cv:204,co2:0}
-      ]
-    },
-    "NX 350h": {
-      years:[2021,2022,2023,2024],
-      versions:[
-        {v:"350h FWD 244CV",fuel:"Híbrido",cv:244,co2:123},
-        {v:"350h AWD 244CV",fuel:"Híbrido",cv:244,co2:130},
-        {v:"450h+ AWD 309CV",fuel:"Híbrido enchufable",cv:309,co2:21}
-      ]
-    },
-    "RX 350h": {
-      years:[2022,2023,2024],
-      versions:[
-        {v:"350h FWD 245CV",fuel:"Híbrido",cv:245,co2:133},
-        {v:"350h AWD 245CV",fuel:"Híbrido",cv:245,co2:141},
-        {v:"500h+ AWD 366CV",fuel:"Híbrido enchufable",cv:366,co2:26}
-      ]
-    }
-  },
-
-  "Alfa Romeo": {
-    "Giulia": {
-      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"2.0T 200CV",fuel:"Gasolina",cv:200,co2:156},
-        {v:"2.0T 280CV",fuel:"Gasolina",cv:280,co2:169},
-        {v:"2.0T Sprint 200CV",fuel:"Gasolina",cv:200,co2:158},
-        {v:"Quadrifoglio 510CV",fuel:"Gasolina",cv:510,co2:214}
-      ]
-    },
-    "Stelvio": {
-      years:[2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"2.2D 160CV",fuel:"Diésel",cv:160,co2:147},
-        {v:"2.2D 210CV",fuel:"Diésel",cv:210,co2:153},
-        {v:"2.0T 200CV",fuel:"Gasolina",cv:200,co2:184},
-        {v:"2.0T 280CV AWD",fuel:"Gasolina",cv:280,co2:192},
-        {v:"Quadrifoglio 510CV AWD",fuel:"Gasolina",cv:510,co2:227}
-      ]
-    }
+  "Maserati": {
+    "Ghibli (M157 2013+)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"Diesel 275CV",fuel:"Diésel",cv:275,co2:158},{v:"V6 330CV",fuel:"Gasolina",cv:330,co2:216},{v:"V6 Turbo 350CV",fuel:"Gasolina",cv:350,co2:224},{v:"S 430CV",fuel:"Gasolina",cv:430,co2:249},{v:"Trofeo 580CV",fuel:"Gasolina",cv:580,co2:274},{v:"Hybrid 330CV",fuel:"Híbrido",cv:330,co2:187}]},
+    "Levante (M161 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"Diesel 275CV",fuel:"Diésel",cv:275,co2:181},{v:"V6 350CV",fuel:"Gasolina",cv:350,co2:237},{v:"S V6 430CV",fuel:"Gasolina",cv:430,co2:256},{v:"GTS V8 530CV",fuel:"Gasolina",cv:530,co2:298},{v:"Trofeo V8 580CV",fuel:"Gasolina",cv:580,co2:306},{v:"Hybrid 330CV",fuel:"Híbrido",cv:330,co2:193}]},
+    "Quattroporte (M156 2013+)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"Diesel V6 275CV",fuel:"Diésel",cv:275,co2:167},{v:"V6 330CV",fuel:"Gasolina",cv:330,co2:227},{v:"S V6 410CV",fuel:"Gasolina",cv:410,co2:249},{v:"GTS V8 530CV",fuel:"Gasolina",cv:530,co2:298},{v:"Trofeo V8 580CV",fuel:"Gasolina",cv:580,co2:311}]},
+    "GranTurismo (M139 2023+)": {years:[2023,2024],versions:[{v:"Modena V6 490CV",fuel:"Gasolina",cv:490,co2:233},{v:"Trofeo V6 550CV",fuel:"Gasolina",cv:550,co2:248},{v:"Folgore AWD 760CV",fuel:"Eléctrico",cv:760,co2:0}]},
+    "Grecale (2022+)": {years:[2022,2023,2024],versions:[{v:"GT 300CV",fuel:"Gasolina",cv:300,co2:189},{v:"Modena 330CV",fuel:"Gasolina",cv:330,co2:196},{v:"Trofeo 530CV",fuel:"Gasolina",cv:530,co2:258},{v:"Folgore AWD 557CV",fuel:"Eléctrico",cv:557,co2:0}]}
   },
 
   "Jaguar": {
-    "F-Pace": {
-      years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"D200 FWD 204CV",fuel:"Diésel",cv:204,co2:161},
-        {v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:172},
-        {v:"P250 AWD 250CV",fuel:"Gasolina",cv:250,co2:219},
-        {v:"P400e AWD 404CV",fuel:"Híbrido enchufable",cv:404,co2:44},
-        {v:"SVR 550CV",fuel:"Gasolina",cv:550,co2:263}
-      ]
-    },
-    "I-Pace": {
-      years:[2018,2019,2020,2021,2022,2023],
-      versions:[
-        {v:"EV400 AWD 400CV",fuel:"Eléctrico",cv:400,co2:0}
-      ]
-    }
+    "XE (X760 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"D150 FWD 150CV",fuel:"Diésel",cv:150,co2:109},{v:"D180 AWD 180CV",fuel:"Diésel",cv:180,co2:118},{v:"D204 AWD 204CV",fuel:"Diésel",cv:204,co2:123},{v:"P200 200CV",fuel:"Gasolina",cv:200,co2:167},{v:"P250 250CV",fuel:"Gasolina",cv:250,co2:178},{v:"P300 AWD 300CV",fuel:"Gasolina",cv:300,co2:189},{v:"P400 R-Dynamic S 400CV",fuel:"Gasolina",cv:400,co2:204}]},
+    "XF (X260 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:135},{v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:148},{v:"P250 250CV",fuel:"Gasolina",cv:250,co2:191},{v:"P300 AWD 300CV",fuel:"Gasolina",cv:300,co2:201},{v:"P400 R-Dynamic HSE 400CV",fuel:"Gasolina",cv:400,co2:217}]},
+    "F-Type (X152 2013+)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"V6 340CV",fuel:"Gasolina",cv:340,co2:216},{v:"V6 S 380CV",fuel:"Gasolina",cv:380,co2:231},{v:"V8 R 550CV",fuel:"Gasolina",cv:550,co2:269},{v:"V8 SVR 575CV",fuel:"Gasolina",cv:575,co2:278},{v:"P300 AWD 300CV",fuel:"Gasolina",cv:300,co2:196},{v:"P450 AWD 450CV",fuel:"Gasolina",cv:450,co2:252}]},
+    "F-Pace (X761 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"D163 FWD 163CV",fuel:"Diésel",cv:163,co2:148},{v:"D200 AWD 204CV",fuel:"Diésel",cv:204,co2:161},{v:"D300 AWD 300CV",fuel:"Diésel",cv:300,co2:172},{v:"P250 AWD 250CV",fuel:"Gasolina",cv:250,co2:219},{v:"P400e AWD 404CV",fuel:"Híbrido enchufable",cv:404,co2:44},{v:"P550 SVR 550CV",fuel:"Gasolina",cv:550,co2:263}]},
+    "I-Pace (X590 2018+)": {years:[2018,2019,2020,2021,2022,2023],versions:[{v:"EV400 AWD 400CV",fuel:"Eléctrico",cv:400,co2:0},{v:"EV400 SE 400CV",fuel:"Eléctrico",cv:400,co2:0},{v:"EV400 HSE 400CV",fuel:"Eléctrico",cv:400,co2:0}]}
+  },
+
+  "Cupra": {
+    "Formentor (KM7 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:144},{v:"2.0 TSI 190CV",fuel:"Gasolina",cv:190,co2:158},{v:"2.0 TSI 265CV 4Drive",fuel:"Gasolina",cv:265,co2:173},{v:"2.0 TSI 310CV 4Drive",fuel:"Gasolina",cv:310,co2:181},{v:"1.4 eHybrid 204CV",fuel:"Híbrido enchufable",cv:204,co2:26},{v:"1.4 eHybrid 245CV",fuel:"Híbrido enchufable",cv:245,co2:24}]},
+    "Born (BZ1 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"e-Boost 150CV 45kWh",fuel:"Eléctrico",cv:150,co2:0},{v:"e-Boost 204CV 58kWh",fuel:"Eléctrico",cv:204,co2:0},{v:"e-Boost 231CV 77kWh",fuel:"Eléctrico",cv:231,co2:0},{v:"VZ 231CV 77kWh",fuel:"Eléctrico",cv:231,co2:0}]},
+    "León ST/Hatch (KL8 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"2.0 TSI 265CV DSG7",fuel:"Gasolina",cv:265,co2:163},{v:"2.0 TSI 300CV DSG7 4Drive",fuel:"Gasolina",cv:300,co2:170},{v:"1.4 eHybrid 204CV",fuel:"Híbrido enchufable",cv:204,co2:26},{v:"2.0 TSI 245CV Competición",fuel:"Gasolina",cv:245,co2:158}]},
+    "Ateca (2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.0 TSI 190CV 4Drive",fuel:"Gasolina",cv:190,co2:174},{v:"2.0 TSI 300CV 4Drive",fuel:"Gasolina",cv:300,co2:192}]},
+    "Terramar (2024+)": {years:[2024],versions:[{v:"1.5 eTSI 150CV",fuel:"Híbrido",cv:150,co2:142},{v:"2.0 TSI 265CV 4Drive",fuel:"Gasolina",cv:265,co2:168},{v:"1.5 eHybrid 204CV",fuel:"Híbrido enchufable",cv:204,co2:24}]}
+  },
+
+  "Polestar": {
+    "Polestar 2 (2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"Single Motor FWD 224CV",fuel:"Eléctrico",cv:224,co2:0},{v:"Single Motor FWD 299CV LR",fuel:"Eléctrico",cv:299,co2:0},{v:"Twin Motor AWD 408CV",fuel:"Eléctrico",cv:408,co2:0},{v:"BST edition 476CV",fuel:"Eléctrico",cv:476,co2:0}]},
+    "Polestar 3 (2023+)": {years:[2023,2024],versions:[{v:"Long Range Single Motor 272CV",fuel:"Eléctrico",cv:272,co2:0},{v:"Long Range Dual Motor 489CV",fuel:"Eléctrico",cv:489,co2:0},{v:"Long Range Dual Motor Performance 517CV",fuel:"Eléctrico",cv:517,co2:0}]},
+    "Polestar 4 (2024+)": {years:[2024],versions:[{v:"Long Range Single Motor 272CV",fuel:"Eléctrico",cv:272,co2:0},{v:"Long Range Dual Motor 544CV",fuel:"Eléctrico",cv:544,co2:0}]}
+  },
+
+  "Genesis": {
+    "G70 (IK 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.0T 252CV",fuel:"Gasolina",cv:252,co2:188},{v:"3.3T AWD 370CV",fuel:"Gasolina",cv:370,co2:213},{v:"2.2D 210CV AWD",fuel:"Diésel",cv:210,co2:143}]},
+    "G80 (RG3 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"2.5T 304CV",fuel:"Gasolina",cv:304,co2:191},{v:"3.5T AWD 380CV",fuel:"Gasolina",cv:380,co2:226},{v:"Electrified AWD 365CV",fuel:"Eléctrico",cv:365,co2:0}]},
+    "GV70 (JK1 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"2.0T 304CV",fuel:"Gasolina",cv:304,co2:195},{v:"2.5T AWD 304CV",fuel:"Gasolina",cv:304,co2:198},{v:"3.5T AWD 380CV",fuel:"Gasolina",cv:380,co2:228},{v:"Electrified AWD 360CV",fuel:"Eléctrico",cv:360,co2:0}]},
+    "GV80 (RS4 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"2.5T 304CV",fuel:"Gasolina",cv:304,co2:204},{v:"3.5T AWD 380CV",fuel:"Gasolina",cv:380,co2:236},{v:"2.2D AWD 210CV",fuel:"Diésel",cv:210,co2:161}]},
+    "GV60 (JW1 2022+)": {years:[2022,2023,2024],versions:[{v:"Standard AWD 218CV",fuel:"Eléctrico",cv:218,co2:0},{v:"Sport AWD 320CV",fuel:"Eléctrico",cv:320,co2:0},{v:"Sport Plus AWD 483CV",fuel:"Eléctrico",cv:483,co2:0}]}
+  },
+
+  "DS Automobiles": {
+    "DS3 Crossback (2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"1.2 PureTech 100CV",fuel:"Gasolina",cv:100,co2:120},{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:127},{v:"1.5 BlueHDi 100CV",fuel:"Diésel",cv:100,co2:103},{v:"E-Tense FWD 136CV",fuel:"Eléctrico",cv:136,co2:0}]},
+    "DS4 (B58 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:133},{v:"1.5 BlueHDi 130CV",fuel:"Diésel",cv:130,co2:110},{v:"1.6 E-Tense 225CV PHEV",fuel:"Híbrido enchufable",cv:225,co2:26},{v:"1.6 E-Tense 300CV PHEV 4x4",fuel:"Híbrido enchufable",cv:300,co2:29}]},
+    "DS7 Crossback (JP 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:132},{v:"1.5 BlueHDi 130CV",fuel:"Diésel",cv:130,co2:109},{v:"2.0 BlueHDi 180CV AWD",fuel:"Diésel",cv:180,co2:127},{v:"E-Tense 4x4 300CV",fuel:"Híbrido enchufable",cv:300,co2:28},{v:"E-Tense 4x4 360CV",fuel:"Híbrido enchufable",cv:360,co2:27}]},
+    "DS9 (2021+)": {years:[2021,2022,2023,2024],versions:[{v:"1.6 PureTech 225CV",fuel:"Gasolina",cv:225,co2:148},{v:"E-Tense FWD 225CV",fuel:"Híbrido enchufable",cv:225,co2:27},{v:"E-Tense 4x4 360CV",fuel:"Híbrido enchufable",cv:360,co2:25}]}
+  },
+
+  "Peugeot": {
+    "208 (A9 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"1.2 PureTech 75CV",fuel:"Gasolina",cv:75,co2:106},{v:"1.2 PureTech 100CV",fuel:"Gasolina",cv:100,co2:110},{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:118},{v:"1.5 BlueHDi 100CV",fuel:"Diésel",cv:100,co2:82},{v:"e-208 136CV",fuel:"Eléctrico",cv:136,co2:0},{v:"GTi 1.6 THP 200CV",fuel:"Gasolina",cv:200,co2:139}]},
+    "308 (P51 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"1.2 PureTech 110CV",fuel:"Gasolina",cv:110,co2:120},{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:126},{v:"1.5 BlueHDi 130CV",fuel:"Diésel",cv:130,co2:108},{v:"1.6 Hybrid 180CV PHEV",fuel:"Híbrido enchufable",cv:180,co2:26},{v:"1.6 Hybrid4 360CV PHEV 4x4",fuel:"Híbrido enchufable",cv:360,co2:29},{v:"e-308 156CV",fuel:"Eléctrico",cv:156,co2:0}]},
+    "508 (R8 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.5 BlueHDi 130CV",fuel:"Diésel",cv:130,co2:110},{v:"2.0 BlueHDi 160CV",fuel:"Diésel",cv:160,co2:119},{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:130},{v:"1.6 PureTech 180CV",fuel:"Gasolina",cv:180,co2:143},{v:"Hybrid 225CV PHEV",fuel:"Híbrido enchufable",cv:225,co2:26},{v:"Hybrid4 360CV PHEV 4x4",fuel:"Híbrido enchufable",cv:360,co2:29}]},
+    "3008 (P84 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:138},{v:"1.6 PureTech 180CV",fuel:"Gasolina",cv:180,co2:154},{v:"1.5 BlueHDi 130CV",fuel:"Diésel",cv:130,co2:110},{v:"2.0 BlueHDi 163CV",fuel:"Diésel",cv:163,co2:124},{v:"Hybrid 225CV PHEV",fuel:"Híbrido enchufable",cv:225,co2:27},{v:"Hybrid4 300CV PHEV 4x4",fuel:"Híbrido enchufable",cv:300,co2:31}]},
+    "5008 (P87 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.2 PureTech 130CV",fuel:"Gasolina",cv:130,co2:141},{v:"1.5 BlueHDi 130CV",fuel:"Diésel",cv:130,co2:114},{v:"2.0 BlueHDi 180CV",fuel:"Diésel",cv:180,co2:131},{v:"Hybrid 225CV PHEV",fuel:"Híbrido enchufable",cv:225,co2:28}]}
+  },
+
+  "Renault": {
+    "Clio (V 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"SCe 65CV",fuel:"Gasolina",cv:65,co2:108},{v:"TCe 90CV",fuel:"Gasolina",cv:90,co2:112},{v:"TCe 100CV",fuel:"Gasolina",cv:100,co2:115},{v:"TCe 130CV",fuel:"Gasolina",cv:130,co2:124},{v:"dCi 85CV",fuel:"Diésel",cv:85,co2:90},{v:"E-Tech 140CV Híbrido",fuel:"Híbrido",cv:140,co2:96},{v:"RS Line 131CV",fuel:"Gasolina",cv:131,co2:125}]},
+    "Mégane (IV 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"TCe 140CV",fuel:"Gasolina",cv:140,co2:133},{v:"TCe 160CV",fuel:"Gasolina",cv:160,co2:141},{v:"Blue dCi 115CV",fuel:"Diésel",cv:115,co2:99},{v:"Blue dCi 150CV",fuel:"Diésel",cv:150,co2:104},{v:"GT TCe 205CV",fuel:"Gasolina",cv:205,co2:153},{v:"RS 300CV Trophy",fuel:"Gasolina",cv:300,co2:176}]},
+    "Arkana (2021+)": {years:[2021,2022,2023,2024],versions:[{v:"TCe 140CV",fuel:"Gasolina",cv:140,co2:134},{v:"E-Tech 145CV Híbrido",fuel:"Híbrido",cv:145,co2:99}]},
+    "Austral (2022+)": {years:[2022,2023,2024],versions:[{v:"TCe 160CV",fuel:"Gasolina",cv:160,co2:148},{v:"E-Tech 200CV PHEV",fuel:"Híbrido enchufable",cv:200,co2:29},{v:"E-Tech 200CV Híbrido",fuel:"Híbrido",cv:200,co2:118}]},
+    "Espace (VI 2023+)": {years:[2023,2024],versions:[{v:"1.2 TCe 130CV Mild Hybrid",fuel:"Híbrido",cv:130,co2:137},{v:"E-Tech 200CV Híbrido",fuel:"Híbrido",cv:200,co2:120}]},
+    "Scénic E-Tech (2024+)": {years:[2024],versions:[{v:"Electric 128CV",fuel:"Eléctrico",cv:128,co2:0},{v:"Electric 220CV",fuel:"Eléctrico",cv:220,co2:0}]}
+  },
+
+  "Nissan": {
+    "Qashqai (J11 2013-2021)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021],versions:[{v:"1.2 DIG-T 115CV",fuel:"Gasolina",cv:115,co2:127},{v:"1.3 DIG-T 140CV",fuel:"Gasolina",cv:140,co2:137},{v:"1.5 dCi 110CV",fuel:"Diésel",cv:110,co2:99},{v:"1.6 dCi 130CV",fuel:"Diésel",cv:130,co2:110},{v:"1.7 dCi 150CV",fuel:"Diésel",cv:150,co2:117}]},
+    "Qashqai (J12 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"1.3 DIG-T 140CV MHEV",fuel:"Híbrido",cv:140,co2:137},{v:"1.3 DIG-T 158CV MHEV",fuel:"Híbrido",cv:158,co2:143},{v:"e-Power 190CV",fuel:"Híbrido",cv:190,co2:113}]},
+    "X-Trail (T32 2014-2021)": {years:[2014,2015,2016,2017,2018,2019,2020,2021],versions:[{v:"1.6 DIG-T 163CV",fuel:"Gasolina",cv:163,co2:163},{v:"1.3 DIG-T 160CV",fuel:"Gasolina",cv:160,co2:158},{v:"1.6 dCi 130CV",fuel:"Diésel",cv:130,co2:119},{v:"2.0 dCi 177CV",fuel:"Diésel",cv:177,co2:141}]},
+    "X-Trail (T33 2022+)": {years:[2022,2023,2024],versions:[{v:"1.5 VC-T 163CV MHEV",fuel:"Híbrido",cv:163,co2:158},{v:"e-Power 204CV",fuel:"Híbrido",cv:204,co2:116},{v:"e-Power e-4ORCE 213CV",fuel:"Híbrido",cv:213,co2:122}]},
+    "Leaf (ZE0/ZE1 2010+)": {years:[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"40kWh 150CV",fuel:"Eléctrico",cv:150,co2:0},{v:"62kWh 217CV e+",fuel:"Eléctrico",cv:217,co2:0}]},
+    "Ariya (2022+)": {years:[2022,2023,2024],versions:[{v:"FWD 218CV",fuel:"Eléctrico",cv:218,co2:0},{v:"FWD 242CV",fuel:"Eléctrico",cv:242,co2:0},{v:"e-4ORCE AWD 306CV",fuel:"Eléctrico",cv:306,co2:0}]},
+    "Juke (F15 2010-2019)": {years:[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019],versions:[{v:"1.2 DIG-T 115CV",fuel:"Gasolina",cv:115,co2:130},{v:"1.6 DIG-T 190CV Nismo",fuel:"Gasolina",cv:190,co2:165},{v:"1.5 dCi 110CV",fuel:"Diésel",cv:110,co2:105}]},
+    "Juke (F16 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 DIG-T 117CV",fuel:"Gasolina",cv:117,co2:133},{v:"1.0 DIG-T 117CV DCT",fuel:"Gasolina",cv:117,co2:136},{v:"Hybrid 143CV",fuel:"Híbrido",cv:143,co2:113}]}
+  },
+
+  "Ford": {
+    "Mustang Mach-E (2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"Standard Range RWD 269CV",fuel:"Eléctrico",cv:269,co2:0},{v:"Long Range RWD 294CV",fuel:"Eléctrico",cv:294,co2:0},{v:"Long Range AWD 351CV",fuel:"Eléctrico",cv:351,co2:0},{v:"GT AWD 480CV",fuel:"Eléctrico",cv:480,co2:0}]},
+    "Kuga (CX482 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"1.5 EcoBoost 120CV",fuel:"Gasolina",cv:120,co2:137},{v:"1.5 EcoBoost 150CV",fuel:"Gasolina",cv:150,co2:143},{v:"2.5 PHEV 225CV",fuel:"Híbrido enchufable",cv:225,co2:26},{v:"2.5 HEV 190CV",fuel:"Híbrido",cv:190,co2:131},{v:"1.5 EcoBlue 120CV",fuel:"Diésel",cv:120,co2:117},{v:"2.0 EcoBlue 150CV",fuel:"Diésel",cv:150,co2:126},{v:"ST-Line 2.0 EcoBlue 190CV 4x4",fuel:"Diésel",cv:190,co2:139}]},
+    "Focus (IV 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 EcoBoost 125CV",fuel:"Gasolina",cv:125,co2:121},{v:"1.0 EcoBoost 155CV MHEV",fuel:"Híbrido",cv:155,co2:117},{v:"2.3 EcoBoost ST 280CV",fuel:"Gasolina",cv:280,co2:168},{v:"1.5 EcoBlue 120CV",fuel:"Diésel",cv:120,co2:104},{v:"2.0 EcoBlue 150CV",fuel:"Diésel",cv:150,co2:112}]},
+    "Explorer PHEV (2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"3.0 EcoBoost PHEV 457CV",fuel:"Híbrido enchufable",cv:457,co2:67}]},
+    "Puma (CB 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 EcoBoost 125CV MHEV",fuel:"Híbrido",cv:125,co2:111},{v:"1.0 EcoBoost 155CV MHEV",fuel:"Híbrido",cv:155,co2:117},{v:"ST 200CV",fuel:"Gasolina",cv:200,co2:152}]}
+  },
+
+  "Opel": {
+    "Astra (L 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"1.2 Turbo 110CV",fuel:"Gasolina",cv:110,co2:122},{v:"1.2 Turbo 130CV",fuel:"Gasolina",cv:130,co2:128},{v:"1.5 Diesel 110CV",fuel:"Diésel",cv:110,co2:106},{v:"1.6 Hybrid 180CV PHEV",fuel:"Híbrido enchufable",cv:180,co2:26},{v:"1.6 GSe PHEV 225CV",fuel:"Híbrido enchufable",cv:225,co2:25},{v:"Electric 156CV",fuel:"Eléctrico",cv:156,co2:0}]},
+    "Insignia (B 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023],versions:[{v:"1.5 Turbo 140CV",fuel:"Gasolina",cv:140,co2:133},{v:"2.0 Turbo 200CV",fuel:"Gasolina",cv:200,co2:152},{v:"2.0 CDTi 110CV",fuel:"Diésel",cv:110,co2:106},{v:"2.0 CDTi 170CV",fuel:"Diésel",cv:170,co2:118},{v:"GSi 4x4 260CV",fuel:"Gasolina",cv:260,co2:179}]},
+    "Mokka (B 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.2 Turbo 100CV",fuel:"Gasolina",cv:100,co2:128},{v:"1.2 Turbo 130CV",fuel:"Gasolina",cv:130,co2:133},{v:"1.5 Diesel 110CV",fuel:"Diésel",cv:110,co2:108},{v:"e-Mokka 136CV",fuel:"Eléctrico",cv:136,co2:0}]},
+    "Grandland (2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.2 Turbo 130CV",fuel:"Gasolina",cv:130,co2:137},{v:"1.5 CDTi 130CV",fuel:"Diésel",cv:130,co2:110},{v:"Hybrid4 300CV PHEV 4x4",fuel:"Híbrido enchufable",cv:300,co2:29},{v:"Hybrid 224CV PHEV",fuel:"Híbrido enchufable",cv:224,co2:27}]}
+  },
+
+  "Jeep": {
+    "Renegade (BU 2014+)": {years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 T3 120CV",fuel:"Gasolina",cv:120,co2:140},{v:"1.3 T4 150CV 4x2",fuel:"Gasolina",cv:150,co2:148},{v:"1.3 T4 240CV 4xe PHEV",fuel:"Híbrido enchufable",cv:240,co2:44},{v:"1.6 MJD 120CV",fuel:"Diésel",cv:120,co2:113},{v:"2.0 MJD 140CV 4x4",fuel:"Diésel",cv:140,co2:127}]},
+    "Compass (MP 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.3 T4 130CV",fuel:"Gasolina",cv:130,co2:143},{v:"1.3 T4 150CV DDCT",fuel:"Gasolina",cv:150,co2:151},{v:"1.3 T4 240CV 4xe PHEV",fuel:"Híbrido enchufable",cv:240,co2:42},{v:"1.6 MJD 130CV",fuel:"Diésel",cv:130,co2:115},{v:"2.0 MJD 170CV 4x4",fuel:"Diésel",cv:170,co2:134}]},
+    "Grand Cherokee (WL 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"3.6 V6 291CV",fuel:"Gasolina",cv:291,co2:264},{v:"2.0 T4 272CV 4xe PHEV",fuel:"Híbrido enchufable",cv:272,co2:49},{v:"SRT 6.4 V8 475CV",fuel:"Gasolina",cv:475,co2:348},{v:"Trackhawk 6.2 V8 707CV",fuel:"Gasolina",cv:707,co2:382}]},
+    "Wrangler (JL 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.0 T 272CV",fuel:"Gasolina",cv:272,co2:216},{v:"2.2 CRD 200CV",fuel:"Diésel",cv:200,co2:183},{v:"4xe PHEV 380CV",fuel:"Híbrido enchufable",cv:380,co2:64},{v:"Rubicon 392 6.4 V8 475CV",fuel:"Gasolina",cv:475,co2:338}]},
+    "Avenger (2022+)": {years:[2022,2023,2024],versions:[{v:"1.2 T3 100CV",fuel:"Gasolina",cv:100,co2:131},{v:"Electric 156CV",fuel:"Eléctrico",cv:156,co2:0}]}
+  },
+
+  "Dacia": {
+    "Sandero (D1 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"SCe 65CV",fuel:"Gasolina",cv:65,co2:101},{v:"TCe 90CV",fuel:"Gasolina",cv:90,co2:102},{v:"TCe 100CV Bi-Fuel",fuel:"GLP",cv:100,co2:96},{v:"Stepway TCe 90CV",fuel:"Gasolina",cv:90,co2:108}]},
+    "Duster (HM 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"TCe 100CV",fuel:"Gasolina",cv:100,co2:148},{v:"TCe 130CV 4x2",fuel:"Gasolina",cv:130,co2:154},{v:"TCe 150CV 4x4",fuel:"Gasolina",cv:150,co2:163},{v:"Blue dCi 115CV 4x2",fuel:"Diésel",cv:115,co2:112},{v:"Blue dCi 115CV 4x4",fuel:"Diésel",cv:115,co2:128}]},
+    "Jogger (2021+)": {years:[2021,2022,2023,2024],versions:[{v:"TCe 110CV 7 plazas",fuel:"Gasolina",cv:110,co2:139},{v:"TCe 110CV Bi-Fuel",fuel:"GLP",cv:110,co2:119},{v:"Hybrid 140CV",fuel:"Híbrido",cv:140,co2:115}]},
+    "Spring (2021+)": {years:[2021,2022,2023,2024],versions:[{v:"Electric 45CV",fuel:"Eléctrico",cv:45,co2:0},{v:"Electric Extreme 65CV",fuel:"Eléctrico",cv:65,co2:0}]}
+  },
+
+  "Mazda": {
+    "Mazda3 (BP 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"Skyactiv-G 122CV",fuel:"Gasolina",cv:122,co2:119},{v:"Skyactiv-G 150CV MHEV",fuel:"Híbrido",cv:150,co2:117},{v:"Skyactiv-X 186CV MHEV",fuel:"Híbrido",cv:186,co2:115},{v:"Skyactiv-D 116CV",fuel:"Diésel",cv:116,co2:102},{v:"2.5T AWD 265CV",fuel:"Gasolina",cv:265,co2:152}]},
+    "CX-5 (KF 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"Skyactiv-G 165CV",fuel:"Gasolina",cv:165,co2:166},{v:"Skyactiv-G 194CV AWD",fuel:"Gasolina",cv:194,co2:179},{v:"2.5T 231CV AWD",fuel:"Gasolina",cv:231,co2:189},{v:"Skyactiv-D 150CV",fuel:"Diésel",cv:150,co2:126},{v:"Skyactiv-D 184CV AWD",fuel:"Diésel",cv:184,co2:138}]},
+    "CX-60 (KH 2022+)": {years:[2022,2023,2024],versions:[{v:"Skyactiv-D 200CV AWD",fuel:"Diésel",cv:200,co2:149},{v:"e-Skyactiv PHEV 327CV AWD",fuel:"Híbrido enchufable",cv:327,co2:28},{v:"2.5T AWD 327CV",fuel:"Gasolina",cv:327,co2:199}]},
+    "MX-5 (ND 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.5 Skyactiv-G 132CV",fuel:"Gasolina",cv:132,co2:143},{v:"2.0 Skyactiv-G 184CV",fuel:"Gasolina",cv:184,co2:157},{v:"2.0 ND RF 184CV",fuel:"Gasolina",cv:184,co2:159}]},
+    "CX-30 (DM 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"Skyactiv-G 122CV MHEV",fuel:"Híbrido",cv:122,co2:122},{v:"Skyactiv-G 150CV MHEV",fuel:"Híbrido",cv:150,co2:128},{v:"Skyactiv-X 186CV MHEV",fuel:"Híbrido",cv:186,co2:118},{v:"Skyactiv-D 116CV",fuel:"Diésel",cv:116,co2:105},{v:"e-Skyactiv X 186CV AWD",fuel:"Híbrido",cv:186,co2:122}]}
+  },
+
+  "Subaru": {
+    "Forester (SK 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"e-Boxer 150CV Hybrid AWD",fuel:"Híbrido",cv:150,co2:143},{v:"2.0i 150CV AWD",fuel:"Gasolina",cv:150,co2:158}]},
+    "Outback (BT 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"2.5i 175CV CVT AWD",fuel:"Gasolina",cv:175,co2:174},{v:"2.5i e-Boxer 175CV AWD Hybrid",fuel:"Híbrido",cv:175,co2:151}]},
+    "XV (GT 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.6i 114CV AWD",fuel:"Gasolina",cv:114,co2:147},{v:"2.0i 156CV CVT AWD",fuel:"Gasolina",cv:156,co2:161},{v:"e-Boxer 150CV AWD Hybrid",fuel:"Híbrido",cv:150,co2:136}]},
+    "BRZ (ZD8 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"2.4 DI 234CV",fuel:"Gasolina",cv:234,co2:190}]},
+    "WRX (VB 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"2.4T 275CV AWD",fuel:"Gasolina",cv:275,co2:196}]}
+  },
+
+  "MINI": {
+    "Cooper 3p (R50/R53 2001-2006)": {years:[2001,2002,2003,2004,2005,2006],versions:[{v:"One 90CV",fuel:"Gasolina",cv:90,co2:154},{v:"Cooper 116CV",fuel:"Gasolina",cv:116,co2:159},{v:"Cooper S 163CV Compresor",fuel:"Gasolina",cv:163,co2:192}]},
+    "Cooper 3p/5p (R56/R57 2006-2013)": {years:[2006,2007,2008,2009,2010,2011,2012,2013],versions:[{v:"One 98CV",fuel:"Gasolina",cv:98,co2:138},{v:"Cooper 120CV",fuel:"Gasolina",cv:120,co2:140},{v:"Cooper S 184CV",fuel:"Gasolina",cv:184,co2:155},{v:"Cooper D 112CV",fuel:"Diésel",cv:112,co2:99},{v:"JCW 211CV",fuel:"Gasolina",cv:211,co2:167}]},
+    "Cooper 3p/5p (F55/F56 2014+)": {years:[2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"One 102CV",fuel:"Gasolina",cv:102,co2:122},{v:"Cooper 136CV",fuel:"Gasolina",cv:136,co2:129},{v:"Cooper S 192CV",fuel:"Gasolina",cv:192,co2:144},{v:"Cooper D 116CV",fuel:"Diésel",cv:116,co2:98},{v:"JCW 231CV",fuel:"Gasolina",cv:231,co2:152},{v:"SE Electric 184CV",fuel:"Eléctrico",cv:184,co2:0},{v:"Aceman E 184CV",fuel:"Eléctrico",cv:184,co2:0}]},
+    "Cooper Cabrio (F57 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"Cooper 136CV",fuel:"Gasolina",cv:136,co2:133},{v:"Cooper S 192CV",fuel:"Gasolina",cv:192,co2:147},{v:"JCW 231CV",fuel:"Gasolina",cv:231,co2:156},{v:"Cooper D 116CV",fuel:"Diésel",cv:116,co2:101}]},
+    "Clubman (F54 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"Cooper 136CV",fuel:"Gasolina",cv:136,co2:131},{v:"Cooper S 192CV ALL4",fuel:"Gasolina",cv:192,co2:149},{v:"Cooper SE ALL4 PHEV 224CV",fuel:"Híbrido enchufable",cv:224,co2:39},{v:"Cooper D 116CV",fuel:"Diésel",cv:116,co2:104},{v:"JCW 306CV",fuel:"Gasolina",cv:306,co2:184}]},
+    "Countryman (R60 2010-2016)": {years:[2010,2011,2012,2013,2014,2015,2016],versions:[{v:"Cooper 122CV",fuel:"Gasolina",cv:122,co2:148},{v:"Cooper S 184CV ALL4",fuel:"Gasolina",cv:184,co2:174},{v:"Cooper D 112CV",fuel:"Diésel",cv:112,co2:115},{v:"JCW ALL4 218CV",fuel:"Gasolina",cv:218,co2:196}]},
+    "Countryman (F60 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"One 102CV",fuel:"Gasolina",cv:102,co2:134},{v:"Cooper D 150CV",fuel:"Diésel",cv:150,co2:121},{v:"Cooper S 192CV",fuel:"Gasolina",cv:192,co2:161},{v:"Cooper SE ALL4 PHEV 224CV",fuel:"Híbrido enchufable",cv:224,co2:39},{v:"JCW ALL4 306CV",fuel:"Gasolina",cv:306,co2:188},{v:"SE Electric 204CV",fuel:"Eléctrico",cv:204,co2:0}]},
+    "Paceman (R61 2012-2016)": {years:[2012,2013,2014,2015,2016],versions:[{v:"Cooper 122CV",fuel:"Gasolina",cv:122,co2:151},{v:"Cooper S 184CV ALL4",fuel:"Gasolina",cv:184,co2:178},{v:"Cooper D 112CV",fuel:"Diésel",cv:112,co2:118}]}
+  },
+
+  "Lexus": {
+    "IS (XE30 2013+)": {years:[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"IS 300h 223CV Híbrido",fuel:"Híbrido",cv:223,co2:102},{v:"IS 200t 245CV",fuel:"Gasolina",cv:245,co2:172},{v:"IS 300 245CV AWD",fuel:"Gasolina",cv:245,co2:196},{v:"IS 500 472CV V8",fuel:"Gasolina",cv:472,co2:258}]},
+    "ES (Z10 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"ES 300h 218CV Híbrido",fuel:"Híbrido",cv:218,co2:107}]},
+    "UX 250h (ZA10 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"UX 250h FWD 184CV",fuel:"Híbrido",cv:184,co2:107},{v:"UX 250h AWD 181CV",fuel:"Híbrido",cv:181,co2:110},{v:"UX 300e FWD 204CV",fuel:"Eléctrico",cv:204,co2:0}]},
+    "NX (AZ20 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"NX 350h FWD 244CV",fuel:"Híbrido",cv:244,co2:123},{v:"NX 350h AWD 244CV",fuel:"Híbrido",cv:244,co2:130},{v:"NX 450h+ AWD 309CV PHEV",fuel:"Híbrido enchufable",cv:309,co2:21},{v:"NX 350 AWD 279CV",fuel:"Gasolina",cv:279,co2:202}]},
+    "RX (AL20 2022+)": {years:[2022,2023,2024],versions:[{v:"RX 350h FWD 245CV",fuel:"Híbrido",cv:245,co2:133},{v:"RX 350h AWD 245CV",fuel:"Híbrido",cv:245,co2:141},{v:"RX 500h AWD 371CV F Sport",fuel:"Híbrido enchufable",cv:371,co2:33},{v:"RX 450h+ AWD 309CV PHEV",fuel:"Híbrido enchufable",cv:309,co2:26}]},
+    "LC 500 (Z100 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"LC 500 V8 477CV",fuel:"Gasolina",cv:477,co2:226},{v:"LC 500h Híbrido 359CV",fuel:"Híbrido",cv:359,co2:150}]},
+    "LBX (2023+)": {years:[2023,2024],versions:[{v:"LBX 136CV Híbrido",fuel:"Híbrido",cv:136,co2:106},{v:"LBX Cool 136CV",fuel:"Híbrido",cv:136,co2:106},{v:"LBX Elegant AWD 136CV",fuel:"Híbrido",cv:136,co2:111}]}
+  },
+
+  "Tesla": {
+    "Model S (2012+)": {years:[2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"Long Range AWD 405CV",fuel:"Eléctrico",cv:405,co2:0},{v:"Plaid AWD 1020CV",fuel:"Eléctrico",cv:1020,co2:0}]},
+    "Model X (2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"Long Range AWD 670CV",fuel:"Eléctrico",cv:670,co2:0},{v:"Plaid AWD 1020CV",fuel:"Eléctrico",cv:1020,co2:0}]},
+    "Model 3 (2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"Standard Range RWD 283CV",fuel:"Eléctrico",cv:283,co2:0},{v:"Long Range AWD 351CV",fuel:"Eléctrico",cv:351,co2:0},{v:"Performance AWD 491CV",fuel:"Eléctrico",cv:491,co2:0}]},
+    "Model Y (2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"Standard Range RWD 255CV",fuel:"Eléctrico",cv:255,co2:0},{v:"Long Range AWD 351CV",fuel:"Eléctrico",cv:351,co2:0},{v:"Performance AWD 534CV",fuel:"Eléctrico",cv:534,co2:0}]},
+    "Cybertruck (2023+)": {years:[2023,2024],versions:[{v:"Dual Motor AWD 600CV",fuel:"Eléctrico",cv:600,co2:0},{v:"Cyberbeast AWD 845CV",fuel:"Eléctrico",cv:845,co2:0}]}
   },
 
   "SEAT": {
-    "León ST / FR": {
-      years:[2020,2021,2022,2023,2024],
-      versions:[
-        {v:"1.5 TDI 115CV",fuel:"Diésel",cv:115,co2:104},
-        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:110},
-        {v:"1.0 eTSI 110CV Mild Hybrid",fuel:"Híbrido",cv:110,co2:121},
-        {v:"1.5 eTSI 150CV Mild Hybrid",fuel:"Híbrido",cv:150,co2:127},
-        {v:"1.4 e-Hybrid 204CV",fuel:"Híbrido enchufable",cv:204,co2:26},
-        {v:"2.0 TSI Cupra 310CV",fuel:"Gasolina",cv:310,co2:163}
-      ]
-    },
-    "Ateca": {
-      years:[2016,2017,2018,2019,2020,2021,2022,2023],
-      versions:[
-        {v:"2.0 TDI 115CV",fuel:"Diésel",cv:115,co2:135},
-        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:138},
-        {v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:162},
-        {v:"2.0 TSI 190CV 4Drive",fuel:"Gasolina",cv:190,co2:174}
-      ]
-    }
+    "Ibiza (KJ1 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 MPI 65CV",fuel:"Gasolina",cv:65,co2:99},{v:"1.0 TSI 95CV",fuel:"Gasolina",cv:95,co2:103},{v:"1.0 TSI 110CV",fuel:"Gasolina",cv:110,co2:108},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:120},{v:"1.6 TDI 95CV",fuel:"Diésel",cv:95,co2:88},{v:"FR 1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:120}]},
+    "León (KL 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.0 TSI 110CV",fuel:"Gasolina",cv:110,co2:118},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:128},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:107},{v:"2.0 TDI 200CV 4Drive",fuel:"Diésel",cv:200,co2:117},{v:"1.4 e-Hybrid 204CV PHEV",fuel:"Híbrido enchufable",cv:204,co2:26},{v:"1.4 e-Hybrid 245CV PHEV",fuel:"Híbrido enchufable",cv:245,co2:24},{v:"FR 2.0 TSI 190CV",fuel:"Gasolina",cv:190,co2:151}]},
+    "Ateca (2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"1.0 TSI 115CV",fuel:"Gasolina",cv:115,co2:145},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:152},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:130},{v:"2.0 TDI 190CV 4Drive",fuel:"Diésel",cv:190,co2:140},{v:"FR 2.0 TSI 190CV 4Drive",fuel:"Gasolina",cv:190,co2:171}]},
+    "Tarraco (KN2 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:153},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:130},{v:"2.0 TDI 190CV 4Drive",fuel:"Diésel",cv:190,co2:142},{v:"1.4 e-Hybrid 245CV PHEV",fuel:"Híbrido enchufable",cv:245,co2:37},{v:"FR 2.0 TSI 190CV 4Drive",fuel:"Gasolina",cv:190,co2:175}]},
+    "Arona (KJ7 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 TSI 95CV",fuel:"Gasolina",cv:95,co2:110},{v:"1.0 TSI 110CV",fuel:"Gasolina",cv:110,co2:115},{v:"1.5 TSI 150CV FR",fuel:"Gasolina",cv:150,co2:128},{v:"1.6 TDI 95CV",fuel:"Diésel",cv:95,co2:92}]}
   },
 
   "Skoda": {
-    "Octavia Combi (IV)": {
-      years:[2020,2021,2022,2023,2024],
-      versions:[
-        {v:"1.6 TDI 115CV",fuel:"Diésel",cv:115,co2:108},
-        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:112},
-        {v:"2.0 TDI 200CV 4x4",fuel:"Diésel",cv:200,co2:122},
-        {v:"1.0 TSI 110CV",fuel:"Gasolina",cv:110,co2:118},
-        {v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:132},
-        {v:"iV 1.4 TSI 245CV",fuel:"Híbrido enchufable",cv:245,co2:22},
-        {v:"RS 2.0 TSI 245CV",fuel:"Gasolina",cv:245,co2:149}
-      ]
-    },
-    "Kodiaq": {
-      years:[2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:144},
-        {v:"2.0 TDI 200CV 4x4",fuel:"Diésel",cv:200,co2:153},
-        {v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:167},
-        {v:"2.0 TSI 190CV 4x4",fuel:"Gasolina",cv:190,co2:176},
-        {v:"RS 2.0 TSI 245CV",fuel:"Gasolina",cv:245,co2:186}
-      ]
-    }
+    "Octavia (III 2013-2020)": {years:[2013,2014,2015,2016,2017,2018,2019,2020],versions:[{v:"1.0 TSI 115CV",fuel:"Gasolina",cv:115,co2:115},{v:"1.4 TSI 150CV",fuel:"Gasolina",cv:150,co2:128},{v:"2.0 TSI 220CV",fuel:"Gasolina",cv:220,co2:148},{v:"1.6 TDI 115CV",fuel:"Diésel",cv:115,co2:106},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:110},{v:"RS 245CV",fuel:"Gasolina",cv:245,co2:145}]},
+    "Octavia Combi (IV 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.0 TSI 110CV",fuel:"Gasolina",cv:110,co2:117},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:130},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:112},{v:"2.0 TDI 200CV 4x4",fuel:"Diésel",cv:200,co2:122},{v:"1.4 TSI iV 245CV PHEV",fuel:"Híbrido enchufable",cv:245,co2:22},{v:"RS 2.0 TSI 245CV",fuel:"Gasolina",cv:245,co2:148}]},
+    "Superb (B8 2015+)": {years:[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:131},{v:"2.0 TSI 190CV 4x4",fuel:"Gasolina",cv:190,co2:151},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:114},{v:"2.0 TDI 190CV 4x4",fuel:"Diésel",cv:190,co2:126},{v:"1.4 TSI iV 218CV PHEV",fuel:"Híbrido enchufable",cv:218,co2:32}]},
+    "Kodiaq (NS7 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:165},{v:"2.0 TSI 190CV 4x4",fuel:"Gasolina",cv:190,co2:174},{v:"2.0 TDI 150CV",fuel:"Diésel",cv:150,co2:142},{v:"2.0 TDI 200CV 4x4",fuel:"Diésel",cv:200,co2:152},{v:"RS 2.0 TSI 245CV",fuel:"Gasolina",cv:245,co2:185},{v:"iV 1.4 TSI 245CV PHEV",fuel:"Híbrido enchufable",cv:245,co2:38}]},
+    "Karoq (NU7 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 TSI 115CV",fuel:"Gasolina",cv:115,co2:136},{v:"1.5 TSI 150CV",fuel:"Gasolina",cv:150,co2:143},{v:"2.0 TDI 115CV",fuel:"Diésel",cv:115,co2:118},{v:"2.0 TDI 150CV 4x4",fuel:"Diésel",cv:150,co2:131}]},
+    "Enyaq iV (5AC 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"50 FWD 149CV",fuel:"Eléctrico",cv:149,co2:0},{v:"60 FWD 179CV",fuel:"Eléctrico",cv:179,co2:0},{v:"80 AWD 204CV",fuel:"Eléctrico",cv:204,co2:0},{v:"80x AWD 265CV",fuel:"Eléctrico",cv:265,co2:0},{v:"RS 299CV AWD",fuel:"Eléctrico",cv:299,co2:0}]}
   },
 
   "Toyota": {
-    "RAV4 Hybrid": {
-      years:[2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"2.5 Hybrid FWD 222CV",fuel:"Híbrido",cv:222,co2:103},
-        {v:"2.5 Hybrid AWD-i 222CV",fuel:"Híbrido",cv:222,co2:110},
-        {v:"2.5 Plug-in AWD 302CV",fuel:"Híbrido enchufable",cv:302,co2:22}
-      ]
-    },
-    "Yaris Cross": {
-      years:[2021,2022,2023,2024],
-      versions:[
-        {v:"1.5 Hybrid FWD 116CV",fuel:"Híbrido",cv:116,co2:92},
-        {v:"1.5 Hybrid AWD 116CV",fuel:"Híbrido",cv:116,co2:100},
-        {v:"GR Sport 130CV",fuel:"Híbrido",cv:130,co2:99}
-      ]
-    },
-    "C-HR": {
-      years:[2017,2018,2019,2020,2021,2022,2023,2024],
-      versions:[
-        {v:"1.8 Hybrid FWD 122CV",fuel:"Híbrido",cv:122,co2:86},
-        {v:"2.0 Hybrid FWD 184CV",fuel:"Híbrido",cv:184,co2:96},
-        {v:"2.0 Plug-in AWD 223CV",fuel:"Híbrido enchufable",cv:223,co2:16}
-      ]
-    }
+    "Yaris (P21 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"Hybrid 116CV FWD",fuel:"Híbrido",cv:116,co2:87},{v:"Hybrid AWD-i 116CV",fuel:"Híbrido",cv:116,co2:93},{v:"GR Sport 130CV",fuel:"Híbrido",cv:130,co2:92},{v:"GR Yaris 261CV AWD",fuel:"Gasolina",cv:261,co2:174}]},
+    "Yaris Cross (MAV10 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"Hybrid FWD 116CV",fuel:"Híbrido",cv:116,co2:92},{v:"Hybrid AWD-i 116CV",fuel:"Híbrido",cv:116,co2:100},{v:"GR Sport 130CV",fuel:"Híbrido",cv:130,co2:99}]},
+    "C-HR (AX10 2016-2023)": {years:[2016,2017,2018,2019,2020,2021,2022,2023],versions:[{v:"1.8 Hybrid FWD 122CV",fuel:"Híbrido",cv:122,co2:86},{v:"2.0 Hybrid FWD 184CV",fuel:"Híbrido",cv:184,co2:96},{v:"1.2 Turbo 116CV",fuel:"Gasolina",cv:116,co2:134}]},
+    "C-HR (AX50 2023+)": {years:[2023,2024],versions:[{v:"2.0 Hybrid FWD 197CV",fuel:"Híbrido",cv:197,co2:101},{v:"2.0 Hybrid AWD 197CV",fuel:"Híbrido",cv:197,co2:108},{v:"2.0 PHEV 223CV",fuel:"Híbrido enchufable",cv:223,co2:16}]},
+    "Corolla (E210 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.8 Hybrid 122CV",fuel:"Híbrido",cv:122,co2:84},{v:"2.0 Hybrid 196CV",fuel:"Híbrido",cv:196,co2:95},{v:"2.0 GR Sport 196CV",fuel:"Híbrido",cv:196,co2:99},{v:"GR Corolla 304CV AWD",fuel:"Gasolina",cv:304,co2:193}]},
+    "RAV4 (XA50 2018+)": {years:[2018,2019,2020,2021,2022,2023,2024],versions:[{v:"2.5 Hybrid FWD 218CV",fuel:"Híbrido",cv:218,co2:103},{v:"2.5 Hybrid AWD-i 222CV",fuel:"Híbrido",cv:222,co2:110},{v:"2.5 Plug-in AWD 302CV",fuel:"Híbrido enchufable",cv:302,co2:22}]},
+    "Highlander (XU70 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"2.5 AWD Hybrid 248CV",fuel:"Híbrido",cv:248,co2:131}]},
+    "GR86 (ZN8 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"2.4 Boxer 234CV",fuel:"Gasolina",cv:234,co2:193}]},
+    "Supra (A90 2019+)": {years:[2019,2020,2021,2022,2023,2024],versions:[{v:"2.0 Turbo 258CV",fuel:"Gasolina",cv:258,co2:178},{v:"3.0 Turbo 340CV",fuel:"Gasolina",cv:340,co2:184},{v:"GR Supra 3.0 Turbo 387CV",fuel:"Gasolina",cv:387,co2:189}]},
+    "bZ4X (2022+)": {years:[2022,2023,2024],versions:[{v:"FWD 204CV",fuel:"Eléctrico",cv:204,co2:0},{v:"AWD 218CV",fuel:"Eléctrico",cv:218,co2:0}]}
   },
 
   "Hyundai": {
-    "Tucson": {
-      years:[2020,2021,2022,2023,2024],
-      versions:[
-        {v:"1.6 CRDi 136CV",fuel:"Diésel",cv:136,co2:128},
-        {v:"2.0 CRDi 185CV 4WD",fuel:"Diésel",cv:185,co2:141},
-        {v:"1.6 T-GDi 150CV",fuel:"Gasolina",cv:150,co2:162},
-        {v:"1.6 T-GDi HEV 230CV",fuel:"Híbrido",cv:230,co2:130},
-        {v:"1.6 T-GDi PHEV 265CV",fuel:"Híbrido enchufable",cv:265,co2:32}
-      ]
-    },
-    "IONIQ 5": {
-      years:[2021,2022,2023,2024],
-      versions:[
-        {v:"RWD 170CV 58kWh",fuel:"Eléctrico",cv:170,co2:0},
-        {v:"RWD 218CV 72.6kWh",fuel:"Eléctrico",cv:218,co2:0},
-        {v:"AWD 325CV 72.6kWh",fuel:"Eléctrico",cv:325,co2:0}
-      ]
-    }
+    "i20 (BC3 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.0 T-GDI 100CV MHEV",fuel:"Híbrido",cv:100,co2:106},{v:"1.0 T-GDI 120CV MHEV",fuel:"Híbrido",cv:120,co2:112},{v:"1.5 CRDi 115CV",fuel:"Diésel",cv:115,co2:96},{v:"N 204CV",fuel:"Gasolina",cv:204,co2:148}]},
+    "i30 (PD 2016+)": {years:[2016,2017,2018,2019,2020,2021,2022,2023,2024],versions:[{v:"1.0 T-GDI 120CV",fuel:"Gasolina",cv:120,co2:122},{v:"1.5 T-GDI 160CV MHEV",fuel:"Híbrido",cv:160,co2:127},{v:"1.6 CRDi 115CV",fuel:"Diésel",cv:115,co2:97},{v:"N 280CV",fuel:"Gasolina",cv:280,co2:170},{v:"N 300CV",fuel:"Gasolina",cv:300,co2:174}]},
+    "Tucson (NX4 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.6 T-GDI 150CV",fuel:"Gasolina",cv:150,co2:162},{v:"1.6 T-GDI HEV 230CV",fuel:"Híbrido",cv:230,co2:130},{v:"1.6 T-GDI PHEV 265CV",fuel:"Híbrido enchufable",cv:265,co2:32},{v:"1.6 CRDi 136CV",fuel:"Diésel",cv:136,co2:128},{v:"2.0 CRDi 185CV 4WD",fuel:"Diésel",cv:185,co2:141}]},
+    "Santa Fe (MX5 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.6 T-GDI HEV 230CV",fuel:"Híbrido",cv:230,co2:143},{v:"1.6 T-GDI PHEV 265CV 4WD",fuel:"Híbrido enchufable",cv:265,co2:42},{v:"2.2 CRDi 200CV 4WD",fuel:"Diésel",cv:200,co2:153}]},
+    "IONIQ 5 (NE1 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"RWD 170CV 58kWh",fuel:"Eléctrico",cv:170,co2:0},{v:"RWD 218CV 72.6kWh",fuel:"Eléctrico",cv:218,co2:0},{v:"AWD 325CV 72.6kWh",fuel:"Eléctrico",cv:325,co2:0},{v:"N AWD 650CV",fuel:"Eléctrico",cv:650,co2:0}]},
+    "IONIQ 6 (CE1 2022+)": {years:[2022,2023,2024],versions:[{v:"RWD 168CV",fuel:"Eléctrico",cv:168,co2:0},{v:"RWD 229CV",fuel:"Eléctrico",cv:229,co2:0},{v:"AWD 325CV",fuel:"Eléctrico",cv:325,co2:0}]},
+    "Kona (OS 2017-2023)": {years:[2017,2018,2019,2020,2021,2022,2023],versions:[{v:"1.0 T-GDI 120CV",fuel:"Gasolina",cv:120,co2:130},{v:"1.6 T-GDI 177CV 4WD",fuel:"Gasolina",cv:177,co2:152},{v:"1.6 CRDi 115CV",fuel:"Diésel",cv:115,co2:102},{v:"Electric 136CV",fuel:"Eléctrico",cv:136,co2:0},{v:"Electric 204CV 64kWh",fuel:"Eléctrico",cv:204,co2:0}]},
+    "Kona (SX2 2023+)": {years:[2023,2024],versions:[{v:"1.0 T-GDI 120CV MHEV",fuel:"Híbrido",cv:120,co2:131},{v:"1.6 HEV 141CV",fuel:"Híbrido",cv:141,co2:118},{v:"Electric 218CV",fuel:"Eléctrico",cv:218,co2:0},{v:"N Line 1.6 T-GDI 198CV",fuel:"Gasolina",cv:198,co2:155}]}
   },
 
   "Kia": {
-    "Sportage": {
-      years:[2021,2022,2023,2024],
-      versions:[
-        {v:"1.6 CRDi 136CV 2WD",fuel:"Diésel",cv:136,co2:126},
-        {v:"2.0 CRDi 185CV AWD",fuel:"Diésel",cv:185,co2:139},
-        {v:"1.6 T-GDI HEV 230CV",fuel:"Híbrido",cv:230,co2:132},
-        {v:"1.6 T-GDI PHEV 265CV AWD",fuel:"Híbrido enchufable",cv:265,co2:34}
-      ]
-    },
-    "EV6": {
-      years:[2021,2022,2023,2024],
-      versions:[
-        {v:"RWD 170CV 58kWh",fuel:"Eléctrico",cv:170,co2:0},
-        {v:"RWD 228CV 77.4kWh",fuel:"Eléctrico",cv:228,co2:0},
-        {v:"AWD 325CV 77.4kWh",fuel:"Eléctrico",cv:325,co2:0},
-        {v:"GT AWD 585CV",fuel:"Eléctrico",cv:585,co2:0}
-      ]
-    }
+    "Stinger (CK 2017+)": {years:[2017,2018,2019,2020,2021,2022,2023],versions:[{v:"2.0 T-GDI 255CV",fuel:"Gasolina",cv:255,co2:188},{v:"3.3 T-GDI AWD 370CV",fuel:"Gasolina",cv:370,co2:213}]},
+    "Sportage (NQ5 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"1.6 T-GDI 150CV MHEV",fuel:"Híbrido",cv:150,co2:148},{v:"1.6 CRDi 136CV 2WD",fuel:"Diésel",cv:136,co2:126},{v:"1.6 T-GDI HEV 230CV",fuel:"Híbrido",cv:230,co2:132},{v:"1.6 T-GDI PHEV 265CV AWD",fuel:"Híbrido enchufable",cv:265,co2:34},{v:"GT-line 2.0 CRDi 185CV AWD",fuel:"Diésel",cv:185,co2:139}]},
+    "Sorento (MQ4 2020+)": {years:[2020,2021,2022,2023,2024],versions:[{v:"1.6 T-GDI HEV 230CV 2WD",fuel:"Híbrido",cv:230,co2:140},{v:"1.6 T-GDI PHEV 265CV AWD",fuel:"Híbrido enchufable",cv:265,co2:43},{v:"2.2 CRDi 200CV AWD",fuel:"Diésel",cv:200,co2:158}]},
+    "Niro (SG2 2022+)": {years:[2022,2023,2024],versions:[{v:"HEV 141CV",fuel:"Híbrido",cv:141,co2:102},{v:"PHEV 183CV",fuel:"Híbrido enchufable",cv:183,co2:26},{v:"EV 204CV",fuel:"Eléctrico",cv:204,co2:0}]},
+    "EV6 (CV1 2021+)": {years:[2021,2022,2023,2024],versions:[{v:"RWD 170CV 58kWh",fuel:"Eléctrico",cv:170,co2:0},{v:"RWD 228CV 77.4kWh",fuel:"Eléctrico",cv:228,co2:0},{v:"AWD 325CV 77.4kWh",fuel:"Eléctrico",cv:325,co2:0},{v:"GT AWD 585CV",fuel:"Eléctrico",cv:585,co2:0}]},
+    "EV9 (MV1 2023+)": {years:[2023,2024],versions:[{v:"RWD 204CV",fuel:"Eléctrico",cv:204,co2:0},{v:"AWD 283CV",fuel:"Eléctrico",cv:283,co2:0},{v:"GT-Line AWD 384CV",fuel:"Eléctrico",cv:384,co2:0}]}
   }
 };
 
@@ -1254,12 +1202,10 @@ function cascadeVersion(prefix){
   } catch(e){}
 }
 
-// Init marca dropdowns — esperar a que el DOM esté completamente listo
-document.addEventListener('DOMContentLoaded', function(){
-  buildMarcaOptions('s');
-  buildMarcaOptions('c');
-  buildMarcaOptions('l');
-});
+// Init marca dropdowns — el script está al final del body, el DOM ya existe
+buildMarcaOptions('s');
+buildMarcaOptions('c');
+buildMarcaOptions('l');
 
 // ────────────────────────────────────────────────────────────────
 // HELPERS
