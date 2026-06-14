@@ -1167,7 +1167,7 @@ function switchTab(name, el){
 // ────────────────────────────────────────────────────────────────
 function buildMarcaOptions(prefix){
   var sel = document.getElementById(prefix+'_marca');
-  var current = sel.innerHTML.split('<option value="">')[0] || '';
+  if(!sel) return;
   var opt = prefix === 'l' ? '<option value="">Cualquier premium</option>' : '<option value="">— Selecciona —</option>';
   Object.keys(CAR_DB).sort().forEach(function(m){ opt += '<option value="'+m+'">'+m+'</option>'; });
   sel.innerHTML = opt;
@@ -1254,10 +1254,12 @@ function cascadeVersion(prefix){
   } catch(e){}
 }
 
-// Init marca dropdowns
-buildMarcaOptions('s');
-buildMarcaOptions('c');
-buildMarcaOptions('l');
+// Init marca dropdowns — esperar a que el DOM esté completamente listo
+document.addEventListener('DOMContentLoaded', function(){
+  buildMarcaOptions('s');
+  buildMarcaOptions('c');
+  buildMarcaOptions('l');
+});
 
 // ────────────────────────────────────────────────────────────────
 // HELPERS
