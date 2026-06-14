@@ -313,11 +313,10 @@ input,select,textarea,button{font-family:inherit}
   <div class="src-panel">
     <div class="src-panel-ttl">Portales donde se buscan los leads — y por qué</div>
     <div class="src-grid">
-      <div class="src-item" title="Mayor volumen de particulares en España. Filtramos exclusivamente vendedor=Particular."><div class="src-dot"></div>Wallapop ✅ Particulares</div>
-      <div class="src-item" title="Segunda mayor plataforma de clasificados en España. Acceso vía URL de búsqueda directa."><div class="src-dot"></div>Milanuncios ✅ Particulares</div>
+      <div class="src-item" title="Mayor volumen de anuncios de particulares en España. Se filtra por categoría coches y se excluyen profesionales."><div class="src-dot"></div>Wallapop ✅ Particulares</div>
     </div>
     <div style="font-size:11px;color:var(--white3);margin-top:8px;line-height:1.5">
-      ⓘ Solo se busca en portales donde el scraping es fiable y devuelve URLs reales de cada anuncio. Coches.net, AutoScout24 y similares están dominados por concesionarios, no por particulares, y no son objetivo de Prime Auto.
+      ⓘ Se busca en Wallapop porque es el portal con mayor volumen de particulares vendiendo coches en España y permite obtener la URL exacta de cada anuncio. Milanuncios requiere suscripción de pago ($29/mes). Coches.net y AutoScout24 están dominados por concesionarios, no son nuestro objetivo.
     </div>
   </div>
   <div class="card">
@@ -341,7 +340,7 @@ input,select,textarea,button{font-family:inherit}
     </div>
   </div>
   <div class="alert" id="leadsAlert"></div>
-  <div class="loading" id="loadLeads"><div class="spin"></div><p>Buscando anuncios reales…</p><p style="opacity:.6;font-size:12px">Scrapendo Wallapop y Milanuncios · La IA puntuará y generará guiones (30-60 seg)</p></div>
+  <div class="loading" id="loadLeads"><div class="spin"></div><p>Buscando anuncios en Wallapop…</p><p style="opacity:.6;font-size:12px">Obteniendo anuncios reales · La IA los puntuará y generará guiones (30-90 seg)</p></div>
   <div class="leads-grid" id="leadsRes"></div>
 </div>
 
@@ -1360,66 +1359,69 @@ async function analizarSemaforo(){
 // ────────────────────────────────────────────────────────────────
 // LEADS — Apify scraping + Claude scoring
 // ────────────────────────────────────────────────────────────────
-var ZONA_WALLAPOP = {Madrid:'Madrid',Barcelona:'Barcelona',Valencia:'Valencia',Sevilla:'Seville','Málaga':'Malaga','Bilbao / País Vasco':'Bilbao',Zaragoza:'Zaragoza'};
-var ZONA_MILA_PROV = {Madrid:'28',Barcelona:'8',Valencia:'46',Sevilla:'41','Málaga':'29','Bilbao / País Vasco':'48',Zaragoza:'50'};
+// Coordenadas de ciudades para Wallapop (usa lat/lng)
+var ZONA_COORDS = {
+  Madrid:    {lat:40.4168, lng:-3.7038},
+  Barcelona: {lat:41.3851, lng:2.1734},
+  Valencia:  {lat:39.4699, lng:-0.3763},
+  Sevilla:   {lat:37.3891, lng:-5.9845},
+  'Málaga':  {lat:36.7213, lng:-4.4214},
+  'Bilbao / País Vasco': {lat:43.2630, lng:-2.9350},
+  Zaragoza:  {lat:41.6488, lng:-0.8891}
+};
 
 async function callApify(actorId, input){
-  var url = 'https://api.apify.com/v2/acts/'+actorId+'/run-sync-get-dataset-items?token='+APIFY_KEY+'&timeout=90&memory=256';
+  var url = 'https://api.apify.com/v2/acts/'+actorId+'/run-sync-get-dataset-items?token='+APIFY_KEY+'&timeout=120&memory=512';
   var resp = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(input)});
-  if(!resp.ok){ var err = await resp.text(); throw new Error('Apify ('+actorId+'): '+resp.status+' '+err.substring(0,120)); }
+  if(!resp.ok){
+    var errTxt = await resp.text().catch(function(){return '';});
+    var msg = 'HTTP '+resp.status;
+    try{ var j=JSON.parse(errTxt); msg += ': '+(j.error&&j.error.message ? j.error.message : errTxt.substring(0,150)); }catch(e){ msg += ': '+errTxt.substring(0,150); }
+    throw new Error(msg);
+  }
   return resp.json();
 }
 
-async function fetchWallapop(marca, modelo, pmax, anioMin, zona){
-  var input = {sellerType:'Private', maxItems:6, orderBy:'newest'};
-  var kw = ((marca||'')+' '+(modelo||'')).trim();
-  if(kw) input.keywords = kw;
-  input.location = ZONA_WALLAPOP[zona] || 'Madrid';
-  if(anioMin) input.minYear = Number(anioMin);
-  if(pmax)    input.maxPrice = Number(pmax);
-  var items = await callApify('rastriq~wallapop-cars-scraper', input);
-  return (items||[]).map(function(i){
-    return {
-      portal:'Wallapop',
-      titulo: i.title||i.name||'Sin título',
-      url: i.url||i.link||i.webUrl||i.itemUrl||'',
-      marca: i.brand||i.make||marca||'',
-      modelo: i.model||modelo||'',
-      anio: i.year||i.yearOfManufacture||'',
-      km: i.mileage||i.km||i.kilometers||0,
-      precio: i.price||0,
-      combustible: i.fuelType||i.engine||i.fuel||'',
-      zona: i.location||i.city||zona||'',
-      descripcion: (i.description||'').substring(0,200)
-    };
-  });
+// Construye URL de búsqueda de Wallapop para coches (categoría 100)
+function buildWallapopUrl(marca, modelo, pmax, zona){
+  var kw = ((marca||'')+' '+(modelo||'')).trim() || 'coche';
+  var base = 'https://es.wallapop.com/app/search?category_ids=100&order_by=newest&keywords='+encodeURIComponent(kw);
+  if(pmax) base += '&max_sale_price='+pmax;
+  var coords = ZONA_COORDS[zona];
+  if(coords) base += '&latitude='+coords.lat+'&longitude='+coords.lng+'&distance=100000';
+  return base;
 }
 
-async function fetchMilanuncios(marca, modelo, pmax, anioMin, zona){
-  var searchUrl = 'https://www.milanuncios.com/coches-segunda-mano/';
-  var params = [];
-  if(marca)  params.push('marca='+encodeURIComponent(marca));
-  if(modelo) params.push('modelo='+encodeURIComponent(modelo));
-  if(pmax)   params.push('precioasta='+pmax);
-  if(anioMin)params.push('aniodesde='+anioMin);
-  if(zona && ZONA_MILA_PROV[zona]) params.push('provincia='+ZONA_MILA_PROV[zona]);
-  if(params.length) searchUrl += '?'+params.join('&');
-  var items = await callApify('lexis-solutions~milanuncios-cars-scraper', {startUrls:[{url:searchUrl}], maxItems:6});
-  return (items||[]).map(function(i){
-    return {
-      portal:'Milanuncios',
-      titulo: i.title||i.name||'Sin título',
-      url: i.url||i.link||i.adUrl||i.href||'',
-      marca: i.brand||i.make||marca||'',
-      modelo: i.model||modelo||'',
-      anio: i.year||'',
-      km: i.mileage||i.km||0,
-      precio: i.price||0,
-      combustible: i.fuelType||i.fuel||'',
-      zona: i.location||i.province||zona||'',
-      descripcion: (i.description||'').substring(0,200)
-    };
-  });
+async function fetchWallapop(marca, modelo, pmax, anioMin, zona){
+  var searchUrl = buildWallapopUrl(marca, modelo, pmax, zona);
+  // piotrv1001~wallapop-listings-scraper: devuelve URL real de cada anuncio, sin proxy especial
+  var items = await callApify('piotrv1001~wallapop-listings-scraper', {searchUrl: searchUrl, maxItems: 20});
+  return (items||[])
+    .filter(function(i){
+      // Solo coches (categoryId 100) y no vendidos/reservados
+      return i.categoryId === 100 && !i.sold && !i.reserved;
+    })
+    .filter(function(i){
+      // Filtro precio máximo si se especificó
+      return !pmax || !i.price || i.price <= Number(pmax);
+    })
+    .slice(0, 8)
+    .map(function(i){
+      return {
+        portal: 'Wallapop',
+        titulo: i.title || 'Sin título',
+        url: i.url || '',
+        marca: marca || '',
+        modelo: modelo || '',
+        anio: anioMin || '',
+        km: 0,
+        precio: i.price || 0,
+        combustible: '',
+        zona: zona || 'España',
+        descripcion: (i.description || '').substring(0, 250),
+        vendedor: (i.seller && i.seller.username) ? i.seller.username : 'Particular'
+      };
+    });
 }
 
 function renderLeadCard(l, idx){
@@ -1481,14 +1483,14 @@ async function buscarLeads(){
   showLoad('loadLeads');
 
   try{
-    // 1. Scraping real en paralelo
-    var results = await Promise.allSettled([
-      fetchWallapop(marca, modelo, pmax, anio, zona),
-      fetchMilanuncios(marca, modelo, pmax, anio, zona)
-    ]);
-    var rawLeads = [];
-    results.forEach(function(r){ if(r.status==='fulfilled') rawLeads = rawLeads.concat(r.value); });
-    if(rawLeads.length === 0) throw new Error('No se encontraron anuncios en Wallapop ni Milanuncios. Prueba con criterios más amplios.');
+    // 1. Scraping real en Wallapop
+    var rawLeads;
+    try{
+      rawLeads = await fetchWallapop(marca, modelo, pmax, anio, zona);
+    } catch(apifyErr){
+      throw new Error('Error al conectar con Wallapop vía Apify: '+apifyErr.message);
+    }
+    if(!rawLeads || rawLeads.length === 0) throw new Error('Wallapop no devolvió anuncios para estos criterios. Prueba a ampliar la búsqueda (menos filtros o toda España).');
 
     // 2. Claude puntúa y genera guiones
     var sys = 'Eres experto en captación para Prime Auto (Madrid). Gestionamos la venta de coches de particulares ofreciendo: fotos profesionales, limpieza, revisión en taller colaborador y garantía contratada por nosotros.\nAnaliza estos anuncios reales y añade a cada objeto estos 5 campos:\n- conversion (0-100): probabilidad de que el vendedor acepte nuestro servicio\n- razon: motivo del score en 10-15 palabras\n- apertura: frase de apertura telefónica personalizada al anuncio\n- propuesta: cómo presentar el valor de Prime Auto a este vendedor concreto\n- cierre: frase de cierre con CTA\nDevuelve SOLO el JSON array con todos los campos originales más los 5 nuevos, sin markdown, ordenado de mayor a menor conversion.';
