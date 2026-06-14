@@ -378,10 +378,12 @@ input,select,textarea,button{font-family:inherit}
             <input type="number" id="c_pventa" placeholder="24000" oninput="calcImport()"/></div>
           <div class="fg full"><label>Coste transporte (€) — 0 = automático por país</label>
             <input type="number" id="c_trans" value="0" oninput="calcImport()"/></div>
-          <div class="fg full"><label>Tipo de vendedor en origen</label>
-            <select id="c_vendedor" onchange="calcImport()">
-              <option value="particular">Particular (sin IVA en factura)</option>
-              <option value="empresa">Empresa / Concesionario (con IVA o NIF-IVA intracomunitario)</option>
+          <div class="fg full"><label>Situación de compra</label>
+            <select id="c_situacion" onchange="calcImport()">
+              <option value="cliente_particular">1 — Mi cliente (persona física) compra directamente al concesionario EU</option>
+              <option value="cliente_empresa">2 — Mi cliente (empresa con NIF-IVA) compra directamente al concesionario EU</option>
+              <option value="primeauto_reventa">3 — Prime Auto compra al concesionario EU para revender en España</option>
+              <option value="compra_particular">4 — Compra a particular (caso excepcional)</option>
             </select></div>
         </div>
         <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
@@ -1547,15 +1549,63 @@ function getIEDMT(co2, comb){
 
 function fmt(n){ return Math.round(n).toLocaleString('es-ES')+'€'; }
 
+// ── Nota explicativa IVA según situación ──────────────────────
+function getIvaNota(situacion, pc){
+  var iva = 0;
+  var linea = '';
+  var nota  = '';
+  var color = 'var(--green)';
+  var border= 'var(--green)';
+  var bg    = 'rgba(46,204,113,.07)';
+  var icono = '✅';
+
+  if(situacion === 'cliente_particular'){
+    linea = '0€ — no aplica en España';
+    nota  = 'El concesionario origen cobra el IVA local (incluido en el precio de compra). '+
+            'Para <strong>vehículos de ocasión</strong> (más de 6 meses Y más de 6.000 km), España no vuelve a exigir IVA cuando un particular importa desde la UE. '+
+            'Base legal: Art. 13 y 25 Ley 37/1992 del IVA y Directiva 2006/112/CE. '+
+            '<em>Excepción: si el vehículo fuera nuevo (&lt;6 meses o &lt;6.000 km), aplicaría IVA 21% en España.</em>';
+  } else if(situacion === 'cliente_empresa'){
+    linea = '0€ — inversión del sujeto pasivo';
+    nota  = 'Operación intracomunitaria B2B (Art. 25 Ley 37/1992). El concesionario emite factura <strong>sin IVA</strong> si el comprador acredita NIF-IVA europeo. '+
+            'El comprador español autorepercute el IVA y lo deduce simultáneamente → <strong>coste efectivo neto: 0€</strong>. '+
+            'Debe declararse en el Mod. 349 (operaciones intracomunitarias) y Mod. 303.';
+  } else if(situacion === 'primeauto_reventa'){
+    linea = '0€ — inversión del sujeto pasivo (compra)';
+    nota  = 'En la <strong>compra</strong>: operación intracomunitaria B2B. Prime Auto aplica inversión del sujeto pasivo → IVA compra: 0€ neto. '+
+            'En la <strong>venta posterior en España</strong>: Prime Auto repercute IVA 21% sobre el precio de venta al cliente final. '+
+            'Alternativa: <strong>Régimen Especial de Bienes Usados (REBU)</strong> — Art. 135-139 Ley 37/1992 — el IVA se calcula únicamente sobre el margen de beneficio (no sobre el precio total), lo que reduce la carga fiscal en la reventa.';
+  } else { // compra_particular
+    iva   = pc * 0.21;
+    color = 'var(--yellow)';
+    border= 'var(--yellow)';
+    bg    = 'rgba(243,156,18,.07)';
+    icono = '⚠';
+    linea = fmt(iva)+' — flujo de caja (recuperable)';
+    nota  = 'El vendedor particular <strong>no cobra IVA</strong> en origen. Prime Auto, como empresa registrada en IVA, debe <strong>autoliquidar el IVA (21%)</strong> sobre el precio de compra en España (Art. 13.1 Ley 37/1992). '+
+            '<strong>Este importe ES DEDUCIBLE</strong> como IVA soportado → coste neto real: 0€. '+
+            'Supone un desembolso temporal de '+fmt(iva)+' hasta la próxima declaración trimestral (Mod. 303). '+
+            'Por ello este importe <u>no se suma al coste total</u> de la operación.';
+  }
+
+  return {
+    iva: iva,
+    html: '<div class="cline"><span class="lbl">IVA España</span>'+
+          '<span class="val" style="color:'+color+'">'+linea+'</span></div>'+
+          '<div style="font-size:11px;color:var(--white3);margin:-8px 0 12px 0;line-height:1.6;padding:10px 12px;background:'+bg+';border-left:2px solid '+border+';border-radius:0 4px 4px 0">'+
+          icono+' '+nota+'</div>'
+  };
+}
+
 function calcImport(){
-  var pc       = Number(document.getElementById('c_pcompra').value) || 0;
-  var pv       = Number(document.getElementById('c_pventa').value)  || 0;
-  var co2      = Number(document.getElementById('c_co2').value)     || 0;
-  var pais     = document.getElementById('c_pais').value;
-  var trans    = Number(document.getElementById('c_trans').value)   || 0;
-  var vendedor = document.getElementById('c_vendedor').value;
-  var combEl   = document.getElementById('c_comb');
-  var comb     = combEl.options[combEl.selectedIndex] ? combEl.options[combEl.selectedIndex].value : '';
+  var pc        = Number(document.getElementById('c_pcompra').value) || 0;
+  var pv        = Number(document.getElementById('c_pventa').value)  || 0;
+  var co2       = Number(document.getElementById('c_co2').value)     || 0;
+  var pais      = document.getElementById('c_pais').value;
+  var trans     = Number(document.getElementById('c_trans').value)   || 0;
+  var situacion = document.getElementById('c_situacion').value;
+  var combEl    = document.getElementById('c_comb');
+  var comb      = combEl.options[combEl.selectedIndex] ? combEl.options[combEl.selectedIndex].value : '';
 
   if(!pc){
     document.getElementById('calcLines').innerHTML='<p style="color:var(--white3);font-size:13px;text-align:center;padding:20px 0">Introduce el precio de compra</p>';
@@ -1563,15 +1613,10 @@ function calcImport(){
   }
 
   var transFinal = trans > 0 ? trans : (TRANS[pais] || 900);
-
-  // IVA: solo se paga en España si el vendedor es un particular (no tiene NIF-IVA)
-  // Si es empresa/concesionario con factura de IVA, la operación intracomunitaria
-  // se liquida mediante inversión del sujeto pasivo → coste neto 0 para empresa registrada en IVA.
-  var ivaPaga   = (vendedor === 'particular');
-  var iva        = ivaPaga ? pc * 0.21 : 0;
-  var ivaTexto   = ivaPaga
-    ? 'El vendedor es un particular no sujeto a IVA en origen. España exige el pago del IVA (21%) sobre el precio de compra al matricular el vehículo (Art. 13 Ley 37/1992 del IVA).'
-    : 'Operación intracomunitaria entre empresas. El comprador aplica la inversión del sujeto pasivo: declara el IVA como soportado y repercutido simultáneamente → coste neto 0€ (Art. 84.Uno.2º Ley 37/1992).';
+  var ivaDatos   = getIvaNota(situacion, pc);
+  // IVA solo suma al total en caso de compra a particular (aunque es recuperable, se muestra como flujo)
+  // En todos los demás casos IVA coste neto = 0
+  var ivaCoste   = 0; // nunca suma al coste real (siempre recuperable o no aplica)
 
   var iedmtRate  = getIEDMT(co2, comb);
   var iedmt      = pc * iedmtRate;
@@ -1580,34 +1625,42 @@ function calcImport(){
   var gest       = 280;
   var dgt        = 130;
   var otros      = 150;
-  var total      = pc + transFinal + iva + iedmt + homol + itv + gest + dgt + otros;
+  var total      = pc + transFinal + ivaCoste + iedmt + homol + itv + gest + dgt + otros;
   var margen     = pv > 0 ? pv - total : null;
 
-  var ivaLinea = ivaPaga
-    ? '<div class="cline"><span class="lbl">IVA España (21%)</span><span class="val">'+fmt(iva)+'</span></div>'+
-      '<div style="font-size:11px;color:var(--white3);margin:-8px 0 10px 0;line-height:1.5;padding:8px 10px;background:rgba(243,156,18,.07);border-left:2px solid var(--yellow);border-radius:0 4px 4px 0">⚠ '+ivaTexto+'</div>'
-    : '<div class="cline"><span class="lbl">IVA España</span><span class="val" style="color:var(--green)">0€ — exento</span></div>'+
-      '<div style="font-size:11px;color:var(--white3);margin:-8px 0 10px 0;line-height:1.5;padding:8px 10px;background:rgba(46,204,113,.07);border-left:2px solid var(--green);border-radius:0 4px 4px 0">✅ '+ivaTexto+'</div>';
+  // Nota IEDMT con fuente oficial
+  var iedmtFuente =
+    '<div style="font-size:11px;color:var(--white3);margin:-6px 0 12px 0;line-height:1.6;padding:10px 12px;background:rgba(201,168,76,.06);border-left:2px solid var(--gold-dark);border-radius:0 4px 4px 0">'+
+    '📋 <strong>Fuente:</strong> <a href="https://sede.agenciatributaria.gob.es/Sede/procedimientoini/GC13.shtml" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Agencia Tributaria — IEDMT</a> '+
+    '(Impuesto Especial sobre Determinados Medios de Transporte · Art. 65-74 Ley 38/1992 LIIEE). '+
+    'Tramos CO₂ vigentes: <strong>≤120 g/km → 0%</strong> · <strong>121-160 g/km → 4,75%</strong> · <strong>161-200 g/km → 9,75%</strong> · <strong>&gt;200 g/km → 14,75%</strong> · Eléctrico/PHEV → 0%. '+
+    'Base imponible: precio de compra en origen (sin IVA).</div>';
 
-  var iedmtFuente = '<div style="font-size:11px;color:var(--white3);margin:-6px 0 10px 0;line-height:1.5;padding:8px 10px;background:rgba(201,168,76,.06);border-left:2px solid var(--gold-dark);border-radius:0 4px 4px 0">'+
-    '📋 Fuente: <a href="https://sede.agenciatributaria.gob.es/Sede/procedimientoini/GC13.shtml" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Agencia Tributaria — IEDMT (Impuesto Especial sobre Determinados Medios de Transporte)</a>. '+
-    'Tramos vigentes: ≤120 g CO₂ → 0% · 121-160 g → 4,75% · 161-200 g → 9,75% · >200 g → 14,75% · Eléctrico/PHEV → 0%. Art. 70 Ley 38/1992 (LIIEE).</div>';
+  // Nota IEDMT específica por situación
+  var iedmtQuienPaga = '';
+  if(situacion === 'primeauto_reventa'){
+    iedmtQuienPaga = '<div style="font-size:11px;color:var(--white3);margin:-6px 0 12px 0;line-height:1.6;padding:8px 12px;background:rgba(201,168,76,.06);border-left:2px solid var(--gold-dark);border-radius:0 4px 4px 0">'+
+      '🔑 <strong>¿Quién paga el IEDMT?</strong> Lo paga quien <u>matricula</u> el vehículo en España por primera vez. Si Prime Auto lo matricula para mostrarlo/venderlo, es coste de Prime Auto (incluido en precio de venta). Si se vende sin matricular y el cliente lo matricula, el coste recae en el cliente.</div>';
+  }
 
   var html =
-    '<div class="cline"><span class="lbl">Precio de compra</span><span class="val">'+fmt(pc)+'</span></div>'+
+    '<div class="cline"><span class="lbl">Precio de compra (en origen)</span><span class="val">'+fmt(pc)+'</span></div>'+
     '<div class="cline"><span class="lbl">Transporte desde '+pais+'</span><span class="val">'+fmt(transFinal)+'</span></div>'+
-    ivaLinea+
+    ivaDatos.html+
     '<div class="cline"><span class="lbl">IEDMT matriculación ('+(iedmtRate*100).toFixed(2)+'%'+(co2?' · '+co2+' g/km CO₂':'')+')</span><span class="val">'+fmt(iedmt)+'</span></div>'+
     iedmtFuente+
+    iedmtQuienPaga+
     '<div class="cline"><span class="lbl">Homologación + ITV</span><span class="val">'+fmt(homol+itv)+'</span></div>'+
     '<div class="cline"><span class="lbl">Gestoría + DGT</span><span class="val">'+fmt(gest+dgt)+'</span></div>'+
-    '<div class="cline"><span class="lbl">Otros gastos</span><span class="val">'+fmt(otros)+'</span></div>'+
-    '<div class="cline tot"><span class="lbl">COSTE TOTAL PUESTO EN ESPAÑA</span><span class="val">'+fmt(total)+'</span></div>';
+    '<div class="cline"><span class="lbl">Otros gastos estimados</span><span class="val">'+fmt(otros)+'</span></div>'+
+    '<div class="cline tot"><span class="lbl">COSTE TOTAL PUESTO EN ESPAÑA</span><span class="val">'+fmt(total)+'</span></div>'+
+    '<div style="font-size:11px;color:var(--white3);margin:4px 0 10px 0;line-height:1.5;padding:6px 12px;background:rgba(255,255,255,.03);border-radius:4px">'+
+    'El IVA no se incluye en el coste total: en todos los casos es 0€ neto para una empresa registrada en IVA o no aplica en España (vehículo de ocasión de particular).</div>';
 
   if(margen !== null){
     var isPos = margen >= 0;
     var pct   = (margen / total * 100).toFixed(1);
-    html += '<div class="cline"><span class="lbl">Margen bruto (venta a '+fmt(pv)+')</span>'+
+    html += '<div class="cline"><span class="lbl">Margen bruto estimado (venta a '+fmt(pv)+')</span>'+
       '<span class="val '+(isPos?'pos':'neg')+'">'+(isPos?'+':'')+fmt(margen)+' ('+(isPos?'+':'')+pct+'%)</span></div>';
   }
 
